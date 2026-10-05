@@ -256,7 +256,9 @@ function coachPanel(model: ViewModel) {
 function handAndActions(model: ViewModel, send: Send): HTMLElement {
   const game = model.game!;
   const section = node('section', 'hand-panel'); section.setAttribute('aria-label', '你的手牌與操作');
-  const head = node('div', 'hand-heading'); head.append(node('h2', '', '你的手牌'), node('span', 'hand-tip', '單擊選牌 · 雙擊打出'));
+  const head = node('div', 'hand-heading');
+  const handTitle = node('h2', '', '你的手牌'); handTitle.tabIndex = -1; handTitle.dataset.focus = 'hand-heading'; handTitle.setAttribute('aria-describedby', 'operation-status');
+  head.append(handTitle, node('span', 'hand-tip', '單擊／Tab 選牌 · 雙擊打出'));
   if (game.self.restrictions.passedWin) head.append(pill('過水中', 'restriction-pill'));
   section.append(head);
   const hand = node('div', 'hand'); hand.setAttribute('role', 'group'); hand.setAttribute('aria-label', '選擇要打出的手牌');
@@ -319,6 +321,7 @@ function handAndActions(model: ViewModel, send: Send): HTMLElement {
     actions.append(control);
   });
   if (model.paused) actions.append(button('繼續牌局', 'continue', () => send({ type: 'pause' }), 'button button-primary'));
+  hint.querySelector('p')!.id = 'operation-status';
   operation.append(hint, actions); section.append(operation);
   if (model.coachNotice) section.append(node('p', 'action-note', model.coachNotice));
   if (discards.length && game.self.restrictions.forbiddenDiscards.length) section.append(node('p', 'action-note', `吃碰後本次不可打出：${game.self.restrictions.forbiddenDiscards.map(tileName).join('、')}。`));
@@ -419,6 +422,10 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
     // toggle also captures a user choice before another mode replaces the root.
     detail.addEventListener('toggle', () => { if (root.contains(detail)) details.set(detail.dataset.persist!, detail.open); });
   }
-  if (focus) Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(element => element.dataset.focus === focus)?.focus({ preventScroll: true });
+  if (focus) {
+    const target = Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(element => element.dataset.focus === focus);
+    if (target && !target.matches(':disabled')) target.focus({ preventScroll: true });
+    else if (focus.startsWith('tile-') || focus.startsWith('action-')) root.querySelector<HTMLElement>('[data-focus="hand-heading"]')?.focus({ preventScroll: true });
+  }
   if (resultDialog && showResult) { resultDialog.showModal(); resultDialog.querySelector<HTMLElement>('h2')?.focus(); }
 }

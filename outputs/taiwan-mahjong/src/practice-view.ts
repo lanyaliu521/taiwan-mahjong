@@ -88,7 +88,7 @@ export function renderPractice(root: HTMLElement, p: Practice | null, notice: st
         lastTap = { id, time: now }; select(id);
       }, `hand-tile ${id === p.drawnTile ? 'drawn' : ''}`, blocked || p.phase !== 'discard');
       control.dataset.tile = id; control.setAttribute('aria-label', `${tileName(id)}${id === p.drawnTile ? '，剛摸入' : ''}`); control.setAttribute('aria-pressed', 'false'); control.append(tile(id));
-      control.addEventListener('focus', () => select(id));
+      control.addEventListener('focus', () => { lastTap = null; select(id); });
       control.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (!event.repeat && !control.disabled) play(); } });
       hand.append(control);
     }

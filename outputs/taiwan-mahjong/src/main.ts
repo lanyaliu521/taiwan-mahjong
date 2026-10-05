@@ -83,7 +83,7 @@ function paint(): void {
   if (selectedTile && !game?.self.concealed.includes(selectedTile)) selectedTile = null;
   let message = status;
   if (paused) message = '牌局已暫停，按繼續即可恢復。';
-  else if (game?.legalActions.length) message = game.phase === 'awaitDiscard' ? '輪到你：雙擊同一張牌打出；鍵盤 Enter 或空白鍵也可出牌。' : '有可回應的牌，請選擇操作或按「過」。';
+  else if (game?.legalActions.length) message = game.phase === 'awaitDiscard' ? '輪到你：Tab 選牌，雙擊打出；Enter 或空白鍵也可出牌。' : '有可回應的牌，請選擇操作或按「過」。';
   const current = session?.game;
   render(root, {
     game, selectedTile, drawnTile: current?.turn === 0 && current.phase === 'awaitDiscard' ? current.drawContext.lastTile : null,
