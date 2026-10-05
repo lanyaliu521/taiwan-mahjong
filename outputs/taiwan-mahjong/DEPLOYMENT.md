@@ -1,6 +1,6 @@
 # GitHub Pages發布與回復
 
-現行網址（2026-10-06）：https://zhai2Liu.github.io/taiwan-mahjong/；repository：zhai2Liu/taiwan-mahjong。Git重導與repository API已確認owner改名，本機origin及About Website已同步。M5.3來源ff6de93，workflow37357698468 build／deploy成功，首頁與本地新版資源一致。下段M4首次發布為歷史紀錄。
+現行網址（2026-10-06）：https://zhai2liu.github.io/taiwan-mahjong/；repository：zhai2Liu/taiwan-mahjong。Git重導與repository API已確認owner改名，本機origin及About Website已同步。M5.3來源ff6de93，workflow37357698468 build／deploy成功，首頁與本地新版資源一致。下段M4首次發布為歷史紀錄。
 
 帳號改名會改變github.io來源；舊網址的localStorage不能由新網址直接讀取，本次未清除舊存檔。不宣稱自動遷移成功。
 

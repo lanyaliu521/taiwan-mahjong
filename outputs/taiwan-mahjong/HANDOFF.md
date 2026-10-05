@@ -16,8 +16,8 @@ practice.ts維護136張一般牌、不放回牌池、16→17→16、五面子一
 
 ## 網站、發布與測試工具
 
-正式網站：https://zhai2Liu.github.io/taiwan-mahjong/
-Repository：https://github.com/zhai2Liu/taiwan-mahjong（Public）。main追蹤origin/main，認證已完成；push自動測試、build、Pages部署。發布／revert回復見DEPLOYMENT。M5.2來源提交b7aafc6edfcd8504122ae57bb47cd631ed80d51f已發布；workflow 37324560829的build及deploy成功，正式首頁／JS均HTTP200，線上JS與本地build完全相同。正常網站已驗純練習入口、17張／119池、捨西預覽27／119＝22.7%、雙擊後16張／池119及回饋。線上截圖M5.2-live.jpg。
+正式網站：https://zhai2liu.github.io/taiwan-mahjong/
+Repository：https://github.com/zhai2liu/taiwan-mahjong（Public）。main追蹤origin/main，認證已完成；push自動測試、build、Pages部署。發布／revert回復見DEPLOYMENT。M5.2來源提交b7aafc6edfcd8504122ae57bb47cd631ed80d51f已發布；workflow 37324560829的build及deploy成功，正式首頁／JS均HTTP200，線上JS與本地build完全相同。正常網站已驗純練習入口、17張／119池、捨西預覽27／119＝22.7%、雙擊後16張／池119及回饋。線上截圖M5.2-live.jpg。
 
 2026-10-05曾僅About Website誤設zhaizhaiLiu.github.io；2026-10-06本次Git推送及repository API已確認實際owner改為zhai2Liu，遠端與About Website已同步新網址。TW16-CLASSIC-v1凍結不變。
 
@@ -40,3 +40,7 @@ coach.ts／view.ts沿用analysis.ts，僅遮罩觀察／合法候選；main.ts�
 起始帳戶五小時已用51%；檢查點因五小時視窗自然更新顯示已用2%。未使用重設額度，不能將兩者相減作本輪token耗用；也不是精確對話剩餘token。
 
 交付檢查點帳戶五小時已用8%，剩92%，週用量25%；本輪跨自然視窗更新，不能推算本輪精確token。新github.io來源不會自動讀取舊來源localStorage；未刪除或覆寫舊來源存檔。後續按使用者試玩回饋維護，沒有待啟動的新功能階段。
+
+## 使用者確認帳號改名（2026-10-06）
+
+使用者明確確認username為zhai2liu；GitHub API保留顯示大小寫zhai2Liu，兩者為同一repository。統一現行網址與origin採小寫zhai2liu，舊驗收的GitHub Actions連結也改用現行owner；歷史首次發布帳號紀錄保留。新網址HTTP200且仍載入M5.3資源index-DoUDaANw.js。Vite base為./，workflow沒有綁舊owner，無CNAME，不須修改遊戲程式或存檔鍵。新舊github.io來源不同，舊來源存檔不會自動移入；未刪除舊資料。
