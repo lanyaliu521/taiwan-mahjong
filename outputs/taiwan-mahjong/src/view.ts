@@ -382,6 +382,17 @@ function result(model: ViewModel, send: Send): HTMLDialogElement {
 
 // ponytail: layout memory lasts for this page session; persist UI preferences only if requested.
 const detailStates = new WeakMap<HTMLElement, Map<string, boolean>>();
+export function preserveDetails(root: HTMLElement): () => void {
+  const details = detailStates.get(root) ?? new Map<string, boolean>();
+  detailStates.set(root, details);
+  for (const detail of Array.from(root.querySelectorAll<HTMLDetailsElement>('details[data-persist]'))) details.set(detail.dataset.persist!, detail.open);
+  return () => {
+    for (const detail of Array.from(root.querySelectorAll<HTMLDetailsElement>('details[data-persist]'))) {
+      detail.open = details.get(detail.dataset.persist!) ?? false;
+      detail.addEventListener('toggle', () => { if (root.contains(detail)) details.set(detail.dataset.persist!, detail.open); });
+    }
+  };
+}
 
 /** Render only the player's masked observation; hidden game state never enters this module. */
 export function render(root: HTMLElement, model: ViewModel, send: Send): void {
@@ -390,9 +401,7 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
   const showResult = !previousResult || previousResult.dataset.result !== model.game?.settlement?.id || previousResult.open;
   let resultDialog: HTMLDialogElement | undefined;
   const focus = root.contains(document.activeElement) ? (document.activeElement as HTMLElement).dataset.focus : undefined;
-  const details = detailStates.get(root) ?? new Map<string, boolean>();
-  detailStates.set(root, details);
-  for (const detail of Array.from(root.querySelectorAll<HTMLDetailsElement>('details[data-persist]'))) details.set(detail.dataset.persist!, detail.open);
+  const restoreDetails = preserveDetails(root);
   const shell = node('div', `app-shell ${model.game ? 'in-game' : ''}`); shell.append(header(model, send));
   if (model.notice) { const notice = node('p', 'notice', model.notice); notice.setAttribute('role', 'alert'); shell.append(notice); }
   if (!model.game) shell.append(home(model, send));
@@ -418,11 +427,7 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
   // ponytail: replace a small local table and restore focused controls; use keyed patching only if measured rendering cost warrants it.
   root.replaceChildren(shell);
   const table = root.querySelector('.table-grid'); if (table) table.scrollTop = tableScroll;
-  for (const detail of Array.from(root.querySelectorAll<HTMLDetailsElement>('details[data-persist]'))) {
-    detail.open = details.get(detail.dataset.persist!) ?? false;
-    // toggle also captures a user choice before another mode replaces the root.
-    detail.addEventListener('toggle', () => { if (root.contains(detail)) details.set(detail.dataset.persist!, detail.open); });
-  }
+  restoreDetails();
   if (focus) {
     const target = Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(element => element.dataset.focus === focus);
     if (target && !target.matches(':disabled')) target.focus({ preventScroll: true });

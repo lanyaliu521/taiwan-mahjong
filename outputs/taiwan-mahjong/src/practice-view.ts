@@ -3,7 +3,7 @@ import { practiceAnalysis } from './practice.js';
 import type { Analysis, DiscardAnalysis } from './analysis.js';
 import { compareAnalysis } from './analysis.js';
 import { kindOf } from './tiles.js';
-import { node, button, tile, tileName } from './view.js';
+import { node, button, tile, tileName, preserveDetails } from './view.js';
 import type { UICommand } from './view.js';
 
 const distance = (a: Analysis) => a.shanten < 0 ? '牌型已完成' : a.shanten === 0 ? '已聽牌，等候1張合適牌成胡牌形' : `至少再 ${a.shanten} 次有效改善可聽牌`;
@@ -43,7 +43,7 @@ function bestText(choices: DiscardAnalysis[]) { return choices.map(c => tileName
 
 export function renderPractice(root: HTMLElement, p: Practice | null, notice: string, hasSave: boolean, blocked: boolean, send: (c: UICommand) => void): void {
   const focused = root.contains(document.activeElement) ? (document.activeElement as HTMLElement).dataset.focus : undefined;
-  const opened = new Set(Array.from(root.querySelectorAll<HTMLDetailsElement>('details[open][data-persist]'), d => d.dataset.persist));
+  const restoreDetails = preserveDetails(root);
   const shell = node('div', 'app-shell practice-shell');
   const head = node('header', 'site-header'); head.append(node('h1', '', '純練習模式'), button('返回對戰', 'game', () => send({ type: 'game' }), 'button button-quiet'));
   shell.append(head);
@@ -127,7 +127,7 @@ export function renderPractice(root: HTMLElement, p: Practice | null, notice: st
     more.append(settings); workspace.append(playArea, more); main.append(workspace);
   }
   shell.append(main); root.replaceChildren(shell);
-  for (const d of Array.from(root.querySelectorAll<HTMLDetailsElement>('details[data-persist]'))) if (opened.has(d.dataset.persist)) d.open = true;
+  restoreDetails();
   if (focused) {
     const target = Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(e => e.dataset.focus === focused);
     const fallback = root.querySelector<HTMLElement>(p?.phase === 'draw' && !blocked ? '[data-focus="practice-draw"]' : '.practice-status') ?? intro;

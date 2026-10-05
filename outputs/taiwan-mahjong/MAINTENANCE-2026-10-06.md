@@ -41,3 +41,9 @@ MAINTENANCE原入口仍寫M5.2、分析段寫教練尚未串接，已校正為�
 首次開練習題時，同名practice-start按鈕被移入收合details，原程式嘗試聚焦隱藏按鈕而回BODY。已重現；現在排除disabled及收合details中的目標，聚焦可見practice-status（保留focus key），Tab直接到第一張手牌，17張未變。展開設定後換題仍保留可見控制項。對戰首頁續局與結算下一局若原按鈕消失，回手牌入口；終將仍優先聚焦結算標題。
 
 4191 practice-browser可見確認替代開關驗首次開題：收合設定、焦點practice-status、Tab第一張未出牌。普通續局→hand-heading；handResult下一局終將結算標題正常；lateHandResult下一局經自動發牌後17張、手牌入口及操作提示正確。23控制器測試及build通過，證據MAINTENANCE-PRACTICE-START.jpg、MAINTENANCE-NEXT-HAND.jpg。未宣稱原生確認或實體長按已自動驗證。
+
+## 工作包八：練習面板往返保留
+
+重現：候選best與棄牌river展開後，返回對戰再進練習均變收合。將view.ts既有單頁WeakMap面板保存抽成preserveDetails，練習直接沿用；沒有新增依賴、設定或存檔鍵。面板不存在時保留其開／關值，移除的舊面板toggle不得覆寫；選牌預覽仍按現有流程重新選擇，不持久保存題目預覽。
+
+4191驗best／river展開往返仍開，best手動收合後往返保持關；切到對戰，教練展開→暫停／繼續仍開，回練習best關／river開維持。235測試及build通過，證據MAINTENANCE-PRACTICE-PANELS.jpg。重新載入仍回預設面板狀態，不是持久偏好。
