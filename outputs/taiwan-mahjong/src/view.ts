@@ -426,7 +426,7 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
   if (focus) {
     const target = Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(element => element.dataset.focus === focus);
     if (target && !target.matches(':disabled')) target.focus({ preventScroll: true });
-    else if (focus === 'game' || focus.startsWith('tile-') || focus.startsWith('action-')) root.querySelector<HTMLElement>(model.game ? '[data-focus="hand-heading"]' : '[data-focus="home-entry"]')?.focus({ preventScroll: true });
+    else if (['game', 'resume', 'start', 'next'].includes(focus) || focus.startsWith('tile-') || focus.startsWith('action-')) root.querySelector<HTMLElement>(model.game ? '[data-focus="hand-heading"]' : '[data-focus="home-entry"]')?.focus({ preventScroll: true });
   }
   if (resultDialog && showResult) { resultDialog.showModal(); resultDialog.querySelector<HTMLElement>('h2')?.focus(); }
 }

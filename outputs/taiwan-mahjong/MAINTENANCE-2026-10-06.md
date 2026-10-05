@@ -35,3 +35,9 @@ MAINTENANCE原入口仍寫M5.2、分析段寫教練尚未串接，已校正為�
 原workflow以outputs/taiwan-mahjong/**觸發，每份Markdown／截圖交接會重跑整套部署，前次與本輪曾造成排隊。改用GitHub原生paths負向排除專案根Markdown、JPG證據與*SIMULATION.json；程式、測試fixture、lockfile、src／public素材與workflow仍觸發。手動執行、全套測試、權限與部署並行設定保留，沒有跳過程式交付的驗證。
 
 本地依11個正／負路徑例驗證設定（Node內建glob，只作一次輔助檢查，不冒稱GitHub雲端matcher實測）。workflow修改需實際雲端跑通；下一次純文件提交不加skip-ci並觀察是否不新增run。若根目錄未來放發布素材，須移入src／public或調整篩選。
+
+## 工作包七：開題／續局／下一局的鍵盤入口
+
+首次開練習題時，同名practice-start按鈕被移入收合details，原程式嘗試聚焦隱藏按鈕而回BODY。已重現；現在排除disabled及收合details中的目標，聚焦可見practice-status（保留focus key），Tab直接到第一張手牌，17張未變。展開設定後換題仍保留可見控制項。對戰首頁續局與結算下一局若原按鈕消失，回手牌入口；終將仍優先聚焦結算標題。
+
+4191 practice-browser可見確認替代開關驗首次開題：收合設定、焦點practice-status、Tab第一張未出牌。普通續局→hand-heading；handResult下一局終將結算標題正常；lateHandResult下一局經自動發牌後17張、手牌入口及操作提示正確。23控制器測試及build通過，證據MAINTENANCE-PRACTICE-START.jpg、MAINTENANCE-NEXT-HAND.jpg。未宣稱原生確認或實體長按已自動驗證。

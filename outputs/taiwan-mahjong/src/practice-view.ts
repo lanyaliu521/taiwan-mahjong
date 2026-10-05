@@ -60,7 +60,7 @@ export function renderPractice(root: HTMLElement, p: Practice | null, notice: st
   else {
     const analysis = practiceAnalysis(p);
     const workspace = node('div', 'practice-workspace'), playArea = node('section', 'practice-play'), more = node('aside', 'practice-more');
-    const status = node('p', 'practice-status'); status.tabIndex = -1; status.setAttribute('role', 'status');
+    const status = node('p', 'practice-status'); status.tabIndex = -1; status.dataset.focus = 'practice-status'; status.setAttribute('role', 'status');
     status.textContent = p.phase === 'complete' ? '完成！五面子一對將。可換題或同題重練。' : p.phase === 'exhausted' ? '牌池已用完。可換題或同題重練。' : p.phase === 'draw' ? '② 看回饋，再摸下一張' : '① 選一張預覽，雙擊同張捨出';
     playArea.append(status, node('p', 'practice-progress', `手牌 ${p.hand.length} 張 · 已捨 ${p.discards.length} 張 · 牌池 ${p.pool.length} 張`));
     const hand = node('div', 'hand practice-hand'); hand.setAttribute('role', 'group'); hand.setAttribute('aria-label', '練習手牌');
@@ -128,5 +128,9 @@ export function renderPractice(root: HTMLElement, p: Practice | null, notice: st
   }
   shell.append(main); root.replaceChildren(shell);
   for (const d of Array.from(root.querySelectorAll<HTMLDetailsElement>('details[data-persist]'))) if (opened.has(d.dataset.persist)) d.open = true;
-  if (focused) (focused === 'practice' ? intro : Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(e => e.dataset.focus === focused) ?? root.querySelector<HTMLElement>(p?.phase === 'draw' ? '[data-focus="practice-draw"]' : '.practice-status'))?.focus({ preventScroll: true });
+  if (focused) {
+    const target = Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(e => e.dataset.focus === focused);
+    const fallback = root.querySelector<HTMLElement>(p?.phase === 'draw' && !blocked ? '[data-focus="practice-draw"]' : '.practice-status') ?? intro;
+    (focused === 'practice' ? intro : target && !target.matches(':disabled') && !target.closest('details:not([open])') ? target : fallback).focus({ preventScroll: true });
+  }
 }
