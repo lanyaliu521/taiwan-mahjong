@@ -49,7 +49,8 @@ export function renderPractice(root: HTMLElement, p: Practice | null, notice: st
   shell.append(head);
   if (notice) { const alert = node('p', 'notice', notice); alert.setAttribute('role', 'alert'); shell.append(alert); }
   const main = node('main', 'practice-main');
-  main.append(node('p', 'practice-intro', p ? '十六張練習 · 五面子一對將' : '136張一般牌、不含花；只練進牌與捨牌，不設對手或計台。'));
+  const intro = node('p', 'practice-intro', p ? '十六張練習 · 五面子一對將' : '136張一般牌、不含花；只練進牌與捨牌，不設對手或計台。');
+  intro.tabIndex = -1; intro.dataset.focus = 'practice-entry'; main.append(intro);
   const tools = node('div', 'practice-tools');
   if (!p && hasSave) tools.append(button('繼續上次練習', 'practice-resume', () => send({ type: 'practice-resume' }), 'button button-primary', blocked));
   tools.append(button(p ? '換一題隨機手牌' : '開始隨機練習', 'practice-start', () => send({ type: 'practice-start' }), 'button button-secondary'));
@@ -127,5 +128,5 @@ export function renderPractice(root: HTMLElement, p: Practice | null, notice: st
   }
   shell.append(main); root.replaceChildren(shell);
   for (const d of Array.from(root.querySelectorAll<HTMLDetailsElement>('details[data-persist]'))) if (opened.has(d.dataset.persist)) d.open = true;
-  if (focused) (Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(e => e.dataset.focus === focused) ?? root.querySelector<HTMLElement>(p?.phase === 'draw' ? '[data-focus="practice-draw"]' : '.practice-status'))?.focus({ preventScroll: true });
+  if (focused) (focused === 'practice' ? intro : Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(e => e.dataset.focus === focused) ?? root.querySelector<HTMLElement>(p?.phase === 'draw' ? '[data-focus="practice-draw"]' : '.practice-status'))?.focus({ preventScroll: true });
 }

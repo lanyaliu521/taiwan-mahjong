@@ -111,7 +111,8 @@ function home(model: ViewModel, send: Send): HTMLElement {
   const main = node('main', 'welcome');
   const hero = node('section', 'welcome-hero');
   const copy = node('div', 'welcome-copy');
-  copy.append(node('p', 'eyebrow', 'TAIWAN MAHJONG · 十六張'), node('h2', '', '牌桌已備好，\n就等你入座。'), node('p', 'welcome-description', '一位玩家，三位電腦。\n熟悉的台灣桌規，專心打一場好牌。'));
+  const title = node('h2', '', '牌桌已備好，\n就等你入座。'); title.tabIndex = -1; title.dataset.focus = 'home-entry';
+  copy.append(node('p', 'eyebrow', 'TAIWAN MAHJONG · 十六張'), title, node('p', 'welcome-description', '一位玩家，三位電腦。\n熟悉的台灣桌規，專心打一場好牌。'));
   const actions = node('div', 'welcome-actions');
   if (model.hasSave) actions.append(button('繼續上次牌局', 'resume', () => send({ type: 'resume' }), 'button button-primary button-large', model.busy));
   actions.append(button(model.hasSave ? '開始新的一將' : '開始一將', 'start', () => send({ type: 'start' }), `button ${model.hasSave ? 'button-secondary' : 'button-primary'} button-large`, model.busy));
@@ -425,7 +426,7 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
   if (focus) {
     const target = Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(element => element.dataset.focus === focus);
     if (target && !target.matches(':disabled')) target.focus({ preventScroll: true });
-    else if (focus.startsWith('tile-') || focus.startsWith('action-')) root.querySelector<HTMLElement>('[data-focus="hand-heading"]')?.focus({ preventScroll: true });
+    else if (focus === 'game' || focus.startsWith('tile-') || focus.startsWith('action-')) root.querySelector<HTMLElement>(model.game ? '[data-focus="hand-heading"]' : '[data-focus="home-entry"]')?.focus({ preventScroll: true });
   }
   if (resultDialog && showResult) { resultDialog.showModal(); resultDialog.querySelector<HTMLElement>('h2')?.focus(); }
 }
