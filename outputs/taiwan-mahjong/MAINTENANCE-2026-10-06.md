@@ -83,3 +83,7 @@ Luna僅補controller測試：練習捨牌保存失敗後不開教學、原存檔
 新手教學上線後檢查640×360／320×360，發現首頁頂列含品牌與兩個工具的最小寬度超過扣除垂直捲軸後的內容寬。320視窗時documentElement.clientWidth305，但scrollWidth318，出現橫向捲動；舊驗收只比innerWidth320因此漏判。溢出元素為header-tools中的公平AI／新手教學。
 
 在既有760px媒體條件讓site-header可換行、工具列margin-left:auto，沿用原生flex，不隱藏內容／裁切溢出，不加依賴。修後首頁320：client／scroll均305；教學dialog265／265；練習入口320／320、續練305／305；對戰320／320與390／390。640×360教學內容可捲、底部操作可見，無browser error；viewport還原。證據HEADER-320.jpg。純CSS改動依ROADMAP做瀏覽器驗證與build，未加字串鏡像測試。來源bundle index-WkiKqWo8.js／index-DIlVjIQw.css，待雲端全套CI及正式顯示核對。
+
+工作包十四正式完成：來源05d0122、run37389916026成功，正式瀏覽器實際index-WkiKqWo8.js，320視窗client／scroll均305；HEADER-LIVE-320.jpg。未恢復或改正式牌局存檔，viewport已還原。
+
+M6.0依使用者新方向完成AI-STYLE-DESIGN及可重現抽樣／反例研究，尚未實作防守AI。原進攻基線為一步向聽與進張，不宣稱全局最佳。詳細研究以專份文件為準，避免抄成第二套桌規。

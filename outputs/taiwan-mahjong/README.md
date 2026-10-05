@@ -1,6 +1,6 @@
 # 台灣16張麻將
 
-1真人＋3位本地公平電腦，採固定桌規TW16-CLASSIC-v1。可在本機網頁遊玩完整牌局；M0–M5.3已完成，正式網站已上線：[立即遊玩](https://zhai2liu.github.io/taiwan-mahjong/)。純練習與可關閉的對戰教練已完成，後續按試玩回饋維護。對戰選牌可預覽向聽、公開有效牌比例與拆法，吃碰各有合法捨牌後比較。
+1真人＋3位本地公平電腦，採固定桌規TW16-CLASSIC-v1。可在本機網頁遊玩完整牌局；M0–M5.4已完成，正式網站已上線：[立即遊玩](https://zhai2liu.github.io/taiwan-mahjong/)。純練習與可關閉的對戰教練已完成，後續按試玩回饋維護。對戰選牌可預覽向聽、公開有效牌比例與拆法，吃碰各有合法捨牌後比較。
 
 ## 入口
 
@@ -10,6 +10,7 @@
 - [維護指南：修改位置、資料流、存檔與驗證](MAINTENANCE.md)
 - [固定桌規與完整台表](../taiwan-mahjong-m0/RULES.md)
 - [概念契約](../taiwan-mahjong-m0/CONTRACTS.md)：實際欄位以src/model.ts為準。
+- [進攻／防守牌風研究](AI-STYLE-DESIGN.md)：公開資訊安全原理、768副起手基準與三個引擎反例；尚未更換遊戲AI。
 - [純練習與新手提示設計](TRAINING-DESIGN.md)：M5設計及Sol／Luna分工。
 - [新手操作教學驗證](TUTORIAL-VALIDATION.md)：六步原生視窗、示範選牌／出牌與兩種吃法，正式發布狀態見HANDOFF。
 - [本輪維護驗證](MAINTENANCE-2026-10-06.md)：鍵盤入口、結算付款核對及文件校正。

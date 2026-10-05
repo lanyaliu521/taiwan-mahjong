@@ -1,0 +1,49 @@
+{
+  "rules": "TW16-CLASSIC-v1",
+  "method": "256 mixed fixed seeds; non-dealer E16 after opening flower replacement; no gameplay; example is nearest-target decomposition, not maximum partial count",
+  "deals": 256,
+  "excluded": 0,
+  "samples": 768,
+  "histogram": {
+    "1": 1,
+    "2": 28,
+    "3": 161,
+    "4": 291,
+    "5": 209,
+    "6": 71,
+    "7": 7
+  },
+  "meanShanten": 4.197916666666667,
+  "median": 4,
+  "p75": 5,
+  "p90": 6,
+  "meanCompleted": 0.9388020833333334,
+  "meanPartials": 3.1458333333333335,
+  "meanPair": 0.7786458333333334,
+  "counterexamples": [
+    {
+      "name": "discardedHonor",
+      "hand": "123m 456m 123p 456p 789s 1z",
+      "owned": "1z",
+      "oldDiscard": "1z",
+      "currentDiscard": "1z",
+      "ronLegal": true
+    },
+    {
+      "name": "sujiCounterexample",
+      "hand": "111p 222p 333s 444s 35m 55z",
+      "owned": "4m",
+      "oldDiscard": "1m",
+      "currentDiscard": "4m",
+      "ronLegal": true
+    },
+    {
+      "name": "fourVisibleNumber",
+      "hand": "111p 222p 333s 444s 12m 55z",
+      "owned": "3333m",
+      "oldDiscard": null,
+      "currentDiscard": "3m",
+      "ronLegal": true
+    }
+  ]
+}
