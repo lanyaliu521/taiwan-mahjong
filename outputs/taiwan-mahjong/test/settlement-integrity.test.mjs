@@ -48,6 +48,14 @@ test('付款差額與總分同步竄改仍拒絕還原', () => {
   assert.throws(() => restored(bad));
 });
 
+test('一般胡牌不得刪除五面子一對的拆法證據；花牌特殊胡仍可沒有一般胡形', () => {
+  for (const state of [winHand(), ronHand(), robKongHand()]) {
+    state.settlement.score.decomposition = null;
+    assert.throws(() => restored(state), /decomposition.required/);
+  }
+  for (const state of [sevenFlowers(), eightFlowers()]) assert.deepEqual(restored(state), state);
+});
+
 test('放槍結算改由非放槍者付款仍拒絕還原', () => {
   const bad = structuredClone(ronHand()), winner = bad.settlement.winner;
   const payer = bad.players.findIndex(p => p.discardHistory.at(-1)?.claimedBy === winner);

@@ -253,6 +253,7 @@ function validateSettlement(s: GameState, owned: string[]): void {
   if (result.source === 'eightFlowers') check(s.players[result.winner].flowers.length === 8, 'settlement.eightFlowers');
   object(result.score, 'settlement.score');
   const score = result.score;
+  if (['selfDraw', 'ron', 'robKong'].includes(result.source)) check(score.decomposition !== null, 'score.decomposition.required');
   integer(score.tai, 'score.tai'); array(score.items, 'score.items');
   score.items.forEach(item => {
     object(item, 'score.item'); check(typeof item.id === 'string' && /^S(0[1-9]|[12][0-9]|3[0-2])$/.test(item.id), 'score.item.id');

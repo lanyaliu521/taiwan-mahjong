@@ -6,7 +6,7 @@
 
 鍵盤出牌／回應按鈕消失時回到手牌入口，Tab直接選合法牌；再次Enter不出第二張。練習跨控制項清除雙擊記錄；320無橫溢且入口外框可見。來源188465baf4e1cbedf9684619e3ebbca7888d6ba1推送，workflow37364743153排隊中，未宣稱正式頁已更新。
 
-結算存檔補來源付款人、完整差額及RON／搶槓引用核對，Luna限定新增8項回歸。234測試／build、3完整將74局317次還原通過。schemaVersion=1終將缺舊連莊上下文，只回推合法付款，不聲稱所有歷史分數可防偽。MAINTENANCE／ROADMAP校正已完成練習與教練的舊說法，README加入本輪集中證據。驗證與限制見MAINTENANCE-2026-10-06，截圖MAINTENANCE-KEYBOARD系列，完整將資料MAINTENANCE-2026-10-06-SIMULATION.json。追加模式切換焦點修正已在4191驗證：進練習聚焦介紹，返回有牌局聚焦手牌、無牌局聚焦首頁標題；不自動開題／出牌，返回仍暫停。23控制器測試及build通過，證據MAINTENANCE-MODE-FOCUS。接續：確認最新來源workflow及正式bundle；排隊舊來源可能阻塞，最新包含前兩包。勿重跑相同長模擬。
+結算存檔補一般胡拆法必填（花胡仍可沒有一般胡形）、來源付款人、完整差額及RON／搶槓引用核對，Luna限定新增8項回歸。235測試／build（含一般胡必有拆法的追加回歸）、3完整將74局317次還原通過。schemaVersion=1終將缺舊連莊上下文，只回推合法付款，不聲稱所有歷史分數可防偽。MAINTENANCE／ROADMAP校正已完成練習與教練的舊說法，README加入本輪集中證據。驗證與限制見MAINTENANCE-2026-10-06，截圖MAINTENANCE-KEYBOARD系列，完整將資料MAINTENANCE-2026-10-06-SIMULATION.json。追加模式切換焦點修正已在4191驗證：進練習聚焦介紹，返回有牌局聚焦手牌、無牌局聚焦首頁標題；不自動開題／出牌，返回仍暫停。23控制器測試及build通過，證據MAINTENANCE-MODE-FOCUS。接續：確認最新來源workflow及正式bundle；排隊舊來源可能阻塞，最新包含前兩包。勿重跑相同長模擬。
 
 ## 前次提示狀態修正
 
