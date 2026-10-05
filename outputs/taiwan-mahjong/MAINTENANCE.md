@@ -1,6 +1,6 @@
 # 維護指南
 
-2026-10-05，M5.1更新。此文件說明現有實作與修改路徑；目前進度見[HANDOFF](HANDOFF.md)，新增玩法規格見[TRAINING-DESIGN](TRAINING-DESIGN.md)。
+2026-10-05，M5.2更新。此文件說明現有實作與修改路徑；目前進度見[HANDOFF](HANDOFF.md)，新增玩法規格見[TRAINING-DESIGN](TRAINING-DESIGN.md)。
 
 ## 文件各自負責什麼
 
@@ -41,7 +41,7 @@ src/analysis.ts是AI、後續練習與教練的共用來源；不要解析AI的r
 
 exactPool只接剩餘一般牌的唯一實體ID；publicPool扣自家牌、公開河牌／副露與搶槓亮牌，以ID去重，不猜對手暗槓。機率為有效張數／牌池總數，空池為null；公開未知牌含對手暗手與牌尾，不能稱真實牌牆機率。牌池不可與自家牌重疊。
 
-每次決策建立一個analyzer，內部快取共用於各候選；不跨牌局永久保留。介面只在真人可決策時分析，重繪可沿觀察版本重用結果；AI關閉示例生成。M5.2尚未建立practice.ts、練習存檔或介面，M5.3尚未串接教練。型別以analysis.ts為準，驗證見M5.1-VALIDATION。
+每次決策建立一個analyzer，內部快取共用於各候選；不跨牌局永久保留。介面只在真人可決策時分析，重繪可沿觀察版本重用結果；AI關閉示例生成。M5.2已由practice.ts、practice-view.ts與main.ts整合；M5.3尚未串接教練。型別以analysis.ts為準，驗證見M5.1-VALIDATION。
 
 ## 存檔與相容性
 
@@ -76,3 +76,13 @@ test/browser.html與test/runner.html為開發來源工具；browser-fixtures、c
 
 main推送後由GitHub Actions發布，正式網址與回復步驟見DEPLOYMENT；確認該次workflow成功。site/是發布產物，src/才是修改來源；不要直接編輯site/或dist/。
 
+
+## 純練習模式（M5.2）
+
+src/practice.ts維護136張一般牌、種子、手牌、池、棄牌、摸入牌及階段。初始16加摸入1張；discardPractice將17變16且棄牌不回池；drawPractice只在draw階段取池首。牌池耗盡或五面子一對完成即結束。
+
+存檔鍵tw16:practice:v1、schemaVersion=1，與對戰分開。restorePractice重播種子與捨牌日誌，核對完整狀態，拒絕篡改、重複ID、非法牌權／階段及未知版本；不能只JSON.parse。若改洗牌／重播演算法須先決定存檔遷移策略。
+
+src/practice-view.ts沿用view.ts牌面、牌名及原生button／details；單擊／Tab局部預覽，450ms內雙擊、Enter／空白鍵出牌。main.ts處理模式、儲存及跨分頁：切入先保存並暫停對戰，返回後手動繼續；保存失敗保留舊檔與記憶體並阻止離開；他頁修改後停止練習。
+
+practice.test.mjs驗證整題完成及耗盡、重播、牌權、比例與存檔邊界；controller.test.mjs驗證模式切換、壞檔取消、保存失敗與跨分頁。test/practice-browser.html以可見核取方塊替代confirm，用於獨立來源的瀏覽器驗收，不納入正式建置；正式程式仍使用原生confirm。

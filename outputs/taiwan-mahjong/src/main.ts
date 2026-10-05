@@ -3,6 +3,9 @@ import { createSession, automaticAction, advance, encodeSession, decodeSession }
 import type { Session } from './session.js';
 import { render } from './view.js';
 import type { UICommand } from './view.js';
+import { PRACTICE_KEY, createPractice, drawPractice, discardPractice, encodePractice, decodePractice } from './practice.js';
+import type { Practice } from './practice.js';
+import { renderPractice } from './practice-view.js';
 
 const SAVE_KEY = 'tw16:TW16-CLASSIC-v1:save';
 const root = document.querySelector<HTMLElement>('#app')!;
@@ -19,6 +22,20 @@ let failed = false;
 let timer: ReturnType<typeof setTimeout> | undefined;
 let generation = 0;
 let rendered = 0;
+let mode: 'game' | 'practice' = 'game';
+let practice: Practice | null = null;
+let practiceSaved: Practice | null = null;
+let practiceRaw: string | null = null;
+let practiceUnreadable = false;
+let practiceNotice = '';
+let practiceBlocked = false;
+try {
+  practiceRaw = localStorage.getItem(PRACTICE_KEY);
+  if (practiceRaw !== null) {
+    try { practiceSaved = decodePractice(practiceRaw); }
+    catch { practiceNotice = '練習存檔無法讀取，原資料已保留；開始新題並確認後才會取代。'; }
+  }
+} catch { practiceUnreadable = true; practiceNotice = '目前無法讀取練習存檔；關閉頁面可能無法續練。'; }
 try {
   rawSave = localStorage.getItem(SAVE_KEY);
   if (rawSave !== null) {
@@ -27,24 +44,36 @@ try {
   }
 } catch { unreadableSave = true; notice = '目前無法讀取本機存檔；仍可開局，但關閉頁面可能無法續局。'; }
 
-function persist(): void {
-  if (!session) return;
+function persist(): boolean {
+  if (!session) return true;
   try {
     const text = encodeSession(session);
     localStorage.setItem(SAVE_KEY, text);
     rawSave = text;
     saved = session;
     notice = '';
-  } catch { notice = '牌局可繼續，但這一步未能儲存。請保持頁面開啟，以免失去目前進度。'; }
+    return true;
+  } catch { notice = '牌局可繼續，但這一步未能儲存。請保持頁面開啟，以免失去目前進度。'; return false; }
+}
+function persistPractice(): boolean {
+  if (!practice) return true;
+  try {
+    const text = encodePractice(practice);
+    localStorage.setItem(PRACTICE_KEY, text); practiceRaw = text; practiceSaved = practice; practiceNotice = ''; return true;
+  } catch { practiceNotice = '本次練習未能儲存；上次存檔已保留。請保持頁面開啟，以免失去目前進度。'; return false; }
 }
 function stopTimer(): void { clearTimeout(timer); timer = undefined; generation++; }
 function needsAutomation(): boolean {
-  if (!session || paused || failed || ['handResult', 'matchResult'].includes(session.game.phase)) return false;
+  if (mode !== 'game' || !session || paused || failed || ['handResult', 'matchResult'].includes(session.game.phase)) return false;
   const game = session.game;
   return legalActions(game, 'engine').length > 0 || (!legalActions(game, 0).length && ([1, 2, 3] as const).some(s => legalActions(game, s).length));
 }
 function paint(): void {
   const screen = ++rendered;
+  if (mode === 'practice') {
+    renderPractice(root, practice, practiceNotice, practiceSaved !== null, practiceBlocked, command => { if (screen === rendered) send(command); });
+    return;
+  }
   const game = session ? getObservation(session.game, 0) : null;
   if (selectedTile && !game?.self.concealed.includes(selectedTile)) selectedTile = null;
   let message = status;
@@ -85,6 +114,32 @@ function start(): void {
   persist(); refresh();
 }
 function send(command: UICommand): void {
+  if (command.type === 'practice') {
+    if (session && !failed && !persist()) { refresh(); return; }
+    paused = true; stopTimer(); mode = 'practice'; paint(); return;
+  }
+  if (command.type === 'game') {
+    if (!practiceBlocked && !persistPractice()) { paint(); return; }
+    mode = 'game'; refresh(); return;
+  }
+  if (mode === 'practice') {
+    if (command.type === 'practice-start' || command.type === 'practice-replay') {
+      if (command.type === 'practice-replay' && (!practice || practiceBlocked)) return;
+      if ((practice || practiceRaw !== null || practiceUnreadable) && !window.confirm(command.type === 'practice-replay' ? '同題重練會回到原始手牌和牌序，取代本題進度。確定？' : '新隨機題會取代練習存檔，對戰存檔不受影響。確定？')) return;
+      practice = command.type === 'practice-replay' ? createPractice(practice!.seed) : createPractice();
+      practiceBlocked = false; practiceUnreadable = false; persistPractice(); paint(); return;
+    }
+    if (practiceBlocked) return;
+    if (command.type === 'practice-resume') { if (practiceSaved) { practice = decodePractice(encodePractice(practiceSaved)); paint(); } return; }
+    if (!practice) return;
+    try {
+      if (command.type === 'practice-draw') practice = drawPractice(practice);
+      else if (command.type === 'practice-discard') practice = discardPractice(practice, command.tileId);
+      else return;
+      persistPractice(); paint();
+    } catch { practiceNotice = '這個操作已失效，請依目前的練習畫面選擇。'; paint(); }
+    return;
+  }
   if (command.type === 'start' || command.type === 'new') { start(); return; }
   if (command.type === 'resume') {
     if (saved) { session = decodeSession(encodeSession(saved)); paused = false; failed = false; selectedTile = null; status = '已恢復牌局'; refresh(); }
@@ -112,8 +167,13 @@ function send(command: UICommand): void {
 }
 // ponytail: one tab owns local play; stop a second tab rather than merging competing turn histories.
 window.addEventListener('storage', event => {
+  if (event.key === null || event.key === PRACTICE_KEY && event.newValue !== practiceRaw) {
+    practiceBlocked = true; practiceSaved = null; practiceRaw = event.key === null ? null : event.newValue;
+    practiceNotice = '另一個分頁已變更練習存檔，此頁已停止練習。請重新整理以使用最新進度。';
+    if (mode === 'practice') paint();
+  }
   if (event.key === null || event.key === SAVE_KEY && event.newValue !== rawSave) {
-    stopTimer(); failed = true; saved = null; rawSave = event.newValue;
+    stopTimer(); failed = true; saved = null; rawSave = event.key === null ? null : event.newValue;
     notice = '另一個分頁已變更存檔。此頁已停止操作，請重新整理以使用最新進度。';
     paint();
   }

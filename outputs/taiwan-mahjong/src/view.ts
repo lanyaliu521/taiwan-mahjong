@@ -5,6 +5,8 @@ import { tileFace } from './tile-face.js';
 
 export type UICommand =
   | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' }
+  | { type: 'practice' | 'practice-start' | 'practice-resume' | 'practice-replay' | 'practice-draw' | 'game' }
+  | { type: 'practice-discard'; tileId: string }
   | { type: 'speed'; value: 'normal' | 'fast' }
   | { type: 'select'; tileId: string }
   | { type: 'intent'; intent: Intent; version: number };
@@ -22,25 +24,25 @@ const names = ['你', '右席', '對席', '左席'];
 const relations = ['真人', '下家・電腦', '對家・電腦', '上家・電腦'];
 const meldNames = { chi: '吃', pon: '碰', exposedKong: '明槓', concealedKong: '暗槓', addedKong: '加槓' };
 
-function node<K extends keyof HTMLElementTagNameMap>(tag: K, className = '', text = ''): HTMLElementTagNameMap[K] {
+export function node<K extends keyof HTMLElementTagNameMap>(tag: K, className = '', text = ''): HTMLElementTagNameMap[K] {
   const element = document.createElement(tag);
   element.className = className;
   if (text) element.textContent = text;
   return element;
 }
-function button(label: string, key: string, action: (event: MouseEvent) => void, className = 'button', disabled = false): HTMLButtonElement {
+export function button(label: string, key: string, action: (event: MouseEvent) => void, className = 'button', disabled = false): HTMLButtonElement {
   const element = node('button', className, label);
   element.type = 'button'; element.disabled = disabled; element.dataset.focus = key;
   element.addEventListener('click', action);
   return element;
 }
-function tileName(id: string): string {
+export function tileName(id: string): string {
   const kind = kindOf(id);
   if (kind[0] === 'f') return `${flowers[Number(kind[1]) - 1]}花`;
   if (kind[1] === 'z') return honors[Number(kind[0]) - 1];
   return `${numerals[Number(kind[0]) - 1]}${{ m: '萬', p: '筒', s: '索' }[kind[1]] ?? ''}`;
 }
-function tile(id: string | null, size = '', selected = false): HTMLSpanElement {
+export function tile(id: string | null, size = '', selected = false): HTMLSpanElement {
   const kind = id === null ? '' : kindOf(id);
   const face = node('span', `tile ${size} ${id === null ? 'tile-back' : `suit-${kind[0] === 'f' ? 'f' : kind[1]}`} ${selected ? 'is-selected' : ''}`);
   if (id === null) { face.setAttribute('aria-label', '暗牌'); return face; }
@@ -87,6 +89,7 @@ function header(model: ViewModel, send: Send): HTMLElement {
   const tools = node('div', 'header-tools');
   tools.append(pill('本地公平 AI', 'fair-pill'));
   if (model.game) {
+    tools.append(button('練習', 'practice', () => send({ type: 'practice' }), 'button button-quiet'));
     tools.append(button(model.paused ? '繼續牌局' : '暫停', 'pause', () => send({ type: 'pause' }), 'button button-quiet'));
     const speed = node('label', 'speed-label'); speed.append(node('span', '', '速度'));
     const select = node('select'); select.dataset.focus = 'speed'; select.setAttribute('aria-label', '電腦行牌速度');
@@ -107,6 +110,7 @@ function home(model: ViewModel, send: Send): HTMLElement {
   const actions = node('div', 'welcome-actions');
   if (model.hasSave) actions.append(button('繼續上次牌局', 'resume', () => send({ type: 'resume' }), 'button button-primary button-large', model.busy));
   actions.append(button(model.hasSave ? '開始新的一將' : '開始一將', 'start', () => send({ type: 'start' }), `button ${model.hasSave ? 'button-secondary' : 'button-primary'} button-large`, model.busy));
+  actions.append(button('純練習模式', 'practice', () => send({ type: 'practice' }), 'button button-secondary button-large'));
   copy.append(actions, node('p', 'welcome-footnote', '無需登入 · 自動續存 · 真人操作不限時'));
   const art = node('div', 'welcome-art'); art.setAttribute('aria-hidden', 'true');
   const ring = node('div', 'table-ring'); ring.append(node('span', 'ring-north', '北'), node('span', 'ring-east', '東'), node('span', 'ring-south', '南'), node('span', 'ring-west', '西'));

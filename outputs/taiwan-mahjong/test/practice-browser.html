@@ -1,0 +1,12 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M5.2 練習驗收</title><link rel="stylesheet" href="../src/style.css">
+<aside style="padding:10px;background:#244b3d;font:13px system-ui">
+本地驗收工具，不納入正式建置；只在獨立測試來源使用。
+<label><input id="accept" type="checkbox" checked>接受重設確認</label>
+<p id="confirmation" role="status"></p></aside><div id="app"></div>
+<script type="module">
+// Native confirm blocks browser automation on this host. The controller's acceptance/rejection
+// paths are covered by Node tests; this visible switch exercises both paths in the real view.
+window.confirm = text => { document.querySelector('#confirmation').textContent=text; return document.querySelector('#accept').checked; };
+await import('../src/main.ts');
+</script></html>

@@ -5,6 +5,7 @@ import vm from 'node:vm';
 import ts from 'typescript';
 import * as engine from '../dist/engine.js';
 import * as sessions from '../dist/session.js';
+import * as practices from '../dist/practice.js';
 
 const key = 'tw16:TW16-CLASSIC-v1:save';
 const initial = () => ({ schemaVersion: 1, game: engine.createGame({ seed: 17, dealer: 0, matchId: 'controller-review' }), aiRandom: [17, 29, 43] });
@@ -15,19 +16,22 @@ const compiled = ts.transpileModule(fs.readFileSync(new URL('../src/main.ts', im
 // Exercise the actual controller with native Node mocks; no browser or test dependency is needed.
 function controller(raw = null, confirm = true, faults = {}) {
   const storage = new Map(raw === null ? [] : [[key, raw]]), timers = new Map(), delays = new Map(), handlers = new Map();
+  if (faults.practiceRaw !== undefined) storage.set(practices.PRACTICE_KEY, faults.practiceRaw);
   let send, view, timerId = 0, confirmations = 0, writes = 0;
   vm.runInNewContext(compiled, {
     require(name) {
       if (name === './engine.js') return engine;
       if (name === './session.js') return sessions;
+      if (name === './practice.js') return practices;
+      if (name === './practice-view.js') return { renderPractice: (_root, practice, notice, hasSave, blocked, handler) => { view = { practice, notice, hasSave, blocked }; send = handler; } };
       if (name === './view.js') return { render: (_root, state, handler) => { view = state; send = handler; } };
       throw Error(name);
     },
-    exports: {}, console, document: { querySelector: () => ({}) },
+    exports: {}, console, crypto, document: { querySelector: () => ({}) },
     window: { confirm: () => { confirmations++; return confirm; }, addEventListener: (name, handler) => handlers.set(name, handler) },
     localStorage: {
       getItem: k => { if (faults.read) throw faults.read; return storage.get(k) ?? null; },
-      setItem: (k, v) => { writes++; if (faults.write) throw faults.write; storage.set(k, v); },
+      setItem: (k, v) => { writes++; if (faults.write || k === practices.PRACTICE_KEY && faults.practiceWrite) throw faults.write || faults.practiceWrite; storage.set(k, v); },
     },
     setTimeout: (callback, delay) => { const id = ++timerId; timers.set(id, callback); delays.set(id, delay); return id; },
     clearTimeout: id => { timers.delete(id); delays.delete(id); },
@@ -41,6 +45,11 @@ function controller(raw = null, confirm = true, faults = {}) {
       timers.delete(id); delays.delete(id); callback();
     },
     raw: () => storage.get(key) ?? null,
+    practiceRaw: () => storage.get(practices.PRACTICE_KEY) ?? null,
+    remotePractice(raw) {
+      if (raw === null) storage.delete(practices.PRACTICE_KEY); else storage.set(practices.PRACTICE_KEY, raw);
+      handlers.get('storage')({ key: practices.PRACTICE_KEY, newValue: raw });
+    },
     remote(raw, clear = false) {
       if (raw === null) storage.delete(key); else storage.set(key, raw);
       handlers.get('storage')({ key: clear ? null : key, newValue: raw });
@@ -246,4 +255,67 @@ test('新一將與暫停使已排入的舊自動操作失效，不能多摸或�
   assert.equal(app.timers.size, 0);
   currentCallback();
   assert.equal(app.raw(), newRaw, '暫停後的遲到回呼不得多摸');
+});
+
+test('切入練習停止對戰舊計時器；練習操作與返回不覆寫对戰存檔', () => {
+  const raw = sessions.encodeSession(initial()), app = controller(raw);
+  app.send({ type: 'resume' });
+  const late = [...app.timers.values()][0];
+  app.send({ type: 'practice' });
+  assert.equal(app.timers.size, 0); late(); assert.equal(app.raw(), raw);
+  app.send({ type: 'practice-start' });
+  const first = app.view.practice;
+  app.send({ type: 'practice-discard', tileId: first.hand[0] });
+  assert.equal(app.view.practice.hand.length, 16);
+  app.send({ type: 'practice-draw' });
+  assert.equal(app.view.practice.hand.length, 17); assert.equal(app.raw(), raw);
+  assert.equal(practices.decodePractice(app.practiceRaw()).pool.length, 118);
+  app.send({ type: 'game' });
+  assert.equal(app.view.paused, true); assert.equal(app.view.game.version, initial().game.version);
+  assert.equal(app.timers.size, 0); app.send({ type: 'pause' }); assert.equal(app.timers.size, 1);
+});
+
+test('練習重載續練及同題重練保存種子；舊畫面重複動作失效', () => {
+  const start = practices.createPractice(42), next = practices.discardPractice(start, start.hand[0]);
+  const app = controller(null, true, { practiceRaw: practices.encodePractice(next) });
+  app.send({ type: 'practice' }); assert.equal(app.view.hasSave, true);
+  app.send({ type: 'practice-resume' }); assert.deepEqual(app.view.practice, next);
+  const stale = app.uiSend;
+  app.send({ type: 'practice-draw' }); const raw = app.practiceRaw(); stale({ type: 'practice-draw' });
+  assert.equal(app.practiceRaw(), raw);
+  app.send({ type: 'practice-replay' }); assert.deepEqual(app.view.practice, start);
+  assert.equal(app.confirmations, 1); assert.equal(app.raw(), null);
+});
+
+for (const raw of ['{broken', '', JSON.stringify({ ...practices.createPractice(42), schemaVersion: 99 })]) test('練習壞檔取消換題後保持原文及對戰存檔', () => {
+  const gameRaw = sessions.encodeSession(initial()), app = controller(gameRaw, false, { practiceRaw: raw });
+  app.send({ type: 'practice' }); assert.equal(app.view.hasSave, false); assert.match(app.view.notice, /原資料已保留/);
+  app.send({ type: 'practice-start' }); assert.equal(app.confirmations, 1);
+  assert.equal(app.practiceRaw(), raw); assert.equal(app.raw(), gameRaw); assert.equal(app.view.practice, null);
+});
+
+test('練習儲存失敗保留上一份存檔並阻止離開；恢復寫入才可切換', () => {
+  const p = practices.createPractice(42), raw = practices.encodePractice(p);
+  const faults = { practiceRaw: raw, practiceWrite: new DOMException('full', 'QuotaExceededError') };
+  const app = controller(null, true, faults); app.send({ type: 'practice' }); app.send({ type: 'practice-resume' });
+  app.send({ type: 'practice-discard', tileId: p.hand[0] });
+  assert.equal(app.practiceRaw(), raw); assert.equal(app.view.practice.hand.length, 16); assert.match(app.view.notice, /未能儲存/);
+  app.send({ type: 'game' }); assert.ok(app.view.practice); assert.equal(app.practiceRaw(), raw);
+  faults.practiceWrite = null; app.send({ type: 'game' }); assert.equal(app.view.game, null);
+  assert.equal(practices.decodePractice(app.practiceRaw()).hand.length, 16);
+});
+
+test('練習跨分頁異動阻止旧畫面與當前操作覆寫，仍可返回對戰', () => {
+  const p = practices.createPractice(42), raw = practices.encodePractice(p), app = controller(null, true, { practiceRaw: raw });
+  app.send({ type: 'practice' }); app.send({ type: 'practice-resume' }); const stale = app.uiSend;
+  const remote = practices.encodePractice(practices.discardPractice(p, p.hand[0])); app.remotePractice(remote);
+  stale({ type: 'practice-discard', tileId: p.hand[1] }); app.send({ type: 'practice-discard', tileId: p.hand[1] });
+  assert.equal(app.practiceRaw(), remote); assert.equal(app.view.blocked, true); assert.match(app.view.notice, /另一個分頁/);
+  app.send({ type: 'game' }); assert.equal(app.view.game, null); assert.equal(app.practiceRaw(), remote);
+});
+
+test('對戰存檔寫入失敗時切入練習受阻，對戰狀態仍保留', () => {
+  const raw = sessions.encodeSession(initial()), faults = {}, app = controller(raw, true, faults);
+  app.send({ type: 'resume' }); faults.write = new DOMException('full', 'QuotaExceededError');
+  app.send({ type: 'practice' }); assert.ok(app.view.game); assert.match(app.view.notice, /未能儲存/); assert.equal(app.raw(), raw);
 });
