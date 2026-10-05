@@ -73,3 +73,7 @@ MAINTENANCE原入口仍寫M5.2、分析段寫教練尚未串接，已校正為�
 Luna僅補controller測試：練習捨牌保存失敗後不開教學、原存檔與記憶體進度保留；壞對戰JSON及對戰跨頁變更可唯讀教學，零覆寫。29控制器／244全套通過，無src或規則修改，最近來源bundle維持index-BJVs4oOv.js。教學最後一步320鍵盤操作與背景模式未切換已驗；Escape／Enter完成回入口，對戰仍暫停。HANDOFF收斂歷史段落到現行入口，詳細歷史留既有報告。
 
 發布檢查點：純文件提交259594e不加skip-ci，API前後最新run仍37369632079（來源723a898），根Markdown路徑篩選已雲端實測不新增run。舊aa3d25c排隊run37369330243確認為最新版祖先後取消；最新run仍完整build queued。官方Actions事故investigating，正式首頁仍舊bundle index-yKRTwBRT.js可用，不把本地完成等同正式發布。
+
+## 發布阻擋解除與正式驗收
+
+2026-10-06 Actions官方公告恢復，最新版run37369632079的測試／build原已成功，deploy因hosted runner未分配而取消。重試失敗工作後attempt2成功。正式首頁與index-BJVs4oOv.js／index-E3veXjre.css HTTP200且兩資源與本地build逐byte相同。正式瀏覽器確認新版JS、教學開啟、雙擊三萬17→16、13吃2／禁捨2及Escape回入口，無error；未動使用者正式牌局存檔。證據TUTORIAL-LIVE.jpg。M5.4已發布，HANDOFF／ROADMAP／README／DEPLOYMENT已同步；五小時帳戶最新87%（剩13%）。

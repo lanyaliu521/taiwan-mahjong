@@ -41,3 +41,9 @@ Vite保留`base: './'`與`outDir: 'site'`，建置資源使用相對路徑，支
 
 
 
+
+## GitHub執行機故障的處理
+
+2026-10-06的實例：run37369632079測試／build成功，但deploy零步驟、註記「The job was not acquired by Runner of type hosted even after multiple attempts」。官方Actions恢復後，重試失敗工作（Re-run failed jobs）即成功，attempt2發布來源723a898。本次無需改源碼、權限或發布架構。
+
+遇到發布失敗先看失敗job與annotations，區分程式測試失敗、執行機未分配、Pages設定／權限或artifact問題。執行機問題查[官方狀態](https://www.githubstatus.com/)；恢復後只重試最新版失敗job，不重跑舊來源。若原artifact已過期／無法取得，才完整重跑最新版的測試／build／deploy。成功後仍需HTTP及瀏覽器確認正式資源和受影響操作，不能只靠重試請求已接受判定已上線。
