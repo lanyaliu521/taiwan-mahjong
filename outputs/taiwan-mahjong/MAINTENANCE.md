@@ -86,3 +86,7 @@ src/practice.ts維護136張一般牌、種子、手牌、池、棄牌、摸入�
 src/practice-view.ts沿用view.ts牌面、牌名及原生button／details；單擊／Tab局部預覽，450ms內雙擊、Enter／空白鍵出牌。main.ts處理模式、儲存及跨分頁：切入先保存並暫停對戰，返回後手動繼續；保存失敗保留舊檔與記憶體並阻止離開；他頁修改後停止練習。
 
 practice.test.mjs驗證整題完成及耗盡、重播、牌權、比例與存檔邊界；controller.test.mjs驗證模式切換、壞檔取消、保存失敗與跨分頁。test/practice-browser.html以可見核取方塊替代confirm，用於獨立來源的瀏覽器驗收，不納入正式建置；正式程式仍使用原生confirm。
+
+### M5.2易用性補充
+
+practice-view.ts採practice-workspace主區／側欄，手機單欄。stats分距離聽牌及下一張改善機率，有效牌單列overflow-x:auto且tabIndex=0；候選button只局部select，不能送practice-discard。候選點擊清除lastTap，避免跨控制項雙擊；選牌保留已展開拆法。捨牌後聚焦practice-draw，摸牌後聚焦practice-status，不自動選牌。style.css僅最後practice區段控制此版面，詳見M5.2-UX-VALIDATION。
