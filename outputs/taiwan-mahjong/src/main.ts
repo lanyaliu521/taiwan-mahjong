@@ -6,6 +6,7 @@ import type { UICommand } from './view.js';
 import { PRACTICE_KEY, createPractice, drawPractice, discardPractice, encodePractice, decodePractice } from './practice.js';
 import type { Practice } from './practice.js';
 import { renderPractice } from './practice-view.js';
+import { showTutorial } from './tutorial-view.js';
 
 const COACH_KEY = 'tw16:coach:v1';
 let coachEnabled = true;
@@ -119,6 +120,10 @@ function start(): void {
   persist(); refresh();
 }
 function send(command: UICommand): void {
+  if (command.type === 'tutorial') {
+    if (mode === 'practice' ? !practiceBlocked && !persistPractice() : session && !failed && !persist()) { refresh(); return; }
+    paused = true; stopTimer(); paint(); showTutorial(root); return;
+  }
   if (command.type === 'coach-toggle') {
     coachEnabled = !coachEnabled; coachNotice = '';
     try { localStorage.setItem(COACH_KEY, coachEnabled ? 'on' : 'off'); }

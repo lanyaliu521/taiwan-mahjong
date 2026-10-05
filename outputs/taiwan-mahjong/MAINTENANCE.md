@@ -19,6 +19,7 @@ README是使用與開發總入口；HANDOFF只記目前進度、風險與下一�
 | 暫停、速度、自動回合、跨分頁 | src/main.ts、session.ts | controller、session、resume；舊計時器與版本拒絕 |
 | 儲存、讀檔、格式變更 | main.ts、session.ts、engine.ts、validation.ts | 壞檔、未知版、保存失敗、重載、不可重付結算 |
 | 建置與發布路徑 | package.json、vite.config.js、index.html | build及正式子路徑資源；M4正式網址驗收 |
+| 新手教學文字、示範、視窗 | src/tutorial-view.ts、view.ts、practice-view.ts、main.ts、style.css | controller：存檔／跨頁／暫停；瀏覽器單擊、雙擊、鍵盤、關閉與320／390 |
 | 共用牌效分析 | src/analysis.ts、hand.ts；TRAINING-DESIGN.md | analysis：容量、獨立枚舉、比例、合法吃碰及資訊公平 |
 | 純練習流程與預覽 | src/practice.ts、practice-view.ts、main.ts | practice、controller；不放回牌池、重播、模式切換與焦點 |
 | 對戰新手教練 | src/coach.ts、view.ts、main.ts | coach、controller；遮罩資訊、合法決策、偏好保存及預覽同步 |
@@ -116,3 +117,9 @@ coach.test.mjs驗決策邊界、兩吃法、碰牌、過水及輸入不變；con
 一般自摸／放槍／搶槓存檔必有五面子一對拆法，並與實際牌核對；花牌特殊胡不強求一般胡形。validation.ts 在既有牌權、來源及零和核對之上，以 settlePayments 重新核對完整差額。RON／搶槓付款人為保留的 turn；七花為持有另一花的玩家；自摸／八花為其餘三人。RON核對來源最後被胡捨牌，搶槓核對來源同種碰牌。壞檔仍保留並拒絕載入，不能清除資料當修復。
 
 view.tableDealer僅於matchResult顯示末局莊家及風位，與保留的末局結算對齊，不改GameState。schemaVersion=1 終將已移莊並歸零連莊，沒有保存上一局付款上下文。因此舊莊由 currentDealer-1 還原；若舊莊付款，只能從其金額推回合法奇數加台並核對其他付款。這維持正常舊檔相容性，不能驗證被一併改動的歷史連莊、台項或完整累計分數；若需可信歷史，另設版本化上下文／可驗證事件紀錄。最新證據見 MAINTENANCE-2026-10-06.md，歷史報告不作現況入口。
+
+## 新手操作教學
+
+src/tutorial-view.ts只接root，不接Session、getObservation、localStorage或遊戲命令；17張與吃法示範為私有資料，只改自己的dialog。main收到tutorial，先保存當前模式，成功才暫停並作廢舊timer/UI；寫入失敗不開教學，跨頁已阻擋者可看但不可覆寫新存檔。關閉移除視窗並聚焦現行教學入口，對戰仍暫停。無新存檔版本／鍵。
+
+教學用原生dialog，固定高度、內容區捲動、底部操作列保留；不要讓選牌提示改變dialog位置而破壞雙擊。示範單擊／focus僅選牌，450ms同張雙擊或Enter／空白鍵只出1張。文字依RULES校正，不在教學重寫計台或完整引擎；示範吃法為134遇2的13／34，禁捨分別2與2／5。擴充教學若要用實際行牌，另定引擎隔離及存檔驗證，不混用正式Session。

@@ -18,7 +18,7 @@ function controller(raw = null, confirm = true, faults = {}) {
   const storage = new Map(raw === null ? [] : [[key, raw]]), timers = new Map(), delays = new Map(), handlers = new Map();
   if (faults.coachRaw !== undefined) storage.set('tw16:coach:v1', faults.coachRaw);
   if (faults.practiceRaw !== undefined) storage.set(practices.PRACTICE_KEY, faults.practiceRaw);
-  let send, view, timerId = 0, confirmations = 0, writes = 0;
+  let send, view, timerId = 0, confirmations = 0, writes = 0, tutorialOpens = 0;
   vm.runInNewContext(compiled, {
     require(name) {
       if (name === './engine.js') return engine;
@@ -26,6 +26,7 @@ function controller(raw = null, confirm = true, faults = {}) {
       if (name === './practice.js') return practices;
       if (name === './practice-view.js') return { renderPractice: (_root, practice, notice, hasSave, blocked, handler) => { view = { practice, notice, hasSave, blocked }; send = handler; } };
       if (name === './view.js') return { render: (_root, state, handler) => { view = state; send = handler; } };
+      if (name === './tutorial-view.js') return { showTutorial: () => { tutorialOpens++; } };
       throw Error(name);
     },
     exports: {}, console, crypto, document: { querySelector: () => ({}) },
@@ -39,7 +40,7 @@ function controller(raw = null, confirm = true, faults = {}) {
   });
   return {
     send: command => send(command), timers, delays,
-    get view() { return view; }, get confirmations() { return confirmations; }, get uiSend() { return send; }, get writes() { return writes; },
+    get view() { return view; }, get confirmations() { return confirmations; }, get uiSend() { return send; }, get writes() { return writes; }, get tutorialOpens() { return tutorialOpens; },
     tick() {
       assert.equal(timers.size, 1, '每次只能排入一個自動操作');
       const [id, callback] = timers.entries().next().value;
@@ -337,4 +338,42 @@ test('教練設定寫入失敗仍可切換，原牌局存檔不變且提示未�
   app.send({ type: 'coach-toggle' });
   assert.equal(app.view.coachEnabled, false); assert.match(app.view.coachNotice, /無法保存/);
   assert.equal(app.raw(), raw); assert.equal(app.timers.size, 0);
+});
+
+test('對戰教學暫停並取消舊計時器；逾期畫面與timer都不能再推進牌局', () => {
+  const raw = sessions.encodeSession(initial()), app = controller(raw);
+  app.send({ type: 'resume' });
+  const game = app.view.game, before = app.raw(), oldTimer = [...app.timers.values()][0], stale = app.uiSend;
+  app.send({ type: 'tutorial' });
+  assert.equal(app.tutorialOpens, 1); assert.equal(app.view.paused, true); assert.equal(app.timers.size, 0);
+  stale({ type: 'pause' }); oldTimer();
+  assert.equal(app.view.paused, true); assert.equal(app.view.game.version, game.version); assert.equal(app.raw(), before);
+});
+
+test('練習教學不改手牌及練習存檔，舊畫面摸牌命令失效', () => {
+  const p = practices.createPractice(42), raw = practices.encodePractice(p), app = controller(null, true, { practiceRaw: raw });
+  app.send({ type: 'practice' }); app.send({ type: 'practice-resume' });
+  const hand = [...app.view.practice.hand], before = app.practiceRaw(), stale = app.uiSend;
+  app.send({ type: 'tutorial' });
+  assert.equal(app.tutorialOpens, 1); assert.deepEqual(app.view.practice.hand, hand); assert.equal(app.practiceRaw(), before);
+  stale({ type: 'practice-draw' });
+  assert.deepEqual(app.view.practice.hand, hand); assert.equal(app.practiceRaw(), before);
+});
+
+test('教學前存檔寫入失敗時不開教學且牌局維持運行', () => {
+  const raw = sessions.encodeSession(initial()), faults = {}, app = controller(raw, true, faults);
+  app.send({ type: 'resume' }); faults.write = new DOMException('full', 'QuotaExceededError');
+  app.send({ type: 'tutorial' });
+  assert.equal(app.tutorialOpens, 0); assert.equal(app.view.paused, false); assert.equal(app.raw(), raw);
+  assert.match(app.view.notice, /未能儲存/);
+});
+
+test('跨分頁競爭後仍可看教學，但不寫入或覆蓋他頁練習存檔', () => {
+  const p = practices.createPractice(42), app = controller(null, true, { practiceRaw: practices.encodePractice(p) });
+  app.send({ type: 'practice' }); app.send({ type: 'practice-resume' });
+  const remote = practices.encodePractice(practices.discardPractice(p, p.hand[0])); app.remotePractice(remote);
+  const writes = app.writes;
+  app.send({ type: 'tutorial' });
+  assert.equal(app.tutorialOpens, 1); assert.equal(app.view.blocked, true); assert.equal(app.practiceRaw(), remote);
+  assert.equal(app.writes, writes);
 });

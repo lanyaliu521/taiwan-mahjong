@@ -6,7 +6,7 @@ import { kindOf, seatWind } from './tiles.js';
 import { tileFace } from './tile-face.js';
 
 export type UICommand =
-  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' }
+  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' | 'tutorial' }
   | { type: 'practice' | 'practice-start' | 'practice-resume' | 'practice-replay' | 'practice-draw' | 'game' }
   | { type: 'practice-discard'; tileId: string }
   | { type: 'speed'; value: 'normal' | 'fast' }
@@ -92,6 +92,7 @@ function header(model: ViewModel, send: Send): HTMLElement {
   brand.append(mark, text); head.append(brand);
   const tools = node('div', 'header-tools');
   tools.append(pill('本地公平 AI', 'fair-pill'));
+  tools.append(button('新手教學', 'tutorial', () => send({ type: 'tutorial' }), 'button button-quiet'));
   if (model.game) {
     const coachToggle = button('教練提示', 'coach-toggle', () => send({ type: 'coach-toggle' }), 'button button-quiet');
     coachToggle.setAttribute('aria-pressed', String(model.coachEnabled !== false)); tools.append(coachToggle);

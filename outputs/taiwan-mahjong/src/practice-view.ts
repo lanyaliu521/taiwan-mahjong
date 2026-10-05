@@ -45,7 +45,7 @@ export function renderPractice(root: HTMLElement, p: Practice | null, notice: st
   const focused = root.contains(document.activeElement) ? (document.activeElement as HTMLElement).dataset.focus : undefined;
   const restoreDetails = preserveDetails(root);
   const shell = node('div', 'app-shell practice-shell');
-  const head = node('header', 'site-header'); head.append(node('h1', '', '純練習模式'), button('返回對戰', 'game', () => send({ type: 'game' }), 'button button-quiet'));
+  const head = node('header', 'site-header'); head.append(node('h1', '', '純練習模式'), button('新手教學', 'tutorial', () => send({ type: 'tutorial' }), 'button button-quiet'), button('返回對戰', 'game', () => send({ type: 'game' }), 'button button-quiet'));
   shell.append(head);
   if (notice) { const alert = node('p', 'notice', notice); alert.setAttribute('role', 'alert'); shell.append(alert); }
   const main = node('main', 'practice-main');
