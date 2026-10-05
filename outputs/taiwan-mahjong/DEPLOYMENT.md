@@ -1,6 +1,6 @@
 # GitHub Pages發布與回復
 
-2026-10-05，M4準備中；尚未部署。GitHub連線帳號已確認為lanyaliu521，使用者已指定帳號並授權自行命名，選定目標為lanyaliu521/taiwan-mahjong（尚未建立，名稱可用性未查）。本機已初始化main分支；尚未連接或推送遠端。
+2026-10-05，M4已部署並完成正式網站驗收。正式網址：https://lanyaliu521.github.io/taiwan-mahjong/。成功run：37247813100，遊戲提交29057b2。GitHub連線帳號已確認為lanyaliu521，使用者已指定帳號並授權自行命名，目標lanyaliu521/taiwan-mahjong已建立為公開repository；Pages來源已設GitHub Actions。本機main及origin已設定，Git認證及初次推送已完成，build及deploy成功。以下首次步驟保留作重新架站參考，實際驗收見HANDOFF。
 
 ## 已準備的發布流程
 
@@ -34,4 +34,6 @@ Vite保留`base: './'`與`outDir: 'site'`，建置資源使用相對路徑，支
 本輪測試、build及本地子路徑資源檢查結果記入HANDOFF。這些不能取代正式網站驗收。M3.1操作與儲存證據可參考，但M4仍需在新來源驗續局。
 
 參考：[GitHub自訂Pages流程](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)、[Vite部署](https://vite.dev/guide/static-deploy.html)、[setup-node](https://github.com/actions/setup-node)、[checkout](https://github.com/actions/checkout)。工作流程採官方已公布版本；外部Action版本及repository設定於實際部署時再核對。
+
+
 

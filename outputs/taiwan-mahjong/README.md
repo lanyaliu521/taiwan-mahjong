@@ -1,6 +1,6 @@
 # 台灣16張麻將
 
-1真人＋3位本地公平電腦，採固定桌規TW16-CLASSIC-v1。可在本機網頁遊玩完整牌局；M0–M3.2已完成，M4 GitHub Pages發布已啟動，發布準備已完成，尚無正式網站網址。練習與教練提示已規劃，尚未實作。
+1真人＋3位本地公平電腦，採固定桌規TW16-CLASSIC-v1。可在本機網頁遊玩完整牌局；M0–M4已完成，正式網站已上線：[立即遊玩](https://lanyaliu521.github.io/taiwan-mahjong/)。下一階段M5.1共用牌效分析。練習與教練提示已規劃，尚未實作。
 
 ## 入口
 
@@ -40,4 +40,5 @@ npm run build
 ## 歷史證據
 
 [M0驗收](../taiwan-mahjong-m0/VALIDATION.md)、[M1驗收](VALIDATION.md)、[M2驗收](M2-VALIDATION.md)、[M3驗收](M3-VALIDATION.md)、[吃牌專項](M3.1-CHI-VALIDATION.md)保留原始結果。歷史交接只用來查背景；目前狀態以HANDOFF及ROADMAP為準。
+
 
