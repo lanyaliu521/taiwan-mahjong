@@ -95,7 +95,7 @@ function receive(s: GameState, id: TileId, initial: boolean): boolean {
   }
   return true;
 }
-function discardBan(own: TileId[], tile: TileId): TileKind[] {
+export function discardBan(own: TileId[], tile: TileId): TileKind[] {
   const a = kinds(own);
   return KINDS.filter(k => {
     const ns = [...a, k].sort();

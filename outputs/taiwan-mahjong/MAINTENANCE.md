@@ -1,6 +1,6 @@
 # 維護指南
 
-2026-10-05，M3.2文件整理。此文件說明現有實作與修改路徑；目前進度見[HANDOFF](HANDOFF.md)，新增玩法規格見[TRAINING-DESIGN](TRAINING-DESIGN.md)。
+2026-10-05，M5.1更新。此文件說明現有實作與修改路徑；目前進度見[HANDOFF](HANDOFF.md)，新增玩法規格見[TRAINING-DESIGN](TRAINING-DESIGN.md)。
 
 ## 文件各自負責什麼
 
@@ -13,13 +13,13 @@ README是使用與開發總入口；HANDOFF只記目前進度、風險與下一�
 | 出牌、吃碰槓胡、過水、連莊、回合推進 | src/engine.ts、model.ts、validation.ts；先對照RULES | engine、chi、claims-integrity、validation相關案例；必要時補人工規則案例 |
 | 五面子一對、聽口、拆法 | src/hand.ts | engine／scoring相關案例；第五張容量與副露邊界 |
 | 計台、互斥、付款 | src/scoring.ts | scoring.test.mjs；付款零和與結算續局 |
-| 電腦選牌 | src/ai.ts、session.ts | ai、session；資訊遮罩及正常完整牌局 |
+| 電腦選牌 | src/ai.ts、analysis.ts、session.ts | ai、session；資訊遮罩及正常完整牌局 |
 | 點擊、鍵盤、吃牌選項、結算彈窗 | src/view.ts、main.ts | controller、chi；瀏覽器受影響流程及焦點 |
 | 牌面、牌河、手機排版 | src/tile-face.ts、style.css、view.ts | 桌面／320及390寬畫面、長牌河；不替純配色寫單元測試 |
 | 暫停、速度、自動回合、跨分頁 | src/main.ts、session.ts | controller、session、resume；舊計時器與版本拒絕 |
 | 儲存、讀檔、格式變更 | main.ts、session.ts、engine.ts、validation.ts | 壞檔、未知版、保存失敗、重載、不可重付結算 |
 | 建置與發布路徑 | package.json、vite.config.js、index.html | build及正式子路徑資源；M4正式網址驗收 |
-| 未來練習／教練 | TRAINING-DESIGN.md；ai.ts、hand.ts是分析抽取起點 | 先做M5.1容量與資訊邊界驗證，再做介面 |
+| 牌效／未來練習與教練 | src/analysis.ts、hand.ts；TRAINING-DESIGN.md | analysis.test.mjs：容量、獨立枚舉、機率、合法吃碰、資訊公平；再驗受影響介面 |
 
 ## 資料流與責任
 
@@ -32,6 +32,16 @@ getObservation遮蔽其他玩家暗手、暗槓牌種、牌牆順序、洗牌種
 牌種如1m，實體ID如1m#0；需要牌權、公開張數與去重時使用實體ID。E＝暗手張數＋3×副露面子數，台灣胡牌形為E17五面子一對；槓的結構算3張，實體仍有4張。
 
 計台evaluateHand的暗手參數須符合等效E17；外來胡牌只加入一次。decomposition.groups含既有副露且共5組；score.tai不含按付款對象而異的莊連台，最終分數變動見settlement.delta。handResult已付款，下一局只能在真人選擇後送NEXT_HAND，不在重載或重開結算時付款。
+
+## 共用牌效分析（M5.1）
+
+src/analysis.ts是AI、後續練習與教練的共用來源；不要解析AI的reason字串。createAnalyzer接牌池，analyze接自家暗手牌種與完整副露；只分析等效E16／E17。E17捨牌比較先走discards，傳入實際合法牌種；analyzeObservation只接引擎產生的單一玩家觀察，吃碰採該觀察合法候選及engine共用discardBan。
+
+距離是到容量合法的五面子一對目標所缺張數減1。容量扣除副露實體張數，槓扣4；完成=-1、聽牌=0。示例拆法是通往某個最近目標的一種不重疊分配，不是唯一拆法，也不保證顯示最多搭子。effectiveTiles保留結構有效但剩餘0張的牌種，以便介面區分距離與實際可用性。
+
+exactPool只接剩餘一般牌的唯一實體ID；publicPool扣自家牌、公開河牌／副露與搶槓亮牌，以ID去重，不猜對手暗槓。機率為有效張數／牌池總數，空池為null；公開未知牌含對手暗手與牌尾，不能稱真實牌牆機率。牌池不可與自家牌重疊。
+
+每次決策建立一個analyzer，內部快取共用於各候選；不跨牌局永久保留。介面只在真人可決策時分析，重繪可沿觀察版本重用結果；AI關閉示例生成。M5.2尚未建立practice.ts、練習存檔或介面，M5.3尚未串接教練。型別以analysis.ts為準，驗證見M5.1-VALIDATION。
 
 ## 存檔與相容性
 
@@ -54,7 +64,7 @@ getObservation遮蔽其他玩家暗手、暗槓牌種、牌牆順序、洗牌種
 | npm run dev -- --port 4183 | 獨立開發／fixture來源，避免覆寫實際遊玩的4173存檔 |
 | npm run preview -- --port 4173 | 預覽已建置site/，修改後須重新build |
 | npm run simulate -- --hands 1000 --matches 3 --seed 20261004 | M1測試策略長模擬，輸出SIMULATION.json；不是正式AI策略驗收 |
-| node scripts/verify-m3.mjs | 正式策略3完整將驗證，需先check；會更新M3-SIMULATION.json，非每次修改必跑 |
+| node scripts/verify-m3.mjs M5.1-SIMULATION.json | 正式策略3完整將驗證，需先check；指定輸出檔名以保留歷史；省略時更新M3-SIMULATION.json，非每次修改必跑 |
 
 test/browser.html與test/runner.html為開發來源工具；browser-fixtures、chi-fixtures、layout-fixtures提供續局、吃法、長牌河與結算場景。使用前先看對應test及scripts，不把測試頁上線；fixture會寫測試來源存檔，測試完成後關閉該來源頁面／伺服器。
 
@@ -64,5 +74,5 @@ test/browser.html與test/runner.html為開發來源工具；browser-fixtures、c
 
 每個工作包完成後更新受影響說明、測試證據及HANDOFF；已知限制以ponytail註解寫清上限與升級條件。優先平台與現有依賴，不新增通用玩法框架。開發由6.1 Sol主導，需要時Luna協助限定任務；遊戲內AI不呼叫模型。
 
-M4再確認GitHub帳號／repository、建立可追蹤版本、發布設定及回復步驟，驗正式網址與子路徑。此處不寫尚未驗證的部署命令或假網址。site/是發布產物，src/才是修改來源；不要直接編輯site/或dist/。
+main推送後由GitHub Actions發布，正式網址與回復步驟見DEPLOYMENT；確認該次workflow成功。site/是發布產物，src/才是修改來源；不要直接編輯site/或dist/。
 

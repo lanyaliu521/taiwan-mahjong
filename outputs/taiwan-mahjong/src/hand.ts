@@ -4,7 +4,7 @@ import { KINDS, kindOf } from './tiles.js';
 type Group = Decomposition['groups'][number];
 const index = new Map(KINDS.map((kind, i) => [kind, i]));
 
-function prepare(concealed: TileKind[], melds: Meld[], effective: number): { counts: number[]; declared: Group[] } | null {
+export function prepareHand(concealed: TileKind[], melds: Meld[], effective: number): { counts: number[]; declared: Group[]; capacity: number[] } | null {
   if (!Array.isArray(concealed) || !Array.isArray(melds) || melds.length > 5 || concealed.length + melds.length * 3 !== effective) return null;
   const counts = Array<number>(34).fill(0);
   const total = Array<number>(34).fill(0);
@@ -30,12 +30,12 @@ function prepare(concealed: TileKind[], melds: Meld[], effective: number): { cou
     for (const i of sorted) if (++total[i] > 4) return null;
     declared.push({ kind: meld.kind === 'chi' ? 'sequence' : 'triplet', tiles: sorted.slice(0, 3).map(i => KINDS[i]) });
   }
-  return { counts, declared };
+  return { counts, declared, capacity: total.map((n, i) => 4 - n + counts[i]) };
 }
 
 /** Complete five-group decompositions; declared melds come first, then concealed groups. */
 export function decompose(concealed: TileKind[], melds: Meld[] = []): Decomposition[] {
-  const prepared = prepare(concealed, melds, 17);
+  const prepared = prepareHand(concealed, melds, 17);
   if (!prepared) return [];
   const { counts, declared } = prepared;
   const results: Decomposition[] = [];
@@ -75,7 +75,7 @@ export function isWinningHand(concealed: TileKind[], melds: Meld[] = []): boolea
 }
 
 export function winningTiles(concealed: TileKind[], melds: Meld[] = []): TileKind[] {
-  if (!prepare(concealed, melds, 16)) return [];
+  if (!prepareHand(concealed, melds, 16)) return [];
   // The full-hand validator also excludes a fifth copy already held in any meld.
   return KINDS.filter(kind => isWinningHand([...concealed, kind], melds));
 }

@@ -4,6 +4,10 @@ import { createGame, getObservation, assertState } from '../dist/engine.js';
 import { automaticAction, advance, encodeSession, decodeSession } from '../dist/session.js';
 import { chooseAction } from '../dist/ai.js';
 
+const output = process.argv[2] ?? 'M3-SIMULATION.json';
+assert.match(output, /^[A-Za-z0-9][A-Za-z0-9.-]*\.json$/);
+assert.ok(!output.includes('..'), 'report must be a local filename');
+
 // Four formal policies exercise complete matches; seat 0 stands in for human choices.
 // The session controller still must stop and return control before every seat-0 choice.
 const report = { seed: 20261005, matches: 0, hands: 0, steps: 0, humanChoices: 0, restores: 0, phases: {}, sources: {}, maxDecisionMs: 0, elapsedMs: 0 };
@@ -48,5 +52,5 @@ for (let match = 0; match < 3; match++) {
 }
 report.elapsedMs = Math.round(performance.now() - started);
 report.maxDecisionMs = Math.round(report.maxDecisionMs * 100) / 100;
-writeFileSync(new URL('../M3-SIMULATION.json', import.meta.url), JSON.stringify(report, null, 2) + '\n');
+writeFileSync(new URL(`../${output}`, import.meta.url), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify(report, null, 2));
