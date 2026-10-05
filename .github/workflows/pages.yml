@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - 'outputs/taiwan-mahjong/**'
+      # Root Markdown, screenshots and simulation reports are maintenance evidence, not site inputs.
+      - '!outputs/taiwan-mahjong/*.md'
+      - '!outputs/taiwan-mahjong/*.jpg'
+      - '!outputs/taiwan-mahjong/*SIMULATION.json'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 

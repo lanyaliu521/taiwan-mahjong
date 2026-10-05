@@ -29,3 +29,9 @@ MAINTENANCE原入口仍寫M5.2、分析段寫教練尚未串接，已校正為�
 ## 工作包五：一般胡牌拆法必填
 
 重現：將正常自摸存檔的score.decomposition刪成null，舊驗證仍接受，繞過五面子一對與實際牌的核對。已要求自摸／放槍／搶槓必有拆法；花牌特殊胡可沒有一般胡形，也保留同時有一般胡形的花胡。新增回歸覆蓋三種一般胡與花胡相容性。235/235及build通過；不改引擎行牌／桌規，不重跑相同完整將模擬。新版index-yKRTwBRT.js／index-DBHXIdOt.css，正式發布待核對。
+
+## 工作包六：純維護證據不重複發布
+
+原workflow以outputs/taiwan-mahjong/**觸發，每份Markdown／截圖交接會重跑整套部署，前次與本輪曾造成排隊。改用GitHub原生paths負向排除專案根Markdown、JPG證據與*SIMULATION.json；程式、測試fixture、lockfile、src／public素材與workflow仍觸發。手動執行、全套測試、權限與部署並行設定保留，沒有跳過程式交付的驗證。
+
+本地依11個正／負路徑例驗證設定（Node內建glob，只作一次輔助檢查，不冒稱GitHub雲端matcher實測）。workflow修改需實際雲端跑通；下一次純文件提交不加skip-ci並觀察是否不新增run。若根目錄未來放發布素材，須移入src／public或調整篩選。
