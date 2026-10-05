@@ -67,3 +67,7 @@ MAINTENANCE原入口仍寫M5.2、分析段寫教練尚未串接，已校正為�
 教練向聽0仍依結構顯示已聽牌；當有效牌種有列出但公開剩餘總數0，明示後續等待已耗盡、可考慮換等待，同時強調當下合法胡牌仍可按。只補view文案，不改向聽或胡牌資格。測試覆盖等待東已公開4張，以及最後一張東當下可胡但後續估計0的區別。exhaustedWait固定場景4191確認0／116、東0張、碰／槓／過維持，證據MAINTENANCE-EXHAUSTED-WAIT.jpg。
 
 本包242/242測試、TypeScript與build通過；最新bundle index-BJVs4oOv.js／index-E3veXjre.css。GitHub官方Actions degraded_performance，舊部署因hosted runner未取得而失敗、build成功；最新來源正式發布仍待驗，不把外部排隊當程式測試失敗。帳戶五小時最新已用77%（剩23%），非精確對話token。
+
+## 工作包十三：教學入口的資料保護驗證
+
+Luna僅補controller測試：練習捨牌保存失敗後不開教學、原存檔與記憶體進度保留；壞對戰JSON及對戰跨頁變更可唯讀教學，零覆寫。29控制器／244全套通過，無src或規則修改，最近来源bundle維持index-BJVs4oOv.js。教學最後一步320鍵盤操作與背景模式未切換已驗；Escape／Enter完成回入口，對戰仍暫停。HANDOFF收斂歷史段落到現行入口，詳細歷史留既有報告。

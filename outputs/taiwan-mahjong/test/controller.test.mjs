@@ -377,3 +377,32 @@ test('跨分頁競爭後仍可看教學，但不寫入或覆蓋他頁練習存�
   assert.equal(app.tutorialOpens, 1); assert.equal(app.view.blocked, true); assert.equal(app.practiceRaw(), remote);
   assert.equal(app.writes, writes);
 });
+
+test('練習存檔寫入失敗時不開教學且保留上一份存檔', () => {
+  const p = practices.createPractice(42), raw = practices.encodePractice(p);
+  const app = controller(null, true, { practiceRaw: raw, practiceWrite: new DOMException('full', 'QuotaExceededError') });
+  app.send({ type: 'practice' }); app.send({ type: 'practice-resume' });
+  app.send({ type: 'practice-discard', tileId: p.hand[0] });
+  assert.equal(app.practiceRaw(), raw); assert.equal(app.view.practice.hand.length, 16);
+  app.send({ type: 'tutorial' });
+  assert.equal(app.tutorialOpens, 0); assert.equal(app.practiceRaw(), raw);
+  assert.match(app.view.notice, /未能儲存/);
+});
+
+test('壞對戰存檔及跨分頁競爭時仍可開唯讀教學且不覆寫資料', () => {
+  const broken = '{broken', unreadable = controller(broken);
+  assert.match(unreadable.view.notice, /無法讀取/);
+  unreadable.send({ type: 'tutorial' });
+  assert.equal(unreadable.tutorialOpens, 1); assert.equal(unreadable.raw(), broken); assert.equal(unreadable.writes, 0);
+
+  const old = sessions.encodeSession(initial()), app = controller(old);
+  app.send({ type: 'resume' });
+  let latest = initial();
+  const next = sessions.automaticAction(latest);
+  latest = sessions.advance(latest, next.actor, next.intent, latest.game.version, next.randomState);
+  const remote = sessions.encodeSession(latest);
+  app.remote(remote); const writes = app.writes;
+  assert.match(app.view.notice, /另一個分頁/);
+  app.send({ type: 'tutorial' });
+  assert.equal(app.tutorialOpens, 1); assert.equal(app.raw(), remote); assert.equal(app.writes, writes);
+});

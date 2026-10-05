@@ -10,12 +10,14 @@ src/tutorial-view.ts只接root，示範手牌與吃法是私有UI資料，不接
 
 ## 目前驗證
 
-239/239及build通過；Luna限定新增4項controller回歸，涵蓋對戰停計時器／不行牌、練習手牌不變、寫入失敗不開啟、他頁變更後可看教學但零寫入。原本23控制器案例全部保持。
+244/244測試、最近來源build通過；Luna限定新增6項controller回歸，涵蓋對戰停計時器／不行牌、練習手牌不變、寫入失敗不開啟、他頁變更後可看教學但零寫入。原本23控制器案例全部保持；追加練習保存失敗不開教學，以及壞對戰／跨頁競爭唯讀不覆寫，controller共29項。
 
 4191首頁開教學，單擊示範仍17張，空白鍵僅捨1張成16；兩種吃法分別亮123與234，禁捨分別2與2／5。完成與Escape關閉均移除dialog並回新手教學按鈕。桌面證據TUTORIAL-CHI-desktop.jpg；320驗收發現首頁grid最小欄寬溢出，minmax(0,1fr)及min-width:0後頁寬318≤320。示範雙擊曾因文字增加導致置中dialog移動而誤選別張，已改固定視窗＋內容區捲動；雙擊三萬確實只捨三萬，剩16張。最後四步320寬dialogScroll=dialogWidth=265，固定操作列底678.5<740；390寬335且底765<844。對戰320頁寬320且教學無溢出。
 
 首頁／對戰／練習均驗入口；原對戰17張與練習17張、已捨0、池119在示範後不變。對戰關教學仍暫停，17張禁用，需真人繼續。教學Tab／Shift+Tab換焦點後單擊仍17，Enter才16；單擊不出牌、空白鍵及雙擊亦通過。瀏覽器無error紀錄。證據TUTORIAL-CHI-desktop.jpg、TUTORIAL-DISCARD-320.jpg、TUTORIAL-320.jpg、TUTORIAL-390.jpg。viewport已還原，原生對話框／實機手機／Safari不冒稱已驗。
 
-建置index-BFn46ZQ0.js／index-E3veXjre.css；正式新版尚待來源提交、workflow及實際資源核對。
+最新來源建置index-BJVs4oOv.js／index-E3veXjre.css；aa3d25c已推送，正式新版尚待workflow及實際資源核對。
 
-追加規則審查：Luna對照R04／R13，補花說明加「一家已有七花、別家亮出最後一花立即結算，不再補牌」，避免一律補牌誤解。一般胡／吃碰槓／過水文字與凍結規則一致。最新整套242測試與build通過，bundle index-BJVs4oOv.js／index-E3veXjre.css；GitHub Actions官方效能異常，正式發布待驗。
+追加規則審查：Luna對照R04／R13，補花說明加「一家已有七花、別家亮出最後一花立即結算，不再補牌」，避免一律補牌誤解。一般胡／吃碰槓／過水文字與凍結規則一致。當時整套242測試與build通過，追加資料保護後244測試通過，bundle index-BJVs4oOv.js／index-E3veXjre.css；GitHub Actions官方效能異常，正式發布待驗。
+
+追加鍵盤與背景操作驗收：320窄畫面最後一步可用Tab到內容捲動區及底部按鈕、Enter完成回教學入口，對戰仍暫停。原生dialog開啟時嘗試背景「練習」未切模式；Escape關閉後仍在原對戰，無瀏覽器error。Tab在循環邊界可前往瀏覽器介面，不冒稱焦點永遠在DOM內或已驗螢幕閱讀器。
