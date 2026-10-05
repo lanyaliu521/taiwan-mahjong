@@ -71,3 +71,5 @@ MAINTENANCE原入口仍寫M5.2、分析段寫教練尚未串接，已校正為�
 ## 工作包十三：教學入口的資料保護驗證
 
 Luna僅補controller測試：練習捨牌保存失敗後不開教學、原存檔與記憶體進度保留；壞對戰JSON及對戰跨頁變更可唯讀教學，零覆寫。29控制器／244全套通過，無src或規則修改，最近來源bundle維持index-BJVs4oOv.js。教學最後一步320鍵盤操作與背景模式未切換已驗；Escape／Enter完成回入口，對戰仍暫停。HANDOFF收斂歷史段落到現行入口，詳細歷史留既有報告。
+
+發布檢查點：純文件提交259594e不加skip-ci，API前後最新run仍37369632079（來源723a898），根Markdown路徑篩選已雲端實測不新增run。舊aa3d25c排隊run37369330243確認為最新版祖先後取消；最新run仍完整build queued。官方Actions事故investigating，正式首頁仍舊bundle index-yKRTwBRT.js可用，不把本地完成等同正式發布。
