@@ -2,23 +2,19 @@
 
 2026-10-06。M0–M5.3已完成並發布，後續按使用者試玩回饋維護；沒有待啟動的新功能階段。先讀README、ROADMAP，再按需查MAINTENANCE／TRAINING-DESIGN。開發由6.1 Sol主導，需要時Luna限定協助，不例行使用Astra。
 
-## 新手操作教學（本地完成，正式發布待驗）
+## 本輪最新工作與接續
 
-使用者已選「加入新手操作教學」。M5.4六步原生dialog在tutorial-view.ts，首頁／對戰／練習入口；先保存與暫停，私有示範不接Session／存檔／遊戲命令，不改正式手牌。239全套／build過，Luna新增4 controller保護回歸。三入口、雙擊／Enter／空白鍵、134兩吃法及禁捨、完成／Escape回焦點、320／390無橫溢均驗。原對戰及練習17張不變，對戰返回仍暫停。viewport已還原，瀏覽器無error。首版雙擊因dialog隨提示高度移位而誤選，固定視窗＋內容區捲動已修正。詳TUTORIAL-VALIDATION及四張TUTORIAL截圖。
+M5.4新手教學已完成本地驗收並推送首版c4ce080：六步原生dialog，首頁／對戰／練習入口；先保存暫停，私有17張出牌及134兩吃法示範不接Session／存檔／遊戲命令。三入口、雙擊／Enter／空白键、吃後禁捨、完成／Escape回焦點、320／390無橫溢已驗，正式17張不變，返回對戰仍暫停。Luna限定4 controller回歸、只讀規則審查；已補花胡立即結算例外。詳TUTORIAL-VALIDATION與四張TUTORIAL截圖。
 
-預期bundle index-BFn46ZQ0.js／index-E3veXjre.css，來源即將推送；接續確認最新CI build／deploy及正式實際資源、教學開關與焦點，再把ROADMAP的M5.4正式待驗更新。不要為測試覆寫正式進度；原生confirm會卡工具，使用獨立4191場景及練習可見確認替代工具。帳戶檢查點70%（剩30%），非精確對話token。
+最新包另補結算台項ID唯一、S31／S32不混基礎台、花胡來源8台與互斥檢查；保留合法一般拆法花胡加台。v1不驗證全部歷史台項／連莊，不聲稱防偽。教練已提示有效牌剩0但不取消當下合法胡，coach測試與exhaustedWait瀏覽器場景覆蓋。242全套／build通過，預期index-BJVs4oOv.js／index-E3veXjre.css，來源待本包提交。各包細節集中MAINTENANCE-2026-10-06及SIMULATION.json；核心付款曾3完整將74局317次還原通過。
 
-## 本輪維護（正式發布核對進行中）
+GitHub官方Actions效能異常；舊run37366170625 build過，但deploy沒有取得hosted runner，最新run37368345888 pending、37366879892 deploy queued。不要更改權限／runner架構或重跑已過的本地測試來繞過服務異常。推送最新來源後確認完整CI及正式document.scripts／教學開關焦點，才標M5.4正式完成。若需取消，只取消最新版完整包含的舊queued祖先run。
 
-最新來源ed9a448，已推送main；正式bundle預期index-CDcpWka5.js／index-DBHXIdOt.css，需先確認workflow，再驗正式頁實際document.scripts。235全套測試／build已過；最新純顯示修正32受影響測試／build已過。核心付款改動3完整將74局317次還原已過，無需重跑相同長模擬。集中歷史證據MAINTENANCE-2026-10-06.md及同名SIMULATION.json。
+workflow原生paths已排除根Markdown／JPG／SIMULATION文件；來源CI37365714924已成功，仍需一次純文件提交不加skip-ci並觀察無新run，不能用skip-ci代替驗證。普通源碼／fixture推送仍全套測試發布。
 
-已完成：鍵盤出牌／回應／續局／下一局回手牌入口；開練習題排除收合設定的隱藏按鈕，回步驟提示再Tab選牌；模式切換聚焦入口且返回對戰仍暫停；對戰／練習共用preserveDetails保留面板開或關，不新增設定／存檔。終將僅在view顯示末局莊家與風位，未改GameState／分數。
+本輪另完成鍵盤出牌／回應／續局／下一局入口、練習開題排除收合details隱藏按鈕、模式切換焦點及手動續牌、共用preserveDetails面板開／關、末局莊與風位顯示、一般胡拆法必填與來源完整付款驗證、維護文件校正。所有包均已落盤／逐包提交，無需重讀對話。帳戶最新77%（剩23%），非精確對話token；低額度先交接，不重設或自動續跑。
 
-存檔驗證補一般胡拆法必填、來源付款人、完整差額及RON／搶槓來源引用；花胡相容性保留。v1終將缺舊連莊上下文，只回推合法付款，不聲稱歷史連莊／台項／總分可防偽。Luna限定新增9項結算回歸並只讀審查UX／現行文件，未使用Astra。
-
-MAINTENANCE／ROADMAP校正已完成練習與教練的過時說法，README連本輪集中證據。workflow用GitHub原生paths排除專案根Markdown／JPG／SIMULATION證據，源碼、fixture、素材與workflow仍觸發，手動執行保留。11路徑例已本地核對；雲端來源CI成功及下一次純文件推送不新增run需實測，不用skip-ci取代這項驗證。舊queued祖先run因新版完全包含其程式而取消，最新來源仍須全套CI。
-
-接續：完成最新版雲端build／deploy及正式資源／介面驗證，將結果集中更新本節；其餘按可重現回饋維護，不為耗額度新增未要求功能。所有來源、測試及驗收證據已逐包提交，不需重讀整段對話。
+4191獨立測試來源，不覆寫使用者4173等存檔。原生confirm會卡工具，重練用practice-browser可見替代開關；不宣稱實機手機／Safari或原生confirm已驗。viewport已還原。
 
 ## 前次提示狀態修正
 

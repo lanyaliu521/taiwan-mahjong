@@ -51,6 +51,20 @@ test('過水令合法胡牌為假，且不改動資料', () => {
   assert.deepEqual(o, before);
 });
 
+test('已聽牌但公開聽口耗盡仍保留0張；當下合法胡牌資格獨立判定', () => {
+  const dead = discard(fixture({ turn: 1, hands: { 0: '111m 222m 333p 444p 555s 1z', 1: '5s' }, restrictions: { 1: { lastDiscard: '1z' }, 2: { lastDiscard: '1z' }, 3: { lastDiscard: '1z' } } }), 1, '5s');
+  const result = coachAnalysis(getObservation(dead, 0));
+  assert.equal(result.current.shanten, 0);
+  assert.equal(result.current.improving, 0);
+  assert.deepEqual(result.current.effectiveTiles, [{ kind: '1z', count: 0 }]);
+  assert.equal(result.canWin, false);
+
+  const live = discard(fixture({ turn: 1, hands: { 0: '111m 222m 333p 444p 555s 1z', 1: '1z' }, restrictions: { 2: { lastDiscard: '1z' }, 3: { lastDiscard: '1z' } } }), 1, '1z');
+  const win = coachAnalysis(getObservation(live, 0));
+  assert.equal(win.current.improving, 0);
+  assert.equal(win.canWin, true, '公開未知牌剩0不會取消當下合法胡牌');
+});
+
 test('合法回應只有PASS時仍顯示目前牌型', () => {
   const state = discard(fixture({ hands: { 0: '2m', 1: W02 } }), 0, '2m');
   const o = getObservation(state, 1);

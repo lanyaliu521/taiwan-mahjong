@@ -17,3 +17,5 @@ src/tutorial-view.ts只接root，示範手牌與吃法是私有UI資料，不接
 首頁／對戰／練習均驗入口；原對戰17張與練習17張、已捨0、池119在示範後不變。對戰關教學仍暫停，17張禁用，需真人繼續。教學Tab／Shift+Tab換焦點後單擊仍17，Enter才16；單擊不出牌、空白鍵及雙擊亦通過。瀏覽器無error紀錄。證據TUTORIAL-CHI-desktop.jpg、TUTORIAL-DISCARD-320.jpg、TUTORIAL-320.jpg、TUTORIAL-390.jpg。viewport已還原，原生對話框／實機手機／Safari不冒稱已驗。
 
 建置index-BFn46ZQ0.js／index-E3veXjre.css；正式新版尚待來源提交、workflow及實際資源核對。
+
+追加規則審查：Luna對照R04／R13，補花說明加「一家已有七花、別家亮出最後一花立即結算，不再補牌」，避免一律補牌誤解。一般胡／吃碰槓／過水文字與凍結規則一致。最新整套242測試與build通過，bundle index-BJVs4oOv.js／index-E3veXjre.css；GitHub Actions官方效能異常，正式發布待驗。

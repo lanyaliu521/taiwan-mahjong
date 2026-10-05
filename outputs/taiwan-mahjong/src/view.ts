@@ -225,6 +225,7 @@ function coachPanel(model: ViewModel) {
     const box = node('div'); box.append(node('strong', '', `${label}：${distance(a)}`));
     if (a.shanten >= 0) box.append(node('p', '', `成胡還需至少 ${a.shanten + 1} 次有效進張（每次都使牌型更接近胡牌）；不代表實際回合數。`));
     box.append(node('p', '', `公開未知牌中，有效牌 ${a.improving}／${a.total} 張${a.probability === null ? '（無可估計牌）' : `（${(a.probability * 100).toFixed(1)}%）`}。`));
+    if (a.shanten >= 0 && a.effectiveTiles.length && a.improving === 0) box.append(node('p', 'action-note', '這份後續進張估計已沒有剩餘有效牌，需考慮換一組等待；若當下已有合法胡牌按鈕，仍可胡。'));
     const list = node('div', 'coach-tiles'); list.tabIndex = 0; list.setAttribute('aria-label', '有效進張與剩餘張數，可左右捲動');
     a.effectiveTiles.forEach(t => { const item = node('span', t.count ? '' : 'exhausted'); item.append(tile(t.kind, 'tile-small'), node('span', '', `${t.count}張`)); list.append(item); });
     if (a.effectiveTiles.length) box.append(list);

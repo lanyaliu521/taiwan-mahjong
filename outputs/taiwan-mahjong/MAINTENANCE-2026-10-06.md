@@ -53,3 +53,17 @@ MAINTENANCE原入口仍寫M5.2、分析段寫教練尚未串接，已校正為�
 重現：handResult第16次移莊後進matchResult，引擎保留末局結算但dealer已移回初始位；畫面使用此dealer導致你原南風變東、原莊家左席變北，與末局付款／台項不一致。view.ts僅在matchResult以dealer-1顯示末局風位，標「一將完成・最後莊家」及「末局莊」；不更動GameState或積分計算。
 
 4191 matchResult固定情境確認：結算你南+50、左席東-50；關彈窗後最後莊家左席且末局莊標記正確。一般牌局仍使用當前dealer。32項受影響控制器／結算測試及build通過，證據MAINTENANCE-LAST-DEALER.jpg，新bundle index-CDcpWka5.js，待正式發布。
+
+## 工作包十：新手操作教學
+
+使用者指定優先加入新手操作教學，M5.4採六步原生dialog、獨立17張出牌與134兩吃法示範；不接Session、不改正式手牌或存檔。三入口、暫停保存、鍵盤／雙擊、焦點返回及320／390尺寸已驗。Luna限定補controller回歸與只讀桌規審查，補花文字已加七搶一立即結算例外。完整證據TUTORIAL-VALIDATION.md。
+
+## 工作包十一：結算台項基本一致性
+
+重現：一般自摸存檔插入莊家／花胡台項，連同付款與積分一起修改仍可還原。現在拒絕重複台項ID、把S31／S32莊連台放入基礎台數、一般胡誤帶S24／S25、花胡錯來源或不是8台及互斥S06／S11。花胡沒有一般拆法時只能有對應花胡台項。有一般拆法的合法花胡保留正常加台；未新增schema、未聲稱全部歷史台項可防偽。settlement-integrity.test補篡改回歸。
+
+## 工作包十二：耗盡等待提示
+
+教練向聽0仍依結構顯示已聽牌；當有效牌種有列出但公開剩餘總數0，明示後續等待已耗盡、可考慮換等待，同時強調當下合法胡牌仍可按。只補view文案，不改向聽或胡牌資格。測試覆盖等待東已公開4張，以及最後一張東當下可胡但後續估計0的區別。exhaustedWait固定場景4191確認0／116、東0張、碰／槓／過維持，證據MAINTENANCE-EXHAUSTED-WAIT.jpg。
+
+本包242/242測試、TypeScript與build通過；最新bundle index-BJVs4oOv.js／index-E3veXjre.css。GitHub官方Actions degraded_performance，舊部署因hosted runner未取得而失敗、build成功；最新來源正式發布仍待驗，不把外部排隊當程式測試失敗。帳戶五小時最新已用77%（剩23%），非精確對話token。

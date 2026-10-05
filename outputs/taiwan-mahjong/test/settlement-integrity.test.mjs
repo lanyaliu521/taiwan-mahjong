@@ -56,6 +56,28 @@ test('一般胡牌不得刪除五面子一對的拆法證據；花牌特殊胡�
   for (const state of [sevenFlowers(), eightFlowers()]) assert.deepEqual(restored(state), state);
 });
 
+test('一致改動金額也不能重複台項、把莊連台放進基本台或套錯花胡台', () => {
+  const normal = winHand();
+  const cases = [
+    [normal, [...normal.settlement.score.items, normal.settlement.score.items[0]]],
+    [winHand(), [...normal.settlement.score.items, { id: 'S31', tai: 1, reason: 'duplicate dealer payment' }]],
+    [winHand(), [...normal.settlement.score.items, { id: 'S32', tai: 2, reason: 'duplicate streak payment' }]],
+    [winHand(), [...normal.settlement.score.items, { id: 'S24', tai: 8, reason: 'wrong flower source' }]],
+    [sevenFlowers(), [{ id: 'S24', tai: 9, reason: 'wrong flower tai' }]],
+    [sevenFlowers(), [{ id: 'S25', tai: 8, reason: 'wrong flower source' }]],
+    [sevenFlowers(), [{ id: 'S24', tai: 8, reason: 'flower' }, { id: 'S06', tai: 1, reason: 'excluded proper flower' }]],
+    [sevenFlowers(), [{ id: 'S24', tai: 8, reason: 'flower' }, { id: 'S01', tai: 1, reason: 'no normal winning shape' }]],
+  ];
+  for (const [state, items] of cases) {
+    state.settlement.score.items = structuredClone(items);
+    state.settlement.score.tai = items.reduce((sum, item) => sum + item.tai, 0);
+    const payers = [0, 1, 2, 3].filter(i => state.settlement.delta[i] < 0);
+    state.settlement.delta = settlePayments(state.settlement.winner, payers, state.settlement.score.tai, state.dealer, state.streak);
+    syncScores(state);
+    assert.throws(() => restored(state), /score\./);
+  }
+});
+
 test('放槍結算改由非放槍者付款仍拒絕還原', () => {
   const bad = structuredClone(ronHand()), winner = bad.settlement.winner;
   const payer = bad.players.findIndex(p => p.discardHistory.at(-1)?.claimedBy === winner);

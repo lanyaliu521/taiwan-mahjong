@@ -259,6 +259,13 @@ function validateSettlement(s: GameState, owned: string[]): void {
     object(item, 'score.item'); check(typeof item.id === 'string' && /^S(0[1-9]|[12][0-9]|3[0-2])$/.test(item.id), 'score.item.id');
     integer(item.tai, 'score.item.tai'); check(typeof item.reason === 'string', 'score.item.reason');
   });
+  unique(score.items.map(item => item.id), 'score.items.duplicate');
+  check(score.items.every(item => item.id !== 'S31' && item.id !== 'S32'), 'score.items.paymentTai');
+  const flowerItem = result.source === 'sevenFlowers' ? 'S24' : result.source === 'eightFlowers' ? 'S25' : null;
+  if (flowerItem) {
+    check(score.items.some(item => item.id === flowerItem && item.tai === 8) && score.items.every(item => !['S06', 'S11', 'S24', 'S25'].includes(item.id) || item.id === flowerItem), 'score.items.flower');
+    if (score.decomposition === null) check(score.items.length === 1, 'score.flower.only');
+  } else check(score.items.every(item => item.id !== 'S24' && item.id !== 'S25'), 'score.items.normal');
   check(score.items.reduce((sum, item) => sum + item.tai, 0) === score.tai, 'score.tai.sum');
   array(score.excluded, 'score.excluded'); check(score.excluded.every(x => typeof x === 'string'), 'score.excluded.item');
   const seats: Seat[] = [0, 1, 2, 3];
