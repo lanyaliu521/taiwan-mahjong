@@ -15,8 +15,7 @@ function stats(a: Analysis): HTMLElement {
   const chance = node('div', 'practice-metric');
   chance.append(node('span', 'metric-label', '下一張改善機率'), node('strong', '', a.shanten < 0 ? '完成' : a.probability === null ? '無剩餘牌' : `${(a.probability * 100).toFixed(1)}%`), node('p', '', a.shanten < 0 ? '五面子一對將' : `${a.improving} 張有效牌／牌池 ${a.total} 張`));
   metrics.append(shape, chance); block.append(metrics);
-  if (a.shanten < 0) return block;
-  block.append(node('p', 'effective-heading', `可縮短距離的進牌 · ${a.effectiveTiles.length} 種、共 ${a.improving} 張`));
+  if (a.shanten >= 0) block.append(node('p', 'effective-heading', `可縮短距離的進牌 · ${a.effectiveTiles.length} 種、共 ${a.improving} 張`));
   const list = node('div', 'practice-effective');
   list.tabIndex = 0; list.setAttribute('role', 'region'); list.setAttribute('aria-label', '有效進張與剩餘張數，可左右捲動');
   for (const t of a.effectiveTiles) {
@@ -24,7 +23,7 @@ function stats(a: Analysis): HTMLElement {
     item.setAttribute('aria-label', `${tileName(t.kind)}，剩餘 ${t.count} 張`);
     item.append(tile(t.kind), node('span', '', `剩 ${t.count} 張`)); list.append(item);
   }
-  block.append(list);
+  if (a.effectiveTiles.length) block.append(list);
   if (a.effectiveTiles.length) block.append(node('p', 'effective-tip', '左右滑動看全部進牌；這是改善距離的機率，不是胡牌機率。'));
   if (a.effectiveTiles.length && !a.improving && a.total) block.append(node('p', 'action-note', '結構有效牌已全部離開牌池；目前這條進牌路徑已無可用張。'));
   const e = a.example;
