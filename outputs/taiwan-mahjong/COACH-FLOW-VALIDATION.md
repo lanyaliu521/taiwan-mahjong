@@ -16,4 +16,6 @@
 
 ## 發布
 
-待來源推送與GitHub Pages驗證，完成後記入本節及HANDOFF。
+來源b28ea5e909e745a8dfea754bbcf1e47104d5d916；[workflow37361750072](https://github.com/zhai2liu/taiwan-mahjong/actions/runs/37361750072) build／deploy成功。正式首頁與index-lkeRHReb.js均HTTP200，線上JS與本地build完全相同。
+
+正式頁續局後單擊四萬再Tab至六萬，唯一選牌、預覽與摘要均為六萬，顯示捨六萬後5向聽（不再沿用最佳4向聽），手牌仍17張且沒有出牌。截圖[正式網站](COACH-FLOW-live.jpg)。文件連結核對4份無缺失；本輪帳戶五小時起始已用11%、交付檢查點16%（剩84%），非精確對話token。
