@@ -1,6 +1,6 @@
 # 現行交接入口
 
-2026-10-06。M0–M5.3完成；226項測試、build及瀏覽器驗收通過，正等待本次Pages發布。後續按試玩回饋維護。先讀README、ROADMAP、TRAINING-DESIGN及MAINTENANCE。6.1 Sol主導，Luna本輪只補限定coach.test.mjs，不例行使用Astra。
+2026-10-06。M0–M5.3完成；226項測試、build及瀏覽器驗收通過，已完成本次Pages發布。後續按試玩回饋維護。先讀README、ROADMAP、TRAINING-DESIGN及MAINTENANCE。6.1 Sol主導，Luna本輪只補限定coach.test.mjs，不例行使用Astra。
 
 ## M5.2完成
 
@@ -16,10 +16,10 @@ practice.ts維護136張一般牌、不放回牌池、16→17→16、五面子一
 
 ## 網站、發布與測試工具
 
-正式網站：https://lanyaliu521.github.io/taiwan-mahjong/
-Repository：https://github.com/lanyaliu521/taiwan-mahjong（Public）。main追蹤origin/main，認證已完成；push自動測試、build、Pages部署。發布／revert回復見DEPLOYMENT。M5.2來源提交b7aafc6edfcd8504122ae57bb47cd631ed80d51f已發布；workflow 37324560829的build及deploy成功，正式首頁／JS均HTTP200，線上JS與本地build完全相同。正常網站已驗純練習入口、17張／119池、捨西預覽27／119＝22.7%、雙擊後16張／池119及回饋。線上截圖M5.2-live.jpg。
+正式網站：https://zhai2Liu.github.io/taiwan-mahjong/
+Repository：https://github.com/zhai2Liu/taiwan-mahjong（Public）。main追蹤origin/main，認證已完成；push自動測試、build、Pages部署。發布／revert回復見DEPLOYMENT。M5.2來源提交b7aafc6edfcd8504122ae57bb47cd631ed80d51f已發布；workflow 37324560829的build及deploy成功，正式首頁／JS均HTTP200，線上JS與本地build完全相同。正常網站已驗純練習入口、17張／119池、捨西預覽27／119＝22.7%、雙擊後16張／池119及回饋。線上截圖M5.2-live.jpg。
 
-前次About Website誤設zhaizhaiLiu.github.io，owner未改名，已恢復正確Pages網址；不要改遠端。TW16-CLASSIC-v1凍結不變。
+2026-10-05曾僅About Website誤設zhaizhaiLiu.github.io；2026-10-06本次Git推送及repository API已確認實際owner改為zhai2Liu，遠端與About Website已同步新網址。TW16-CLASSIC-v1凍結不變。
 
 瀏覽器原生confirm令IAB／Brave自動化焦點處理卡住，使用者已關閉；重練接受／拒絕用test/practice-browser.html可見開關驗證，正式頁面仍原生confirm。未宣稱工具直接控制原生視窗成功或實機手機／Safari驗收。測試只用4185／4187，與正式存檔分開。正常4187練習tab保留作預覽；伺服器是否存活下次查。不要再次點原生重練確認作自動化。
 
@@ -35,6 +35,8 @@ Repository：https://github.com/lanyaliu521/taiwan-mahjong（Public）。main追
 
 ## M5.3交付檢查點（2026-10-06）
 
-coach.ts／view.ts沿用analysis.ts，僅遮罩觀察／合法候選；main.ts增加獨立tw16:coach:v1偏好，存檔版本不變。單擊／focus局部預覽、雙擊／鍵盤出牌；原生details限高，吃碰比較先呈現，胡牌先提醒。226測試及build通過，320／390無橫溢且操作可見。詳見M5.3-VALIDATION、MAINTENANCE。已落盤，待發布證據。
+coach.ts／view.ts沿用analysis.ts，僅遮罩觀察／合法候選；main.ts增加獨立tw16:coach:v1偏好，存檔版本不變。單擊／focus局部預覽、雙擊／鍵盤出牌；原生details限高，吃碰比較先呈現，胡牌先提醒。226測試及build通過，320／390無橫溢且操作可見。詳見M5.3-VALIDATION、MAINTENANCE。已發布來源ff6de9351c1bfc61b7bb431307cdd8529825d047；workflow37357698468的build／deploy成功。新網址首頁及index-DoUDaANw.js均HTTP200，線上JS與本地build完全一致；正常開局到真人17張，單擊東預覽4向聽／81有效張／115未知張（70.4%），沒有出牌。證據M5.3-live.jpg。
 
 起始帳戶五小時已用51%；檢查點因五小時視窗自然更新顯示已用2%。未使用重設額度，不能將兩者相減作本輪token耗用；也不是精確對話剩餘token。
+
+交付檢查點帳戶五小時已用8%，剩92%，週用量25%；本輪跨自然視窗更新，不能推算本輪精確token。新github.io來源不會自動讀取舊來源localStorage；未刪除或覆寫舊來源存檔。後續按使用者試玩回饋維護，沒有待啟動的新功能階段。

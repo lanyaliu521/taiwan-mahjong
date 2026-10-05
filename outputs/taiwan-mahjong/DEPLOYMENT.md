@@ -1,5 +1,9 @@
 # GitHub Pages發布與回復
 
+現行網址（2026-10-06）：https://zhai2Liu.github.io/taiwan-mahjong/；repository：zhai2Liu/taiwan-mahjong。Git重導與repository API已確認owner改名，本機origin及About Website已同步。M5.3來源ff6de93，workflow37357698468 build／deploy成功，首頁與本地新版資源一致。下段M4首次發布為歷史紀錄。
+
+帳號改名會改變github.io來源；舊網址的localStorage不能由新網址直接讀取，本次未清除舊存檔。不宣稱自動遷移成功。
+
 2026-10-05，M4已部署並完成正式網站驗收。正式網址：https://lanyaliu521.github.io/taiwan-mahjong/。成功run：37247813100，遊戲提交29057b2。GitHub連線帳號已確認為lanyaliu521，使用者已指定帳號並授權自行命名，目標lanyaliu521/taiwan-mahjong已建立為公開repository；Pages來源已設GitHub Actions。本機main及origin已設定，Git認證及初次推送已完成，build及deploy成功。以下首次步驟保留作重新架站參考，實際驗收見HANDOFF。
 
 ## 已準備的發布流程
@@ -8,7 +12,7 @@
 
 初始化／上傳時只明確加入上述專案來源、文件、lockfile及workflow；不加入node_modules、dist、site、work、其他專案檔案或個人資料。遊戲資料夾現有.gitignore排除三份生成目錄。若接到既有repository，先檢查內容及分支再整合，不覆寫既有歷史。
 
-流程在main推送遊戲修改或手動執行時啟動：安裝lockfile指定依賴 → 185項既有測試 → build → 上傳site產物 → 部署。測試／建置失敗時deploy不執行。只給deploy job Pages及OIDC權限，不需自訂PAT秘密值。尚未驗證GitHub實際workflow執行。
+流程在main推送遊戲修改或手動執行時啟動：安裝lockfile指定依賴 → 全部現行測試（M5.3為226項） → build → 上傳site產物 → 部署。測試／建置失敗時deploy不執行。只給deploy job Pages及OIDC權限，不需自訂PAT秘密值。已驗證GitHub實際workflow執行。
 
 Vite保留`base: './'`與`outDir: 'site'`，建置資源使用相對路徑，支援帶repository子路徑的首頁；沒有前端路由或深層網址。dist是測試編譯，不能誤作發布產物。
 
