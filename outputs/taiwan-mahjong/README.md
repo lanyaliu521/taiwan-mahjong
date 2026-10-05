@@ -11,7 +11,8 @@
 - [固定桌規與完整台表](../taiwan-mahjong-m0/RULES.md)
 - [概念契約](../taiwan-mahjong-m0/CONTRACTS.md)：實際欄位以src/model.ts為準。
 - [純練習與新手提示設計](TRAINING-DESIGN.md)：M5設計及Sol／Luna分工。
-- [最近對戰教練驗收](M5.3-VALIDATION.md)：226項測試、建置、提示開關、吃碰比較與窄畫面；純練習見M5.2，共用數學見M5.1。
+- [最近選牌流程修正](COACH-FLOW-VALIDATION.md)：滑鼠／鍵盤選牌與教練摘要同步、禁捨提醒、出牌及窄畫面。
+- [對戰教練驗收](M5.3-VALIDATION.md)：226項測試、建置、提示開關、吃碰比較與窄畫面；純練習見M5.2，共用數學見M5.1。
 
 ## 安裝與遊玩
 

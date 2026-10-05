@@ -102,3 +102,5 @@ main.ts的教練設定使用獨立鍵tw16:coach:v1，on／off、預設開啟，�
 公開比例為K／N：N含其他玩家暗手與牌尾，不是可摸牌牆。吃碰只比較向聽、有效張數並提示失去門清，沒有台數、防守及槓風險評分。若擴充需先定義資訊邊界與測試，不能把純牌效說成總體最佳策略。
 
 coach.test.mjs驗決策邊界、兩吃法、碰牌、過水及輸入不變；controller.test.mjs驗獨立設定、重載、寫入故障與不更動牌局。瀏覽器證據見M5.3-VALIDATION。局部文字／配色修改做相關畫面驗收即可，不重跑長模擬。
+
+2026-10-06選牌流程修正：handAndActions的focus／單擊共用select，同步視覺／aria-pressed／main選牌及coach.select；焦點切換清除lastTap。coach.select同步收合摘要，胡牌摘要優先；禁捨及胡牌提醒先於教練。仍不重畫整副手牌或保存選牌，沒有新增設定。驗收見COACH-FLOW-VALIDATION。
