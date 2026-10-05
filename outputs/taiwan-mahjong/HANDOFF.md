@@ -17,7 +17,7 @@ practice.ts維護136張一般牌、不放回牌池、16→17→16、五面子一
 ## 網站、發布與測試工具
 
 正式網站：https://lanyaliu521.github.io/taiwan-mahjong/
-Repository：https://github.com/lanyaliu521/taiwan-mahjong（Public）。main追蹤origin/main，認證已完成；push自動測試、build、Pages部署。發布／revert回復見DEPLOYMENT。M5.2驗收完成，待本輪推送確認workflow與線上資源後補發布證據。
+Repository：https://github.com/lanyaliu521/taiwan-mahjong（Public）。main追蹤origin/main，認證已完成；push自動測試、build、Pages部署。發布／revert回復見DEPLOYMENT。M5.2來源提交b7aafc6edfcd8504122ae57bb47cd631ed80d51f已發布；workflow 37324560829的build及deploy成功，正式首頁／JS均HTTP200，線上JS與本地build完全相同。正常網站已驗純練習入口、17張／119池、捨西預覽27／119＝22.7%、雙擊後16張／池119及回饋。線上截圖M5.2-live.jpg。
 
 前次About Website誤設zhaizhaiLiu.github.io，owner未改名，已恢復正確Pages網址；不要改遠端。TW16-CLASSIC-v1凍結不變。
 
@@ -25,4 +25,4 @@ Repository：https://github.com/lanyaliu521/taiwan-mahjong（Public）。main追
 
 ## 用量
 
-本輪五小時起始已用15%，交付檢查點32%（剩68%），帳戶共用估計，非精確對話剩餘token。程式、文件及驗收落盤；不重設、不建自動續跑。下次先重查。
+本輪五小時起始已用15%，交付檢查點37%（剩63%），帳戶共用估計，非精確對話剩餘token。程式、文件及驗收落盤；不重設、不建自動續跑。下次先重查。
