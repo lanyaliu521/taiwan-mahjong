@@ -16,6 +16,7 @@ const compiled = ts.transpileModule(fs.readFileSync(new URL('../src/main.ts', im
 // Exercise the actual controller with native Node mocks; no browser or test dependency is needed.
 function controller(raw = null, confirm = true, faults = {}) {
   const storage = new Map(raw === null ? [] : [[key, raw]]), timers = new Map(), delays = new Map(), handlers = new Map();
+  if (faults.coachRaw !== undefined) storage.set('tw16:coach:v1', faults.coachRaw);
   if (faults.practiceRaw !== undefined) storage.set(practices.PRACTICE_KEY, faults.practiceRaw);
   let send, view, timerId = 0, confirmations = 0, writes = 0;
   vm.runInNewContext(compiled, {
@@ -318,4 +319,22 @@ test('對戰存檔寫入失敗時切入練習受阻，對戰狀態仍保留', ()
   const raw = sessions.encodeSession(initial()), faults = {}, app = controller(raw, true, faults);
   app.send({ type: 'resume' }); faults.write = new DOMException('full', 'QuotaExceededError');
   app.send({ type: 'practice' }); assert.ok(app.view.game); assert.match(app.view.notice, /未能儲存/); assert.equal(app.raw(), raw);
+});
+
+test('教練開關保存獨立設定，不改牌局、不行牌，關閉可重載', () => {
+  const raw = sessions.encodeSession(initial()), app = controller(raw);
+  app.send({ type: 'resume' }); app.send({ type: 'pause' });
+  const before = app.raw(), game = app.view.game;
+  app.send({ type: 'coach-toggle' });
+  assert.equal(app.view.coachEnabled, false); assert.equal(app.raw(), before);
+  assert.deepEqual(app.view.game, game); assert.equal(app.timers.size, 0);
+  assert.equal(controller(raw, true, { coachRaw: 'off' }).view.coachEnabled, false);
+  assert.equal(controller(raw, true, { coachRaw: 'invalid' }).view.coachEnabled, true);
+});
+
+test('教練設定寫入失敗仍可切換，原牌局存檔不變且提示未保存', () => {
+  const raw = sessions.encodeSession(initial()), app = controller(raw, true, { write: new DOMException('full', 'QuotaExceededError') });
+  app.send({ type: 'coach-toggle' });
+  assert.equal(app.view.coachEnabled, false); assert.match(app.view.coachNotice, /無法保存/);
+  assert.equal(app.raw(), raw); assert.equal(app.timers.size, 0);
 });

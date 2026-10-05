@@ -7,6 +7,11 @@ import { PRACTICE_KEY, createPractice, drawPractice, discardPractice, encodePrac
 import type { Practice } from './practice.js';
 import { renderPractice } from './practice-view.js';
 
+const COACH_KEY = 'tw16:coach:v1';
+let coachEnabled = true;
+let coachNotice = '';
+try { coachEnabled = localStorage.getItem(COACH_KEY) !== 'off'; } catch { /* Preference stays in memory when storage is unavailable. */ }
+
 const SAVE_KEY = 'tw16:TW16-CLASSIC-v1:save';
 const root = document.querySelector<HTMLElement>('#app')!;
 let session: Session | null = null;
@@ -82,7 +87,7 @@ function paint(): void {
   const current = session?.game;
   render(root, {
     game, selectedTile, drawnTile: current?.turn === 0 && current.phase === 'awaitDiscard' ? current.drawContext.lastTile : null,
-    busy: needsAutomation() || failed, paused, speed, status: message, notice, hasSave: saved !== null,
+    busy: needsAutomation() || failed, paused, speed, coachEnabled, coachNotice, status: message, notice, hasSave: saved !== null,
   }, command => { if (screen === rendered) send(command); });
 }
 function refresh(): void {
@@ -114,6 +119,12 @@ function start(): void {
   persist(); refresh();
 }
 function send(command: UICommand): void {
+  if (command.type === 'coach-toggle') {
+    coachEnabled = !coachEnabled; coachNotice = '';
+    try { localStorage.setItem(COACH_KEY, coachEnabled ? 'on' : 'off'); }
+    catch { coachNotice = '教練設定本次已套用，但無法保存；重新開啟可能恢復預設。'; }
+    refresh(); return;
+  }
   if (command.type === 'practice') {
     if (session && !failed && !persist()) { refresh(); return; }
     paused = true; stopTimer(); mode = 'practice'; paint(); return;

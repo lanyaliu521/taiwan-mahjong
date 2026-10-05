@@ -1,10 +1,12 @@
+import { coachAnalysis } from './coach.js';
+import type { Analysis } from './analysis.js';
 import type { Intent, Seat } from './model.js';
 import type { getObservation } from './engine.js';
 import { kindOf, seatWind } from './tiles.js';
 import { tileFace } from './tile-face.js';
 
 export type UICommand =
-  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' }
+  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' }
   | { type: 'practice' | 'practice-start' | 'practice-resume' | 'practice-replay' | 'practice-draw' | 'game' }
   | { type: 'practice-discard'; tileId: string }
   | { type: 'speed'; value: 'normal' | 'fast' }
@@ -13,6 +15,7 @@ export type UICommand =
 export type ViewModel = {
   game: ReturnType<typeof getObservation> | null;
   selectedTile: string | null; drawnTile: string | null; busy: boolean; paused: boolean;
+  coachEnabled?: boolean; coachNotice?: string;
   speed: 'normal' | 'fast'; status: string; notice: string; hasSave: boolean;
 };
 type Game = NonNullable<ViewModel['game']>;
@@ -89,6 +92,8 @@ function header(model: ViewModel, send: Send): HTMLElement {
   const tools = node('div', 'header-tools');
   tools.append(pill('本地公平 AI', 'fair-pill'));
   if (model.game) {
+    const coachToggle = button('教練提示', 'coach-toggle', () => send({ type: 'coach-toggle' }), 'button button-quiet');
+    coachToggle.setAttribute('aria-pressed', String(model.coachEnabled !== false)); tools.append(coachToggle);
     tools.append(button('練習', 'practice', () => send({ type: 'practice' }), 'button button-quiet'));
     tools.append(button(model.paused ? '繼續牌局' : '暫停', 'pause', () => send({ type: 'pause' }), 'button button-quiet'));
     const speed = node('label', 'speed-label'); speed.append(node('span', '', '速度'));
@@ -204,6 +209,49 @@ function actionLabel(intent: Intent): string {
   }
 }
 
+function coachPanel(model: ViewModel) {
+  const report = model.coachEnabled === false || model.busy || model.paused ? null : coachAnalysis(model.game!);
+  if (!report) return null;
+  const detail = node('details', 'coach-panel'); detail.dataset.persist = 'coach';
+  const summary = node('summary'); summary.dataset.focus = 'coach';
+  const distance = (a: Analysis) => a.shanten < 0 ? '牌型已完成' : a.shanten === 0 ? '已聽牌' : `${a.shanten} 向聽・距聽牌至少 ${a.shanten} 次進張`;
+  summary.textContent = `教練 · ${report.canWin ? '此刻可以胡牌' : report.best.length ? `捨牌後最佳 ${distance(report.best[0].analysis)}` : distance(report.current)}`;
+  detail.append(summary);
+  const body = node('div', 'coach-body'), preview = node('div', 'coach-preview'); preview.setAttribute('aria-live', 'polite');
+  const describe = (a: Analysis, label: string) => {
+    const box = node('div'); box.append(node('strong', '', `${label}：${distance(a)}`));
+    if (a.shanten >= 0) box.append(node('p', '', `成胡還需至少 ${a.shanten + 1} 次有效進張（每次都使牌型更接近胡牌）；不代表實際回合數。`));
+    box.append(node('p', '', `公開未知牌中，有效牌 ${a.improving}／${a.total} 張${a.probability === null ? '（無可估計牌）' : `（${(a.probability * 100).toFixed(1)}%）`}。`));
+    const list = node('div', 'coach-tiles'); list.tabIndex = 0; list.setAttribute('aria-label', '有效進張與剩餘張數，可左右捲動');
+    a.effectiveTiles.forEach(t => { const item = node('span', t.count ? '' : 'exhausted'); item.append(tile(t.kind, 'tile-small'), node('span', '', `${t.count}張`)); list.append(item); });
+    if (a.effectiveTiles.length) box.append(list);
+    const e = a.example;
+    if (e) {
+      box.append(node('p', '', `拆法示例：${e.completed.length} 組面子、${e.partials.length} 搭、${e.pair.length ? '1 對將' : '尚無將'}、${e.singles.length} 張散牌。`));
+      const groups = node('div', 'coach-tiles');
+      [...e.completed, ...e.partials, ...(e.pair.length ? [e.pair] : []), ...e.singles.map(k => [k])].forEach(g => { const row = node('span', 'coach-group'); g.forEach(k => row.append(tile(k, 'tile-small'))); groups.append(row); }); box.append(groups);
+    }
+    return box;
+  };
+  function select(id: string | null) {
+    const choice = report!.discards.find(d => d.kind === (id ? kindOf(id) : ''));
+    preview.replaceChildren(choice ? describe(choice.analysis, `打出${tileName(choice.kind)}後`) : report!.discards.length ? node('p', '', '單擊手牌預覽，雙擊才打出。') : describe(report!.current, '目前牌型'));
+  }
+  select(model.selectedTile);
+  if (report.canWin) body.append(node('p', 'coach-claim', '此刻有合法胡牌，先考慮胡牌；放棄會過水。以下吃碰比較是假設你放棄本次胡牌。'));
+  else if (report.current.shanten < 0) body.append(node('p', '', '牌型已完成，但此刻沒有合法胡牌。吃碰後與明槓補牌不可自摸，過水亦會限制胡牌；請以合法胡牌按鈕為準。'));
+  if (report.best.length) body.append(node('p', 'coach-candidates', `牌效較佳候選：${report.best.map(d => tileName(d.kind)).join('、')}。先比較向聽，再比較有效牌張數；同分都保留。`));
+  const effects: Record<string, string> = { unavailable: '無合法捨牌', closer: '更接近聽牌：有效進張', worse: '牌效下降', moreOptions: '向聽相同，有效牌增加', same: '牌效相同' };
+  for (const claim of report.claims) {
+    const after = claim.best[0]?.analysis;
+    body.append(node('p', 'coach-claim', `${actionLabel(claim.intent)} → ${effects[claim.effect]}${after ? `；捨 ${claim.best.map(d => tileName(d.kind)).join('／')} 後 ${distance(after)}，有效 ${after.improving} 張` : ''}${claim.losesClosed ? '；會失去門清' : ''}。`));
+  }
+  body.append(preview);
+  if (model.game!.self.restrictions.passedWin) body.append(node('p', '', '目前過水：牌型聽牌不代表此刻可胡，請以合法胡牌按鈕為準。'));
+  body.append(node('p', 'coach-footnote', '未知牌包含他家暗牌與牌尾，以上比例不是實際摸牌機率。拆法只是一種最近目標分配；不評估台數、防守或槓後補牌風險。'));
+  detail.append(body); return { element: detail, select };
+}
+
 function handAndActions(model: ViewModel, send: Send): HTMLElement {
   const game = model.game!;
   const section = node('section', 'hand-panel'); section.setAttribute('aria-label', '你的手牌與操作');
@@ -213,6 +261,7 @@ function handAndActions(model: ViewModel, send: Send): HTMLElement {
   const hand = node('div', 'hand'); hand.setAttribute('role', 'group'); hand.setAttribute('aria-label', '選擇要打出的手牌');
   const discards = game.legalActions.filter((action): action is Extract<Intent, { type: 'DISCARD' }> => action.type === 'DISCARD');
   const legalIds = new Set(discards.map(action => action.tileId));
+  const coach = coachPanel(model);
   let lastTap: { id: string; time: number } | null = null;
   const sorted = [...game.self.concealed].sort((a, b) => {
     const ka = kindOf(a), kb = kindOf(b); return 'mpsz'.indexOf(ka[1]) - 'mpsz'.indexOf(kb[1]) || Number(ka[0]) - Number(kb[0]) || a.localeCompare(b);
@@ -230,8 +279,10 @@ function handAndActions(model: ViewModel, send: Send): HTMLElement {
       for (const other of Array.from(hand.querySelectorAll<HTMLButtonElement>('button'))) {
         other.classList.toggle('selected', other === control); other.setAttribute('aria-pressed', String(other === control));
       }
+      coach?.select(id);
       send({ type: 'select', tileId: id });
     }, `hand-tile ${isSelected ? 'selected' : ''} ${isDrawn ? 'drawn' : ''} ${discards.length && !legalIds.has(id) ? 'unavailable' : ''}`, model.busy || model.paused || !legalIds.has(id));
+    control.addEventListener('focus', () => { if (!control.disabled) coach?.select(id); });
     control.addEventListener('keydown', event => {
       if (event.key !== 'Enter' && event.key !== ' ') return;
       event.preventDefault();
@@ -265,6 +316,8 @@ function handAndActions(model: ViewModel, send: Send): HTMLElement {
   });
   if (model.paused) actions.append(button('繼續牌局', 'continue', () => send({ type: 'pause' }), 'button button-primary'));
   operation.append(hint, actions); section.append(operation);
+  if (model.coachNotice) section.append(node('p', 'action-note', model.coachNotice));
+  if (coach) section.append(coach.element);
   if (discards.length && game.self.restrictions.forbiddenDiscards.length) section.append(node('p', 'action-note', `吃碰後本次不可打出：${game.self.restrictions.forbiddenDiscards.map(tileName).join('、')}。`));
   if (choices.some(action => action.type === 'WIN')) section.append(node('p', 'action-note', '此刻可以胡牌；放棄合法胡牌會進入過水。'));
   return section;
@@ -356,4 +409,3 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
   if (focus) Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(element => element.dataset.focus === focus)?.focus({ preventScroll: true });
   if (resultDialog && showResult) { resultDialog.showModal(); resultDialog.querySelector<HTMLElement>('h2')?.focus(); }
 }
-

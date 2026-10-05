@@ -1,6 +1,6 @@
 # 台灣麻將專案的啟動入口
 
-開始本專案相關工作前，先讀 `outputs/taiwan-mahjong-m0/HANDOFF.md`，再接讀 `outputs/taiwan-mahjong/HANDOFF.md`（按需查歷史M1–M3.1交接）。M0–M5.2 已完成；下一階段M5.3對戰教練提示，後續順序以 `outputs/taiwan-mahjong/ROADMAP.md` 為準。按需讀 RULES.md、CONTRACTS.md 和 cases.json，避免重新研究或覆寫已凍結桌規。使用者只啟動哪一階段，就先完成該階段。
+開始本專案相關工作前，先讀 `outputs/taiwan-mahjong-m0/HANDOFF.md`，再接讀 `outputs/taiwan-mahjong/HANDOFF.md`（按需查歷史M1–M3.1交接）。M0–M5.3 已完成；後續按試玩回饋維護，後續順序以 `outputs/taiwan-mahjong/ROADMAP.md` 為準。按需讀 RULES.md、CONTRACTS.md 和 cases.json，避免重新研究或覆寫已凍結桌規。使用者只啟動哪一階段，就先完成該階段。
 
 使用者要求節省 token 並可靠交接：每個工作包完成後落盤，立即更新 HANDOFF；額度工具只能讀帳戶用量，不能宣稱可知精確對話剩餘 token。長工作開始及檢查點查額度，剩餘偏低時優先收斂與交接，不自行使用重設額度或新增自動續跑。
 

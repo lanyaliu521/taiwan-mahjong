@@ -90,3 +90,15 @@ practice.test.mjs驗證整題完成及耗盡、重播、牌權、比例與存檔
 ### M5.2易用性補充
 
 practice-view.ts採practice-workspace主區／側欄，手機單欄。stats分距離聽牌及下一張改善機率，有效牌單列overflow-x:auto且tabIndex=0；候選button只局部select，不能送practice-discard。候選點擊清除lastTap，避免跨控制項雙擊；選牌保留已展開拆法。捨牌後聚焦practice-draw，摸牌後聚焦practice-status，不自動選牌。style.css僅最後practice區段控制此版面，詳見M5.2-UX-VALIDATION。
+
+## 對戰教練（M5.3）
+
+src/coach.ts只接getObservation遮罩資訊；awaitDiscard／awaitClaims／awaitRobKong且完整E16／E17真人有合法回應時，才呼叫共用analyzeObservation。view.ts再排除忙碌、暫停與已關閉提示；不讀Session、暗牌、牌牆或AI reason，也不另算向聽。
+
+view.ts的coachPanel使用原生details，body最大24dvh／220px局部捲動；吃碰比較排在有效牌列表之前，合法胡牌先提醒。單擊及鍵盤focus只更新預覽，保留手牌DOM以支援450ms雙擊；只有原有合法操作送intent。E17以合法捨牌後E16比較，不把E17有效進張0當摸牌比例；距成胡至少S+1次改善不是回合數。拆法是最近目標分配示例，非最多搭子；零剩餘張數保留提醒。
+
+main.ts的教練設定使用獨立鍵tw16:coach:v1，on／off、預設開啟，未知值用預設；保存失敗仍在記憶體套用並顯示提醒。不改對戰或練習schemaVersion=1。設定只在重新載入讀取，不另做跨分頁偏好同步；牌局原有跨分頁保護不變。
+
+公開比例為K／N：N含其他玩家暗手與牌尾，不是可摸牌牆。吃碰只比較向聽、有效張數並提示失去門清，沒有台數、防守及槓風險評分。若擴充需先定義資訊邊界與測試，不能把純牌效說成總體最佳策略。
+
+coach.test.mjs驗決策邊界、兩吃法、碰牌、過水及輸入不變；controller.test.mjs驗獨立設定、重載、寫入故障與不更動牌局。瀏覽器證據見M5.3-VALIDATION。局部文字／配色修改做相關畫面驗收即可，不重跑長模擬。

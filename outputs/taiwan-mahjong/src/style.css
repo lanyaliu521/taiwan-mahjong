@@ -41,3 +41,16 @@
 @media(max-width:760px){.practice-shell .site-header{min-height:60px}.practice-shell .site-header h1{font-size:21px}.practice-hand{padding:13px 6px;gap:5px}.practice-hand .tile{--tile-width:32px;--tile-height:45px}.practice-preview{padding:12px}.practice-metrics{gap:8px}.practice-metric{padding:10px}.practice-metric strong{font-size:23px}.practice-status{font-size:13px;margin-top:8px}.practice-step{min-height:54px}.practice-intro{font-size:12px}.practice-tools .button{padding:8px 10px;font-size:12px}.in-game .header-tools{flex-wrap:wrap;justify-content:flex-end}.in-game .site-header{flex-wrap:wrap}}
 
 @media(max-width:360px){.practice-hand .tile{--tile-width:29px;--tile-height:41px}}
+
+/* Coach stays bounded so legal actions and the hand remain reachable. */
+.coach-panel { border-top: 1px solid #ffffff30; margin-top: .4rem; font-size: .85rem; }
+.coach-panel summary { cursor: pointer; padding: .45rem; font-weight: 700; }
+.coach-body { max-height: min(24dvh, 220px); overflow: auto; padding: 0 .45rem .4rem; }
+.coach-body p { margin: .4rem 0; }
+.coach-tiles { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .3rem; }
+.coach-tiles > span { display: inline-flex; align-items: center; gap: .15rem; flex-shrink: 0; }
+.coach-group { border-bottom: 2px solid #c6a95e; }
+.coach-footnote { opacity: .8; font-size: .75rem; }
+.coach-claim { border-left: 3px solid #c6a95e; padding-left: .5rem; }
+.exhausted { opacity: .55; }
+[data-focus="coach-toggle" ][aria-pressed="true"] { border-color: #c6a95e; }
