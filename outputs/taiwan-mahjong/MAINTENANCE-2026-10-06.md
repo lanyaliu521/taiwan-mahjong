@@ -8,8 +8,16 @@
 
 驗證：226 既有測試及 build 通過；獨立來源 4191 的吃牌情境按過後，下一次真人決策維持手牌入口、17 張，再按 Tab 選第一張。Enter 出牌後為16張，焦點回入口；再次 Enter 未出第二張。未模擬實體鍵盤長按。練習點牌→Tab→Shift+Tab→單擊不出牌；雙擊僅捨一張，摸牌後空白鍵正常捨牌。
 
-證據：MAINTENANCE-KEYBOARD-desktop.jpg、MAINTENANCE-KEYBOARD-practice.jpg。建置 index-CtOVT2Yr.js／index-Fanank-l.css；發布結果待補。
+證據：MAINTENANCE-KEYBOARD-desktop.jpg、MAINTENANCE-KEYBOARD-practice.jpg。建置 index-CtOVT2Yr.js／index-Fanank-l.css；來源188465baf4e1cbedf9684619e3ebbca7888d6ba1已推送，workflow37364743153排隊中；待正式發布核對。320×740無橫向溢出，出牌後手牌入口外框可見，證據MAINTENANCE-KEYBOARD-320.jpg。
 
-## 工作包二：結算存檔核對（進行中）
+## 工作包二：結算存檔核對
 
-已發現：結算差額成對改動、維持零和，仍可能被舊驗證接受。待補依凍結付款規則與實際付款人核對；不改存檔版本，不清除壞檔。
+修正前新回歸中4項失敗，證實成對改動付款、付款人錯置及末局狀態可通過原零和檢查。validation.ts沿用scoring.ts的settlePayments，以來源付款人與本桌底30／台10、莊連台重算完整差額；RON與搶槓另驗來源捨牌／碰牌關聯。8項新回歸包含正常自摸、放槍、搶槓、七花、八花、連莊後終將、末局未涉莊家付款及不一致來源。無存檔鍵／版本或桌規改動。
+
+舊schemaVersion=1終將已移莊且歸零連莊，沒有上一局付款上下文。採前莊與合法奇數加台回推，保留正常舊檔相容性；不能驗證被一併修改的歷史連莊／台項／總分，未聲稱防偽。可信歷史需要另設版本化上下文／事件紀錄，已留下ponytail限制。
+
+234/234測試與build通過；3完整將74局9121動作、912真人決策、317次序列化還原通過，資料見MAINTENANCE-2026-10-06-SIMULATION.json。正式策略採既有固定種子；花牌特殊付款由單獨回歸覆蓋。建置index-C-ItP4CY.js／index-Fanank-l.css。發布結果待補。
+
+## 工作包三：維護文件校正
+
+MAINTENANCE原入口仍寫M5.2、分析段寫教練尚未串接，已校正為已完成。修改位置地圖區分分析、練習與教練，補鍵盤入口、同頁面板與結算驗證邊界。ROADMAP將226標成歷史交付數，新增試玩回饋歸入後續維護，README連至本輪集中證據，避免維護者被過時階段或測試數誤導。

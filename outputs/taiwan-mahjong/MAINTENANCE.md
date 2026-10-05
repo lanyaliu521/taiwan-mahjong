@@ -1,6 +1,6 @@
 # 維護指南
 
-2026-10-05，M5.2更新。此文件說明現有實作與修改路徑；目前進度見[HANDOFF](HANDOFF.md)，新增玩法規格見[TRAINING-DESIGN](TRAINING-DESIGN.md)。
+2026-10-06，M5.3及後續維護更新。此文件說明現有實作與修改路徑；目前進度見[HANDOFF](HANDOFF.md)，新增玩法規格見[TRAINING-DESIGN](TRAINING-DESIGN.md)。
 
 ## 文件各自負責什麼
 
@@ -12,14 +12,16 @@ README是使用與開發總入口；HANDOFF只記目前進度、風險與下一�
 |---|---|---|
 | 出牌、吃碰槓胡、過水、連莊、回合推進 | src/engine.ts、model.ts、validation.ts；先對照RULES | engine、chi、claims-integrity、validation相關案例；必要時補人工規則案例 |
 | 五面子一對、聽口、拆法 | src/hand.ts | engine／scoring相關案例；第五張容量與副露邊界 |
-| 計台、互斥、付款 | src/scoring.ts | scoring.test.mjs；付款零和與結算續局 |
+| 計台、互斥、付款 | src/scoring.ts、validation.ts | scoring、settlement-integrity；來源付款人、金額、末局連莊相容性與結算續局 |
 | 電腦選牌 | src/ai.ts、analysis.ts、session.ts | ai、session；資訊遮罩及正常完整牌局 |
 | 點擊、鍵盤、吃牌選項、結算彈窗 | src/view.ts、main.ts | controller、chi；瀏覽器受影響流程及焦點 |
 | 牌面、牌河、手機排版 | src/tile-face.ts、style.css、view.ts | 桌面／320及390寬畫面、長牌河；不替純配色寫單元測試 |
 | 暫停、速度、自動回合、跨分頁 | src/main.ts、session.ts | controller、session、resume；舊計時器與版本拒絕 |
 | 儲存、讀檔、格式變更 | main.ts、session.ts、engine.ts、validation.ts | 壞檔、未知版、保存失敗、重載、不可重付結算 |
 | 建置與發布路徑 | package.json、vite.config.js、index.html | build及正式子路徑資源；M4正式網址驗收 |
-| 牌效／未來練習與教練 | src/analysis.ts、hand.ts；TRAINING-DESIGN.md | analysis.test.mjs：容量、獨立枚舉、機率、合法吃碰、資訊公平；再驗受影響介面 |
+| 共用牌效分析 | src/analysis.ts、hand.ts；TRAINING-DESIGN.md | analysis：容量、獨立枚舉、比例、合法吃碰及資訊公平 |
+| 純練習流程與預覽 | src/practice.ts、practice-view.ts、main.ts | practice、controller；不放回牌池、重播、模式切換與焦點 |
+| 對戰新手教練 | src/coach.ts、view.ts、main.ts | coach、controller；遮罩資訊、合法決策、偏好保存及預覽同步 |
 
 ## 資料流與責任
 
@@ -35,13 +37,13 @@ getObservation遮蔽其他玩家暗手、暗槓牌種、牌牆順序、洗牌種
 
 ## 共用牌效分析（M5.1）
 
-src/analysis.ts是AI、後續練習與教練的共用來源；不要解析AI的reason字串。createAnalyzer接牌池，analyze接自家暗手牌種與完整副露；只分析等效E16／E17。E17捨牌比較先走discards，傳入實際合法牌種；analyzeObservation只接引擎產生的單一玩家觀察，吃碰採該觀察合法候選及engine共用discardBan。
+src/analysis.ts是AI、練習與教練的共用來源；不要解析AI的reason字串。createAnalyzer接牌池，analyze接自家暗手牌種與完整副露；只分析等效E16／E17。E17捨牌比較先走discards，傳入實際合法牌種；analyzeObservation只接引擎產生的單一玩家觀察，吃碰採該觀察合法候選及engine共用discardBan。
 
 距離是到容量合法的五面子一對目標所缺張數減1。容量扣除副露實體張數，槓扣4；完成=-1、聽牌=0。示例拆法是通往某個最近目標的一種不重疊分配，不是唯一拆法，也不保證顯示最多搭子。effectiveTiles保留結構有效但剩餘0張的牌種，以便介面區分距離與實際可用性。
 
 exactPool只接剩餘一般牌的唯一實體ID；publicPool扣自家牌、公開河牌／副露與搶槓亮牌，以ID去重，不猜對手暗槓。機率為有效張數／牌池總數，空池為null；公開未知牌含對手暗手與牌尾，不能稱真實牌牆機率。牌池不可與自家牌重疊。
 
-每次決策建立一個analyzer，內部快取共用於各候選；不跨牌局永久保留。介面只在真人可決策時分析，重繪可沿觀察版本重用結果；AI關閉示例生成。M5.2已由practice.ts、practice-view.ts與main.ts整合；M5.3尚未串接教練。型別以analysis.ts為準，驗證見M5.1-VALIDATION。
+每次決策建立一個analyzer，內部快取共用於各候選；不跨牌局永久保留。介面只在真人可決策時分析，重繪可沿觀察版本重用結果；AI關閉示例生成。M5.2由practice.ts、practice-view.ts與main.ts整合，M5.3由coach.ts、view.ts與main.ts整合。型別以analysis.ts為準，驗證見M5.1-VALIDATION。
 
 ## 存檔與相容性
 
@@ -49,7 +51,7 @@ exactPool只接剩餘一般牌的唯一實體ID；publicPool扣自家牌、公�
 
 讀取必須走session.decodeSession → engine.restore。只JSON.parse或直接呼叫validation.restore不足以取代引擎還原；engine還會重算待回應候選。寫入前encodeSession驗證資料；壞檔及未知版本保留，開始新一將前確認覆寫。保存失敗保留上一份可用存檔並提醒保持頁面；跨分頁競爭停止操作，要求重載。
 
-修改格式前先決定遷移／拒絕策略，補舊版、未知版與壞檔案例，不能以清空localStorage當修復。新練習另用版本化鍵，不覆寫對戰；詳細設計見TRAINING-DESIGN。Pages網址與本機來源不同，現有續局不包含跨來源匯入功能。
+修改格式前先決定遷移／拒絕策略，補舊版、未知版與壞檔案例，不能以清空localStorage當修復。練習另用版本化鍵，不覆寫對戰；詳細設計見TRAINING-DESIGN。Pages網址與本機來源不同，現有續局不包含跨來源匯入功能。
 
 ## 驗證工具
 
@@ -106,3 +108,11 @@ coach.test.mjs驗決策邊界、兩吃法、碰牌、過水及輸入不變；con
 2026-10-06選牌流程修正：handAndActions的focus／單擊共用select，同步視覺／aria-pressed／main選牌及coach.select；焦點切換清除lastTap。coach.select同步收合摘要，胡牌摘要優先；禁捨及胡牌提醒先於教練。仍不重畫整副手牌或保存選牌，沒有新增設定。驗收見COACH-FLOW-VALIDATION。
 
 2026-10-06面板狀態維護：view.ts的detailStates以WeakMap按root記data-persist的boolean。render捕捉目前面板、toggle記使用者選擇；僅root內元素可寫狀態。面板暫時消失（忙碌、暫停、關提示或模式切換）時保留，重現時恢復。只記本次頁面，重載預設收合，不改任何存檔鍵。驗收見PANEL-STATE-VALIDATION。
+
+## 維護補充：鍵盤與結算核對
+
+手牌標題以 data-focus=hand-heading 作程式化焦點入口，不加入一般 Tab 順序。重繪先還原同一控制項；手牌／回應按鈕消失或禁用才退回入口，aria-describedby 連結當前操作提示。焦點及單擊僅選牌，不可繞過合法動作；練習手牌焦點變更清除 lastTap，避免跨控制項誤判雙擊。教練 details 的 data-persist 只保存同頁展開狀態；舊面板事件不得覆蓋現行狀態。
+
+validation.ts 在既有牌權、來源及零和核對之上，以 settlePayments 重新核對完整差額。RON／搶槓付款人為保留的 turn；七花為持有另一花的玩家；自摸／八花為其餘三人。RON核對來源最後被胡捨牌，搶槓核對來源同種碰牌。壞檔仍保留並拒絕載入，不能清除資料當修復。
+
+schemaVersion=1 終將已移莊並歸零連莊，沒有保存上一局付款上下文。因此舊莊由 currentDealer-1 還原；若舊莊付款，只能從其金額推回合法奇數加台並核對其他付款。這維持正常舊檔相容性，不能驗證被一併改動的歷史連莊、台項或完整累計分數；若需可信歷史，另設版本化上下文／可驗證事件紀錄。最新證據見 MAINTENANCE-2026-10-06.md，歷史報告不作現況入口。

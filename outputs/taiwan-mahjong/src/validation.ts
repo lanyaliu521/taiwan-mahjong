@@ -1,5 +1,6 @@
 import type { ClaimWindow, GameState, Intent, Seat } from './model.js';
 import { DECK, KINDS, isFlower, kindOf, nextSeat } from './tiles.js';
+import { settlePayments } from './scoring.js';
 
 const deckIds = new Set(DECK);
 const kinds = new Set(KINDS);
@@ -237,6 +238,7 @@ function validateSettlement(s: GameState, owned: string[]): void {
   check(['draw', 'selfDraw', 'ron', 'robKong', 'sevenFlowers', 'eightFlowers'].includes(result.source), 'settlement.source');
   fourNumbers(result.delta, 'settlement.delta', Number.MIN_SAFE_INTEGER);
   check(result.delta.reduce((a, b) => a + b, 0) === 0, 'settlement.delta.sum');
+  if (s.phase === 'matchResult') check(result.source !== 'draw' && result.winner !== (s.dealer + 3) % 4 && s.streak === 0, 'settlement.matchResult');
   if (result.externalTile !== null) { tile(result.externalTile, 'settlement.externalTile'); check(!isFlower(result.externalTile), 'settlement.externalTile.flower'); owned.push(result.externalTile); }
   if (result.source === 'draw') {
     check(result.winner === null && result.score === null && result.externalTile === null && result.delta.every(n => n === 0), 'settlement.draw');
@@ -258,6 +260,28 @@ function validateSettlement(s: GameState, owned: string[]): void {
   });
   check(score.items.reduce((sum, item) => sum + item.tai, 0) === score.tai, 'score.tai.sum');
   array(score.excluded, 'score.excluded'); check(score.excluded.every(x => typeof x === 'string'), 'score.excluded.item');
+  const seats: Seat[] = [0, 1, 2, 3];
+  const payers = result.source === 'ron' || result.source === 'robKong' ? [s.turn]
+    : result.source === 'sevenFlowers' ? seats.filter(i => i !== result.winner && s.players[i].flowers.length === 1)
+    : seats.filter(i => i !== result.winner);
+  if (result.source === 'selfDraw') check(s.turn === result.winner, 'settlement.selfDraw.turn');
+  if (result.source === 'ron') {
+    const last = s.players[s.turn].discardHistory.at(-1);
+    check(last?.tileId === result.externalTile && last.claimedBy === result.winner, 'settlement.ron.reference');
+  }
+  if (result.source === 'robKong') check(s.players[s.turn].melds.some(m => m.kind === 'pon' && kindOf(m.tiles[0]) === kindOf(result.externalTile!)), 'settlement.robKong.reference');
+  const dealer = s.phase === 'matchResult' ? (s.dealer + 3) % 4 as Seat : s.dealer;
+  let streak = s.streak;
+  if (s.phase === 'matchResult' && payers.includes(dealer)) {
+    // ponytail: v1 resets the last streak at match end; infer its legal bonus from the old dealer's payment. Authenticating that streak needs a versioned payment context/history.
+    const bonus = (-result.delta[dealer] - (30 + 10 * score.tai)) / 10;
+    check(Number.isSafeInteger(bonus) && bonus >= 1 && bonus % 2 === 1, 'settlement.matchResult.bonus');
+    streak = (bonus - 1) / 2;
+  }
+  let expected: number[];
+  try { expected = settlePayments(result.winner, payers, score.tai, dealer, streak); }
+  catch { throw new Error('INVALID_STATE: settlement.payment'); }
+  check(result.delta.every((n, i) => n === expected[i]), 'settlement.delta.amount');
   if (score.decomposition !== null) {
     object(score.decomposition, 'score.decomposition'); kind(score.decomposition.pair, 'decomposition.pair');
     array(score.decomposition.groups, 'decomposition.groups');
