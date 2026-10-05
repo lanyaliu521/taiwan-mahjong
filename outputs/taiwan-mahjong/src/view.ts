@@ -55,7 +55,8 @@ export function tile(id: string | null, size = '', selected = false): HTMLSpanEl
 }
 function pill(text: string, className = ''): HTMLSpanElement { return node('span', `pill ${className}`, text); }
 function signed(value: number): string { return value > 0 ? `+${value}` : String(value); }
-function wind(game: Game, seat: number): string { return tileName(seatWind(seat as Seat, game.dealer)); }
+function tableDealer(game: Game): Seat { return game.phase === 'matchResult' ? (game.dealer + 3) % 4 as Seat : game.dealer; }
+function wind(game: Game, seat: number): string { return tileName(seatWind(seat as Seat, tableDealer(game))); }
 
 function rules(): HTMLDetailsElement {
   const detail = node('details', 'rules'); detail.dataset.persist = 'rules';
@@ -142,7 +143,7 @@ function publicPlayer(game: Game, seat: Seat): HTMLElement {
   const points = node('span', `player-score ${game.scores[seat] > 0 ? 'positive' : ''}`, signed(game.scores[seat])); points.setAttribute('aria-label', `積分 ${game.scores[seat]}`);
   label.append(avatar, title);
   if (!self) label.append(node('span', 'hand-count', `${player.concealedCount} 張`));
-  if (game.dealer === seat) label.append(pill(game.streak ? `莊 連${game.streak}` : '莊', 'dealer-pill'));
+  if (tableDealer(game) === seat) label.append(pill(game.phase === 'matchResult' ? '末局莊' : game.streak ? `莊 連${game.streak}` : '莊', 'dealer-pill'));
   label.append(points); section.append(label);
   if (!self) {
     const hidden = node('div', 'opponent-hand'); hidden.setAttribute('aria-label', `${player.concealedCount} 張暗牌`);
@@ -407,7 +408,7 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
   if (!model.game) shell.append(home(model, send));
   else {
     const main = node('main', 'game-main');
-    const heading = node('div', 'table-heading'); heading.append(node('p', 'eyebrow', '你的私人牌桌'), node('p', 'table-subtitle', `${tileName(model.game.roundWind)}圈 · 莊家 ${names[model.game.dealer]}${model.game.streak ? ` · 連 ${model.game.streak}` : ''}`));
+    const heading = node('div', 'table-heading'); heading.append(node('p', 'eyebrow', '你的私人牌桌'), node('p', 'table-subtitle', model.game.phase === 'matchResult' ? `一將完成 · 最後莊家 ${names[tableDealer(model.game)]}` : `${tileName(model.game.roundWind)}圈 · 莊家 ${names[model.game.dealer]}${model.game.streak ? ` · 連 ${model.game.streak}` : ''}`));
     const table = node('div', 'table-grid');
     for (const seat of [2, 3, 1, 0] as Seat[]) table.append(publicPlayer(model.game, seat));
     const sea = node('div', 'discard-table'); sea.setAttribute('aria-label', '中央牌河');

@@ -12,7 +12,7 @@
 
 初始化／上傳時只明確加入上述專案來源、文件、lockfile及workflow；不加入node_modules、dist、site、work、其他專案檔案或個人資料。遊戲資料夾現有.gitignore排除三份生成目錄。若接到既有repository，先檢查內容及分支再整合，不覆寫既有歷史。
 
-流程在main推送遊戲來源／測試／建置設定／workflow修改或手動執行時啟動；專案根目錄Markdown、JPG截圖、*SIMULATION.json證據不觸發。src／public內素材仍觸發，勿把發布素材放在被排除的根目錄證據路徑。使用GitHub原生paths依序排除，不另加判定程式；符合[官方路徑篩選](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onpushpull_requestpull_request_targetpathspaths-ignore)。執行內容：安裝lockfile指定依賴 → 全部現行測試（M5.3為226項） → build → 上傳site產物 → 部署。測試／建置失敗時deploy不執行。只給deploy job Pages及OIDC權限，不需自訂PAT秘密值。已驗證GitHub實際workflow執行。
+流程在main推送遊戲來源／測試／建置設定／workflow修改或手動執行時啟動；專案根目錄Markdown、JPG截圖、*SIMULATION.json證據不觸發。src／public內素材仍觸發，勿把發布素材放在被排除的根目錄證據路徑。使用GitHub原生paths依序排除，不另加判定程式；符合[官方路徑篩選](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onpushpull_requestpull_request_targetpathspaths-ignore)。執行內容：安裝lockfile指定依賴 → 全部現行測試（M5.3為226項） → build → 上傳site產物 → 部署。測試／建置失敗時deploy不執行。只給deploy job Pages及OIDC權限，不需自訂PAT秘密值。既有build／deploy已實際跑通；本輪paths修改的雲端觸發與純文件不新增run另以HANDOFF最新證據為準。
 
 Vite保留`base: './'`與`outDir: 'site'`，建置資源使用相對路徑，支援帶repository子路徑的首頁；沒有前端路由或深層網址。dist是測試編譯，不能誤作發布產物。
 

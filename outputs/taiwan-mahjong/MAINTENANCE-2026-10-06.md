@@ -47,3 +47,9 @@ MAINTENANCE原入口仍寫M5.2、分析段寫教練尚未串接，已校正為�
 重現：候選best與棄牌river展開後，返回對戰再進練習均變收合。將view.ts既有單頁WeakMap面板保存抽成preserveDetails，練習直接沿用；沒有新增依賴、設定或存檔鍵。面板不存在時保留其開／關值，移除的舊面板toggle不得覆寫；選牌預覽仍按現有流程重新選擇，不持久保存題目預覽。
 
 4191驗best／river展開往返仍開，best手動收合後往返保持關；切到對戰，教練展開→暫停／繼續仍開，回練習best關／river開維持。235測試及build通過，證據MAINTENANCE-PRACTICE-PANELS.jpg。重新載入仍回預設面板狀態，不是持久偏好。
+
+## 工作包九：終將顯示末局莊家與風位
+
+重現：handResult第16次移莊後進matchResult，引擎保留末局結算但dealer已移回初始位；畫面使用此dealer導致你原南風變東、原莊家左席變北，與末局付款／台項不一致。view.ts僅在matchResult以dealer-1顯示末局風位，標「一將完成・最後莊家」及「末局莊」；不更動GameState或積分計算。
+
+4191 matchResult固定情境確認：結算你南+50、左席東-50；關彈窗後最後莊家左席且末局莊標記正確。一般牌局仍使用當前dealer。32項受影響控制器／結算測試及build通過，證據MAINTENANCE-LAST-DEALER.jpg，新bundle index-CDcpWka5.js，待正式發布。
