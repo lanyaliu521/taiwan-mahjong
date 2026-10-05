@@ -104,3 +104,5 @@ main.ts的教練設定使用獨立鍵tw16:coach:v1，on／off、預設開啟，�
 coach.test.mjs驗決策邊界、兩吃法、碰牌、過水及輸入不變；controller.test.mjs驗獨立設定、重載、寫入故障與不更動牌局。瀏覽器證據見M5.3-VALIDATION。局部文字／配色修改做相關畫面驗收即可，不重跑長模擬。
 
 2026-10-06選牌流程修正：handAndActions的focus／單擊共用select，同步視覺／aria-pressed／main選牌及coach.select；焦點切換清除lastTap。coach.select同步收合摘要，胡牌摘要優先；禁捨及胡牌提醒先於教練。仍不重畫整副手牌或保存選牌，沒有新增設定。驗收見COACH-FLOW-VALIDATION。
+
+2026-10-06面板狀態維護：view.ts的detailStates以WeakMap按root記data-persist的boolean。render捕捉目前面板、toggle記使用者選擇；僅root內元素可寫狀態。面板暫時消失（忙碌、暫停、關提示或模式切換）時保留，重現時恢復。只記本次頁面，重載預設收合，不改任何存檔鍵。驗收見PANEL-STATE-VALIDATION。
