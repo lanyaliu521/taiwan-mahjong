@@ -1,0 +1,12 @@
+# 台灣麻將專案的啟動入口
+
+開始本專案相關工作前，先讀 `outputs/taiwan-mahjong-m0/HANDOFF.md`，再接讀 `outputs/taiwan-mahjong/HANDOFF.md`（按需查歷史M1–M3.1交接）。M0–M3.2 已完成；下一階段M4 GitHub Pages發布，後續順序以 `outputs/taiwan-mahjong/ROADMAP.md` 為準。按需讀 RULES.md、CONTRACTS.md 和 cases.json，避免重新研究或覆寫已凍結桌規。使用者只啟動哪一階段，就先完成該階段。
+
+使用者要求節省 token 並可靠交接：每個工作包完成後落盤，立即更新 HANDOFF；額度工具只能讀帳戶用量，不能宣稱可知精確對話剩餘 token。長工作開始及檢查點查額度，剩餘偏低時優先收斂與交接，不自行使用重設額度或新增自動續跑。
+
+Ponytail：先判斷是否必要，優先標準函式庫、平台功能和已安裝依賴；保持最少程式。不得省略資料驗證、避免資料損失、可及性或使用者要求的規則行為。有已知上限的捷徑，以 `ponytail:` 註解記錄上限與升級條件。
+
+使用繁體中文。scratch 放 work/，本輪文件交付在 outputs/。遊戲目標為 GitHub Pages 的台灣16張，1真人＋3本地公平AI；開發模型與遊戲AI為不同概念。
+
+開發由6.1 Sol主導，必要時使用Luna子代理完成限定工作；常規不啟用Astra。
+

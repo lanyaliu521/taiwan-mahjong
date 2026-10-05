@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M3 獨立驗收</title>
+<style>body{font:16px system-ui;margin:12px}label,button{margin:4px}button,select{font:inherit;padding:8px}iframe{width:100%;height:85vh;border:1px solid #888}#result{white-space:pre-wrap}</style>
+<h1>M3 獨立驗收</h1><p>僅使用此測試來源的存檔，正式牌局不受影響。此頁不納入網站建置。</p>
+<label>場景 <select id="scenario"><option value="empty">無存檔</option><option value="bad">壞 JSON</option><option value="blank">空白存檔</option><option value="unknown">未知格式版</option></select></label>
+<label>儲存故障 <select id="fault"><option value="none">正常</option><option value="read">禁止讀取</option><option value="write">空間不足</option></select></label>
+<button id="load">設定情境並載入</button><button id="reload">重新載入現有存檔</button><button id="recover">恢復儲存</button><button id="inspect">檢查存檔是否改變</button>
+<p id="result" role="status">尚未載入</p><iframe id="game" title="待驗收的麻將頁面"></iframe>
+<script type="module">
+const key='tw16:TW16-CLASSIC-v1:save';
+const cases=(await Promise.all(['browser-fixtures.json','chi-fixtures.json','layout-fixtures.json'].map(file=>fetch('./'+file).then(r=>r.json())))).flat();
+const select=document.querySelector('#scenario'),frame=document.querySelector('#game'),result=document.querySelector('#result');
+let original=null;
+cases.forEach((c,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=c.name;select.append(option)});
+document.querySelector('#load').onclick=()=>{
+ const value=select.value;
+ original=value==='empty'?null:value==='bad'?'{broken':value==='blank'?'':value==='unknown'?'{"schemaVersion":999}':JSON.stringify(cases[Number(value)].session);
+ if(original===null)localStorage.removeItem(key);else localStorage.setItem(key,original);
+ frame.src='./runner.html?fault='+document.querySelector('#fault').value+'&run='+Date.now();
+ result.textContent='已載入：'+select.selectedOptions[0].textContent;
+};
+document.querySelector('#recover').onclick=()=>{frame.contentWindow.postMessage('recover',location.origin);result.textContent='已解除故障；下次合法操作會再嘗試儲存。'};
+document.querySelector('#reload').onclick=()=>frame.contentWindow.location.reload();
+document.querySelector('#inspect').onclick=()=>{result.textContent=localStorage.getItem(key)===original?'原存檔未變更':'存檔已更新';};
+</script></html>

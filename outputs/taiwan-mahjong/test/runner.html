@@ -1,0 +1,10 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>麻將測試實例</title><link rel="stylesheet" href="../src/style.css"><div id="app"></div>
+<script type="module">
+let fault=new URLSearchParams(location.search).get('fault');
+const get=Storage.prototype.getItem,set=Storage.prototype.setItem;
+Storage.prototype.getItem=function(k){if(fault==='read')throw new DOMException('Test read failure','SecurityError');return get.call(this,k)};
+Storage.prototype.setItem=function(k,v){if(fault==='write')throw new DOMException('Test write failure','QuotaExceededError');return set.call(this,k,v)};
+addEventListener('message',e=>{if(e.origin===location.origin&&e.source===parent&&e.data==='recover')fault='none'});
+await import('../src/main.ts');
+</script></html>

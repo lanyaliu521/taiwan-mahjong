@@ -1,0 +1,25 @@
+{
+  "seed": 20261005,
+  "matches": 3,
+  "hands": 74,
+  "steps": 9121,
+  "humanChoices": 912,
+  "restores": 317,
+  "phases": {
+    "setup": 74,
+    "initialFlowers": 355,
+    "awaitDiscard": 2754,
+    "awaitClaims": 3592,
+    "awaitDraw": 2091,
+    "awaitReplacement": 163,
+    "handResult": 74,
+    "awaitRobKong": 18
+  },
+  "sources": {
+    "ron": 57,
+    "selfDraw": 16,
+    "draw": 1
+  },
+  "maxDecisionMs": 4.51,
+  "elapsedMs": 5978
+}

@@ -1,0 +1,9 @@
+/*
+!/.gitignore
+!/AGENTS.md
+!/.github/
+!/outputs/
+/outputs/*
+!/outputs/taiwan-mahjong/
+!/outputs/taiwan-mahjong-m0/
+outputs/taiwan-mahjong/*-draft.jpg

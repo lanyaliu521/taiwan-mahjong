@@ -1,0 +1,547 @@
+{
+  "seed": 20261004,
+  "requestedHands": 1000,
+  "requestedMatches": 3,
+  "hands": 1000,
+  "matches": 42,
+  "steps": 138708,
+  "wins": 956,
+  "draws": 44,
+  "sources": {
+    "ron": 768,
+    "selfDraw": 182,
+    "draw": 44,
+    "robKong": 6
+  },
+  "actions": {
+    "DEAL": 1000,
+    "REPLACE": 6332,
+    "RESOLVE": 43698,
+    "DISCARD": 42388,
+    "DRAW": 31260,
+    "PON": 4754,
+    "CHI": 5770,
+    "WIN": 962,
+    "NEXT_HAND": 999,
+    "PASS": 901,
+    "KAN_OPEN": 246,
+    "KAN_ADDED": 309,
+    "KAN_CLOSED": 89
+  },
+  "roundWinds": {
+    "1z": 251,
+    "2z": 239,
+    "3z": 265,
+    "4z": 245
+  },
+  "maxStreak": 5,
+  "maxStepsPerHand": 232,
+  "restoredSnapshots": 2419,
+  "matchSummaries": [
+    {
+      "seed": 20261004,
+      "hands": 26,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -410,
+        240,
+        -520,
+        690
+      ]
+    },
+    {
+      "seed": 20261005,
+      "hands": 28,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -190,
+        -120,
+        -520,
+        830
+      ]
+    },
+    {
+      "seed": 20261006,
+      "hands": 25,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        170,
+        310,
+        -420,
+        -60
+      ]
+    },
+    {
+      "seed": 20261007,
+      "hands": 23,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -400,
+        -310,
+        710,
+        0
+      ]
+    },
+    {
+      "seed": 20261008,
+      "hands": 23,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -70,
+        520,
+        -150,
+        -300
+      ]
+    },
+    {
+      "seed": 20261009,
+      "hands": 31,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        160,
+        -110,
+        -110,
+        60
+      ]
+    },
+    {
+      "seed": 20261010,
+      "hands": 22,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        290,
+        -110,
+        -10,
+        -170
+      ]
+    },
+    {
+      "seed": 20261011,
+      "hands": 19,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -250,
+        300,
+        -100,
+        50
+      ]
+    },
+    {
+      "seed": 20261012,
+      "hands": 25,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        270,
+        -90,
+        -420,
+        240
+      ]
+    },
+    {
+      "seed": 20261013,
+      "hands": 26,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -340,
+        590,
+        -590,
+        340
+      ]
+    },
+    {
+      "seed": 20261014,
+      "hands": 21,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        30,
+        -460,
+        670,
+        -240
+      ]
+    },
+    {
+      "seed": 20261015,
+      "hands": 20,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -240,
+        140,
+        310,
+        -210
+      ]
+    },
+    {
+      "seed": 20261016,
+      "hands": 22,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        310,
+        -90,
+        230,
+        -450
+      ]
+    },
+    {
+      "seed": 20261017,
+      "hands": 26,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        610,
+        -180,
+        -320,
+        -110
+      ]
+    },
+    {
+      "seed": 20261018,
+      "hands": 21,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        100,
+        -190,
+        310,
+        -220
+      ]
+    },
+    {
+      "seed": 20261019,
+      "hands": 30,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -600,
+        380,
+        -540,
+        760
+      ]
+    },
+    {
+      "seed": 20261020,
+      "hands": 26,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        620,
+        -240,
+        80,
+        -460
+      ]
+    },
+    {
+      "seed": 20261021,
+      "hands": 23,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        340,
+        100,
+        -310,
+        -130
+      ]
+    },
+    {
+      "seed": 20261022,
+      "hands": 25,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        170,
+        290,
+        -350,
+        -110
+      ]
+    },
+    {
+      "seed": 20261023,
+      "hands": 19,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        240,
+        -150,
+        -200,
+        110
+      ]
+    },
+    {
+      "seed": 20261024,
+      "hands": 26,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -340,
+        300,
+        370,
+        -330
+      ]
+    },
+    {
+      "seed": 20261025,
+      "hands": 22,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        290,
+        290,
+        -270,
+        -310
+      ]
+    },
+    {
+      "seed": 20261026,
+      "hands": 26,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        130,
+        80,
+        -220,
+        10
+      ]
+    },
+    {
+      "seed": 20261027,
+      "hands": 26,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -320,
+        -60,
+        500,
+        -120
+      ]
+    },
+    {
+      "seed": 20261028,
+      "hands": 21,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -110,
+        20,
+        -30,
+        120
+      ]
+    },
+    {
+      "seed": 20261029,
+      "hands": 21,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -190,
+        230,
+        240,
+        -280
+      ]
+    },
+    {
+      "seed": 20261030,
+      "hands": 23,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        40,
+        -200,
+        -130,
+        290
+      ]
+    },
+    {
+      "seed": 20261031,
+      "hands": 23,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -600,
+        -130,
+        640,
+        90
+      ]
+    },
+    {
+      "seed": 20261032,
+      "hands": 21,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -140,
+        -180,
+        70,
+        250
+      ]
+    },
+    {
+      "seed": 20261033,
+      "hands": 29,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        1100,
+        -720,
+        -360,
+        -20
+      ]
+    },
+    {
+      "seed": 20261034,
+      "hands": 21,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -150,
+        320,
+        -420,
+        250
+      ]
+    },
+    {
+      "seed": 20261035,
+      "hands": 24,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -170,
+        10,
+        340,
+        -180
+      ]
+    },
+    {
+      "seed": 20261036,
+      "hands": 24,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        230,
+        220,
+        -300,
+        -150
+      ]
+    },
+    {
+      "seed": 20261037,
+      "hands": 22,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        390,
+        50,
+        -530,
+        90
+      ]
+    },
+    {
+      "seed": 20261038,
+      "hands": 28,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        240,
+        -270,
+        30,
+        0
+      ]
+    },
+    {
+      "seed": 20261039,
+      "hands": 23,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -330,
+        330,
+        20,
+        -20
+      ]
+    },
+    {
+      "seed": 20261040,
+      "hands": 25,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -220,
+        -230,
+        380,
+        70
+      ]
+    },
+    {
+      "seed": 20261041,
+      "hands": 20,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        120,
+        -30,
+        70,
+        -160
+      ]
+    },
+    {
+      "seed": 20261042,
+      "hands": 19,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -140,
+        -130,
+        100,
+        170
+      ]
+    },
+    {
+      "seed": 20261043,
+      "hands": 23,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -330,
+        -170,
+        480,
+        20
+      ]
+    },
+    {
+      "seed": 20261044,
+      "hands": 23,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        -500,
+        350,
+        280,
+        -130
+      ]
+    },
+    {
+      "seed": 20261045,
+      "hands": 27,
+      "dealerAdvances": 16,
+      "roundWind": "4z",
+      "scores": [
+        10,
+        -410,
+        790,
+        -390
+      ]
+    }
+  ],
+  "elapsedMs": 31086
+}
