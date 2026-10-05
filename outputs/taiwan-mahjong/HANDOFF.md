@@ -1,14 +1,14 @@
 # 現行交接入口
 
-2026-10-06。M0–M5.3已完成並發布，後續按使用者試玩回饋維護；使用者已指定M5.4新手教學，本地完成、正式发布待驗。先讀README、ROADMAP，再按需查MAINTENANCE／TRAINING-DESIGN。開發由6.1 Sol主導，需要時Luna限定協助，不例行使用Astra。
+2026-10-06。M0–M5.3已完成並發布，後續按使用者試玩回饋維護；使用者已指定M5.4新手教學，本地完成、正式發布待驗。先讀README、ROADMAP，再按需查MAINTENANCE／TRAINING-DESIGN。開發由6.1 Sol主導，需要時Luna限定協助，不例行使用Astra。
 
 ## 本輪最新工作與接續
 
-M5.4新手教學已完成本地驗收並推送首版c4ce080：六步原生dialog，首頁／對戰／練習入口；先保存暫停，私有17張出牌及134兩吃法示範不接Session／存檔／遊戲命令。三入口、雙擊／Enter／空白键、吃後禁捨、完成／Escape回焦點、320／390無橫溢已驗，正式17張不變，返回對戰仍暫停。Luna限定4 controller回歸、只讀規則審查；已補花胡立即結算例外。詳TUTORIAL-VALIDATION與四張TUTORIAL截圖。
+M5.4新手教學已完成本地驗收並推送首版c4ce080：六步原生dialog，首頁／對戰／練習入口；先保存暫停，私有17張出牌及134兩吃法示範不接Session／存檔／遊戲命令。三入口、雙擊／Enter／空白鍵、吃後禁捨、完成／Escape回焦點、320／390無橫溢已驗，正式17張不變，返回對戰仍暫停。Luna限定6 controller回歸、只讀規則審查；已補花胡立即結算例外。詳TUTORIAL-VALIDATION與四張TUTORIAL截圖。
 
-最新包另補結算台項ID唯一、S31／S32不混基礎台、花胡來源8台與互斥檢查；保留合法一般拆法花胡加台。v1不驗證全部歷史台項／連莊，不聲稱防偽。教練已提示有效牌剩0但不取消當下合法胡，coach測試與exhaustedWait瀏覽器場景覆蓋。244全套測試通過／最近來源build通過，預期index-BJVs4oOv.js／index-E3veXjre.css，最新來源aa3d25c已推送，另有2項教學資料保護測試待本包提交。各包細節集中MAINTENANCE-2026-10-06及SIMULATION.json；核心付款曾3完整將74局317次還原通過。
+最新包另補結算台項ID唯一、S31／S32不混基礎台、花胡來源8台與互斥檢查；保留合法一般拆法花胡加台。v1不驗證全部歷史台項／連莊，不聲稱防偽。教練已提示有效牌剩0但不取消當下合法胡，coach測試與exhaustedWait瀏覽器場景覆蓋。244全套測試通過／最近來源build通過，預期index-BJVs4oOv.js／index-E3veXjre.css，最新來源723a898已推送，含29 controller／244全套測試。各包細節集中MAINTENANCE-2026-10-06及SIMULATION.json；核心付款曾3完整將74局317次還原通過。
 
-GitHub官方Actions效能異常；舊run37366170625 build過，但deploy沒有取得hosted runner，最新run37369330243 build queued；37366879892已failure、37368345888由新來源取代取消。不要更改權限／runner架構或重跑已過的本地測試來繞過服務異常。推送最新來源後確認完整CI及正式document.scripts／教學開關焦點，才標M5.4正式完成。若需取消，只取消最新版完整包含的舊queued祖先run。
+GitHub官方Actions效能異常；舊run37366170625 build過，但deploy沒有取得hosted runner，最新run37369632079 pending、37369330243 build queued；37366879892已failure、37368345888由新來源取代取消。不要更改權限／runner架構或重跑已過的本地測試來繞過服務異常。推送最新來源後確認完整CI及正式document.scripts／教學開關焦點，才標M5.4正式完成。若需取消，只取消最新版完整包含的舊queued祖先run。
 
 workflow原生paths已排除根Markdown／JPG／SIMULATION文件；來源CI37365714924已成功，仍需一次純文件提交不加skip-ci並觀察無新run，不能用skip-ci代替驗證。普通源碼／fixture推送仍全套測試發布。
 
