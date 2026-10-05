@@ -77,3 +77,9 @@ Luna僅補controller測試：練習捨牌保存失敗後不開教學、原存檔
 ## 發布阻擋解除與正式驗收
 
 2026-10-06 Actions官方公告恢復，最新版run37369632079的測試／build原已成功，deploy因hosted runner未分配而取消。重試失敗工作後attempt2成功。正式首頁與index-BJVs4oOv.js／index-E3veXjre.css HTTP200且兩資源與本地build逐byte相同。正式瀏覽器確認新版JS、教學開啟、雙擊三萬17→16、13吃2／禁捨2及Escape回入口，無error；未動使用者正式牌局存檔。證據TUTORIAL-LIVE.jpg。M5.4已發布，HANDOFF／ROADMAP／README／DEPLOYMENT已同步；五小時帳戶最新87%（剩13%）。
+
+## 工作包十四：窄視窗首頁頂列換行
+
+新手教學上線後檢查640×360／320×360，發現首頁頂列含品牌與兩個工具的最小寬度超過扣除垂直捲軸後的內容寬。320視窗時documentElement.clientWidth305，但scrollWidth318，出現橫向捲動；舊驗收只比innerWidth320因此漏判。溢出元素為header-tools中的公平AI／新手教學。
+
+在既有760px媒體條件讓site-header可換行、工具列margin-left:auto，沿用原生flex，不隱藏內容／裁切溢出，不加依賴。修後首頁320：client／scroll均305；教學dialog265／265；練習入口320／320、續練305／305；對戰320／320與390／390。640×360教學內容可捲、底部操作可見，無browser error；viewport還原。證據HEADER-320.jpg。純CSS改動依ROADMAP做瀏覽器驗證與build，未加字串鏡像測試。來源bundle index-WkiKqWo8.js／index-DIlVjIQw.css，待雲端全套CI及正式顯示核對。

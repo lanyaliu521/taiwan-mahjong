@@ -1,4 +1,4 @@
-**現行入口：[HANDOFF](../taiwan-mahjong/HANDOFF.md)。M0–M5.3已完成，後續按試玩回饋維護；以下為歷史交接記錄。**
+**現行入口：[HANDOFF](../taiwan-mahjong/HANDOFF.md)。M0–M5.4已完成，後續按試玩回饋維護；以下為歷史交接記錄。**
 
 # 下一次模型啟動：先讀此檔
 

@@ -2,6 +2,12 @@
 
 2026-10-06。M0–M5.4已完成並發布，後續按使用者試玩回饋維護。先讀README、ROADMAP，再按需查MAINTENANCE／TRAINING-DESIGN。開發由6.1 Sol主導，需要時Luna限定協助，不例行使用Astra。
 
+## 最新維護：窄視窗頂列（本地完成，發布待驗）
+
+320首頁垂直捲軸扣寬後client305、scroll318，品牌與header-tools最小寬溢出；舊驗收只比innerWidth而漏判。760px媒體條件加site-header換行、工具列靠右。修後首頁305／305、教學265／265、練習入口／續練及對戰320／390均無橫溢，無error；build過。證據HEADER-320.jpg／MAINTENANCE-2026-10-06工作包十四。預期index-WkiKqWo8.js／index-DIlVjIQw.css；提交推送後查完整CI／正式首頁client與scroll，再記發布完成。不改規則／存檔，不重跑長模擬。
+
+本輪帳戶五小時起始0%（剩100%）；工具快照不同於精確對話token，前輪87%為歷史。下一功能優先順序已向使用者詢問，尚未取得選項時先完成本包，不增加題庫／自測功能。
+
 ## 本輪最新工作與接續
 
 M5.4新手教學已完成本地驗收並推送首版c4ce080：六步原生dialog，首頁／對戰／練習入口；先保存暫停，私有17張出牌及134兩吃法示範不接Session／存檔／遊戲命令。三入口、雙擊／Enter／空白鍵、吃後禁捨、完成／Escape回焦點、320／390無橫溢已驗，正式17張不變，返回對戰仍暫停。Luna限定6 controller回歸、只讀規則審查；已補花胡立即結算例外。詳TUTORIAL-VALIDATION與四張TUTORIAL截圖。
