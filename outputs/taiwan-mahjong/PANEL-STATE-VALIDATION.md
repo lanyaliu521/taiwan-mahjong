@@ -16,4 +16,8 @@ view.ts以原生WeakMap按root保留data-persist細節的開／關狀態。rende
 
 ## 發布
 
-待本次來源推送／Pages確認，完成後補入此節及HANDOFF。
+來源e01c210b45a0365c3ef87e2a51c1bb6f9d63fe1c；[workflow37362434882](https://github.com/zhai2liu/taiwan-mahjong/actions/runs/37362434882) build／deploy成功。正式首頁載入index-fRXH5__G.js，JS HTTP200且與本地build完全相同。
+
+正式頁首次開啟曾沿用瀏覽器快取的舊index-lkeRHReb.js（舊行為仍收合）；重新整理後DOM確認載入新版。續局17張→展開→選四萬→暫停／繼續，仍open=true且手牌17張。證據[正式網站](PANEL-STATE-live.jpg)。本機重載另確認預設收合，不新增持久化設定。
+
+前次純文件run37361965343排隊阻擋本次，已核對該次a27df18只有文件後取消；本次完整測試／build／deploy未跳過。最終證據提交僅文件與截圖，標記skip ci避免再排相同程式的重複發布。4份文件本地連結無缺失。帳戶五小時用量起始18%、交付檢查點21%（剩79%），非精確對話token。
