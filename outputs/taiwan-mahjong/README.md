@@ -1,6 +1,6 @@
 # 台灣16張麻將
 
-1真人＋3位本地公平電腦，採固定桌規TW16-CLASSIC-v1。可在本機網頁遊玩完整牌局；M0–M5.1已完成，正式網站已上線：[立即遊玩](https://lanyaliu521.github.io/taiwan-mahjong/)。下一階段M5.2純練習模式。本機M5.2純練習已實作、驗收中，尚未發布；對戰教練尚未實作。
+1真人＋3位本地公平電腦，採固定桌規TW16-CLASSIC-v1。可在本機網頁遊玩完整牌局；M0–M5.2已完成，正式網站已上線：[立即遊玩](https://lanyaliu521.github.io/taiwan-mahjong/)。下一階段M5.3對戰教練提示。M5.2純練習模式已完成；對戰教練尚未實作。
 
 ## 入口
 
@@ -11,7 +11,7 @@
 - [固定桌規與完整台表](../taiwan-mahjong-m0/RULES.md)
 - [概念契約](../taiwan-mahjong-m0/CONTRACTS.md)：實際欄位以src/model.ts為準。
 - [純練習與新手提示設計](TRAINING-DESIGN.md)：M5設計及Sol／Luna分工。
-- [最近分析與遊戲驗收](M5.1-VALIDATION.md)：200項測試、建置及正式策略整場模擬；介面歷史驗收見M3.1及M4。
+- [最近練習與遊戲驗收](M5.2-VALIDATION.md)：217項測試、建置、練習重播及模式切換；共用數學見M5.1，對戰歷史介面驗收見M3.1及M4。
 
 ## 安裝與遊玩
 

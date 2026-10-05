@@ -1,4 +1,4 @@
-**現行入口：[HANDOFF](../taiwan-mahjong/HANDOFF.md)。M0–M5.1已完成，下一階段M5.2；以下為歷史交接記錄。**
+**現行入口：[HANDOFF](../taiwan-mahjong/HANDOFF.md)。M0–M5.2已完成，下一階段M5.3；以下為歷史交接記錄。**
 
 # 下一次模型啟動：先讀此檔
 
