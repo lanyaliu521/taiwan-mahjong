@@ -23,6 +23,7 @@ README是使用與開發總入口；HANDOFF只記目前進度、風險與下一�
 | 共用牌效分析 | src/analysis.ts、hand.ts；TRAINING-DESIGN.md | analysis：容量、獨立枚舉、比例、合法吃碰及資訊公平 |
 | 純練習流程與預覽 | src/practice.ts、practice-view.ts、main.ts | practice、controller；不放回牌池、重播、模式切換與焦點 |
 | 對戰新手教練 | src/coach.ts、view.ts、main.ts | coach、controller；遮罩資訊、合法決策、偏好保存及預覽同步 |
+| 正向回饋、進步里程碑與得分卡 | src/feedback.ts、main.ts、view.ts、practice-view.ts、style.css | feedback、controller；仲裁成立、耗盡等待、錯過WIN、分析失敗保存及窄畫面；見POSITIVE-FEEDBACK-VALIDATION |
 
 ## 資料流與責任
 

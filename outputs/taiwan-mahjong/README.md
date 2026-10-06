@@ -5,6 +5,7 @@
 ## 入口
 
 - [目前交接與下一步](HANDOFF.md)
+- [正向遊玩回饋與驗證](POSITIVE-FEEDBACK-VALIDATION.md)：牌效進步、聽牌、吃碰成立、胡牌得分與練習鼓勵；不改遊戲AI。
 - [階段順序與完成條件](ROADMAP.md)
 - [發布設定、更新與回復](DEPLOYMENT.md)
 - [維護指南：修改位置、資料流、存檔與驗證](MAINTENANCE.md)

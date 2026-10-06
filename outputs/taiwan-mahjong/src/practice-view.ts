@@ -3,7 +3,7 @@ import { practiceAnalysis } from './practice.js';
 import type { Analysis, DiscardAnalysis } from './analysis.js';
 import { compareAnalysis } from './analysis.js';
 import { kindOf } from './tiles.js';
-import { node, button, tile, tileName, preserveDetails } from './view.js';
+import { node, button, tile, tileName, preserveDetails, clearFeedback } from './view.js';
 import type { UICommand } from './view.js';
 
 const distance = (a: Analysis) => a.shanten < 0 ? '牌型已完成' : a.shanten === 0 ? '已聽牌，等候1張合適牌成胡牌形' : `至少再 ${a.shanten} 次有效改善可聽牌`;
@@ -42,6 +42,7 @@ function stats(a: Analysis): HTMLElement {
 function bestText(choices: DiscardAnalysis[]) { return choices.map(c => tileName(c.kind)).join('、'); }
 
 export function renderPractice(root: HTMLElement, p: Practice | null, notice: string, hasSave: boolean, blocked: boolean, send: (c: UICommand) => void): void {
+  clearFeedback(root);
   const focused = root.contains(document.activeElement) ? (document.activeElement as HTMLElement).dataset.focus : undefined;
   const restoreDetails = preserveDetails(root);
   const shell = node('div', 'app-shell practice-shell');
@@ -63,6 +64,11 @@ export function renderPractice(root: HTMLElement, p: Practice | null, notice: st
     const status = node('p', 'practice-status'); status.tabIndex = -1; status.dataset.focus = 'practice-status'; status.setAttribute('role', 'status');
     status.textContent = p.phase === 'complete' ? '完成！五面子一對將。可換題或同題重練。' : p.phase === 'exhausted' ? '牌池已用完。可換題或同題重練。' : p.phase === 'draw' ? '② 看回饋，再摸下一張' : '① 選一張預覽，雙擊同張捨出';
     playArea.append(status, node('p', 'practice-progress', `手牌 ${p.hand.length} 張 · 已捨 ${p.discards.length} 張 · 牌池 ${p.pool.length} 張`));
+    if (p.phase === 'complete') {
+      const reward = node('section', 'result-reward is-win');
+      reward.append(node('span', 'reward-symbol', '成'), node('div', 'reward-copy', '練習完成！五面子一對將'));
+      playArea.append(reward);
+    }
     const hand = node('div', 'hand practice-hand'); hand.setAttribute('role', 'group'); hand.setAttribute('aria-label', '練習手牌');
     const preview = node('section', 'practice-preview'); preview.setAttribute('aria-label', '捨牌預覽');
     const selection = node('p', 'practice-selection', '單擊／Tab 預覽 · 雙擊／Enter／空白鍵捨牌');
@@ -102,8 +108,9 @@ export function renderPractice(root: HTMLElement, p: Practice | null, notice: st
     if (analysis.feedback) {
       const f = analysis.feedback, best = f.best[0].analysis;
       const same = compareAnalysis(f.chosen.analysis, best) === 0;
-      const feedback = node('div', 'practice-feedback');
-      feedback.append(node('strong', '', `已捨 ${tileName(p.discards.at(-1)!)} · ${same ? '牌效與較佳候選相同' : '還有牌效較佳的選擇'}`));
+      const feedback = node('div', `practice-feedback ${same ? 'is-positive' : ''}`);
+      feedback.append(node('strong', '', `已捨 ${tileName(p.discards.at(-1)!)} · ${same ? '好選擇！與最佳一步牌效相同' : '找到下一次進步的方向'}`));
+      if (same) feedback.append(node('p', '', best.improving > 0 ? '這次兼顧了距離與有效張數，繼續觀察下一張進牌。' : '這步與最佳一步牌效相同，但目前沒有可用的有效進牌。'));
       if (!same) feedback.append(node('p', '', `本次：${f.chosen.analysis.shanten} 向聽、有效 ${f.chosen.analysis.improving} 張。候選 ${bestText(f.best)}：${best.shanten} 向聽、有效 ${best.improving} 張。`), node('p', 'muted', best.shanten < f.chosen.analysis.shanten ? '先看距離，再看有效張數；進牌張數較多，不一定更接近胡牌形。' : '距離相同時，比較有效張數；有效張數越多，下一張改善機會越大。'));
       playArea.append(feedback);
     }

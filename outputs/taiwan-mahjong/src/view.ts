@@ -4,6 +4,7 @@ import type { Intent, Seat } from './model.js';
 import type { getObservation } from './engine.js';
 import { kindOf, seatWind } from './tiles.js';
 import { tileFace } from './tile-face.js';
+import type { PlayFeedback } from './feedback.js';
 
 export type UICommand =
   | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' | 'tutorial' }
@@ -16,6 +17,7 @@ export type ViewModel = {
   game: ReturnType<typeof getObservation> | null;
   selectedTile: string | null; drawnTile: string | null; busy: boolean; paused: boolean;
   coachEnabled?: boolean; coachNotice?: string;
+  feedback?: PlayFeedback | null;
   speed: 'normal' | 'fast'; status: string; notice: string; hasSave: boolean;
 };
 type Game = NonNullable<ViewModel['game']>;
@@ -344,6 +346,17 @@ function result(model: ViewModel, send: Send): HTMLDialogElement {
   const heading = title.querySelector('h2')!; heading.id = 'result-title'; heading.tabIndex = -1;
   title.append(button('返回牌桌', 'close-result', () => section.close(), 'button button-quiet'));
   section.append(title);
+  const won = settlement.winner === game.seat;
+  const reward = node('section', `result-reward ${won ? 'is-win' : ''}`);
+  reward.setAttribute('aria-label', won ? '你的胡牌得分' : '你的本局結果');
+  reward.append(node('span', 'reward-symbol', won ? '胡' : settlement.winner === null ? '和' : '局'), node('p', 'reward-title', won ? `${source}！這局由你拿下` : settlement.winner === null ? '收好這手經驗，下一局再來' : settlement.delta[game.seat] === 0 ? '本局沒有扣分' : '這局告一段落，下一局重新出發'));
+  reward.append(node('strong', 'reward-points', `${signed(settlement.delta[game.seat])} 分`), node('span', 'reward-caption', '本局實際積分變動'));
+  if (game.phase === 'matchResult') {
+    const rank = 1 + game.scores.filter(s => s > game.scores[game.seat]).length;
+    const tied = game.scores.filter(s => s === game.scores[game.seat]).length > 1;
+    reward.append(node('p', 'reward-finish', `一將完成 · ${tied ? '並列' : ''}第 ${rank} 名 · 總分 ${signed(game.scores[game.seat])}`));
+  }
+  section.append(reward);
   if (model.notice) section.append(node('p', 'notice', model.notice));
   const breakdown = node('details', 'result-breakdown'); breakdown.dataset.persist = `result-${settlement.id}`;
   breakdown.append(node('summary', '', '查看胡牌拆法與計台明細'));
@@ -385,6 +398,11 @@ function result(model: ViewModel, send: Send): HTMLDialogElement {
 
 // ponytail: layout memory lasts for this page session; persist UI preferences only if requested.
 const detailStates = new WeakMap<HTMLElement, Map<string, boolean>>();
+const feedbackRegions = new WeakMap<HTMLElement, { live: HTMLElement; key: string }>();
+export function clearFeedback(root: HTMLElement): void {
+  const region = feedbackRegions.get(root);
+  if (region) { region.live.textContent = ''; region.key = ''; }
+}
 export function preserveDetails(root: HTMLElement): () => void {
   const details = detailStates.get(root) ?? new Map<string, boolean>();
   detailStates.set(root, details);
@@ -399,6 +417,16 @@ export function preserveDetails(root: HTMLElement): () => void {
 
 /** Render only the player's masked observation; hidden game state never enters this module. */
 export function render(root: HTMLElement, model: ViewModel, send: Send): void {
+  let region = feedbackRegions.get(root);
+  if (!region) {
+    const live = node('p', 'sr-only'); live.setAttribute('role', 'status'); live.setAttribute('aria-live', 'polite');
+    root.insertAdjacentElement('afterend', live);
+    region = { live, key: '' }; feedbackRegions.set(root, region);
+  }
+  const feedback = model.game && !model.game.settlement ? model.feedback : null;
+  const isNewFeedback = Boolean(feedback && region.key !== feedback.key);
+  if (isNewFeedback) { region.live.textContent = `${feedback!.title}。${feedback!.detail}`; region.key = feedback!.key; }
+  else if (!feedback) { region.live.textContent = ''; region.key = ''; }
   const previousResult = root.querySelector<HTMLDialogElement>('dialog[data-result]');
   const tableScroll = root.querySelector('.table-grid')?.scrollTop ?? 0;
   const showResult = !previousResult || previousResult.dataset.result !== model.game?.settlement?.id || previousResult.open;
@@ -410,6 +438,11 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
   if (!model.game) shell.append(home(model, send));
   else {
     const main = node('main', 'game-main');
+    if (feedback) {
+      const card = node('div', `play-feedback feedback-${feedback.kind} ${isNewFeedback ? 'is-new' : ''}`);
+      const mark = node('span', 'feedback-mark', feedback.kind === 'ready' ? '聽' : feedback.kind === 'action' ? '成' : '進'); mark.setAttribute('aria-hidden', 'true');
+      const text = node('div'); text.append(node('strong', '', feedback.title), node('p', '', feedback.detail)); card.append(mark, text); main.append(card);
+    }
     const heading = node('div', 'table-heading'); heading.append(node('p', 'eyebrow', '你的私人牌桌'), node('p', 'table-subtitle', model.game.phase === 'matchResult' ? `一將完成 · 最後莊家 ${names[tableDealer(model.game)]}` : `${tileName(model.game.roundWind)}圈 · 莊家 ${names[model.game.dealer]}${model.game.streak ? ` · 連 ${model.game.streak}` : ''}`));
     const table = node('div', 'table-grid');
     for (const seat of [2, 3, 1, 0] as Seat[]) table.append(publicPlayer(model.game, seat));

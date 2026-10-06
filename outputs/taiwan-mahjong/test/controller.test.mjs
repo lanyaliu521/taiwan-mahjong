@@ -6,6 +6,9 @@ import ts from 'typescript';
 import * as engine from '../dist/engine.js';
 import * as sessions from '../dist/session.js';
 import * as practices from '../dist/practice.js';
+import * as feedback from '../dist/feedback.js';
+import { fixture } from './fixtures.mjs';
+import { kindOf } from '../dist/tiles.js';
 
 const key = 'tw16:TW16-CLASSIC-v1:save';
 const initial = () => ({ schemaVersion: 1, game: engine.createGame({ seed: 17, dealer: 0, matchId: 'controller-review' }), aiRandom: [17, 29, 43] });
@@ -24,6 +27,7 @@ function controller(raw = null, confirm = true, faults = {}) {
       if (name === './engine.js') return engine;
       if (name === './session.js') return sessions;
       if (name === './practice.js') return practices;
+      if (name === './feedback.js') return faults.feedbackError ? { ...feedback, discardFeedback: () => { throw faults.feedbackError; } } : feedback;
       if (name === './practice-view.js') return { renderPractice: (_root, practice, notice, hasSave, blocked, handler) => { view = { practice, notice, hasSave, blocked }; send = handler; } };
       if (name === './view.js') return { render: (_root, state, handler) => { view = state; send = handler; } };
       if (name === './tutorial-view.js') return { showTutorial: () => { tutorialOpens++; } };
@@ -405,4 +409,34 @@ test('壞對戰存檔及跨分頁競爭時仍可開唯讀教學且不覆寫資�
   assert.match(app.view.notice, /另一個分頁/);
   app.send({ type: 'tutorial' });
   assert.equal(app.tutorialOpens, 1); assert.equal(app.raw(), remote); assert.equal(app.writes, writes);
+});
+
+const readySession = () => ({ schemaVersion: 1, game: fixture({ hands: { 0: '123m456m123p456p789s1z7z' } }), aiRandom: [17, 29, 43] });
+const readyDiscard = game => ({ type: 'intent', intent: { type: 'DISCARD', tileId: game.self.concealed.find(t => kindOf(t) === '7z') }, version: game.version });
+
+test('捨牌回饋伴隨一次合法行牌並保存原有格式；暫停與過期操作不改回饋', () => {
+  const app = controller(sessions.encodeSession(readySession())); app.send({ type: 'resume' });
+  const command = readyDiscard(app.view.game), before = app.view.game.version;
+  app.send(command);
+  assert.equal(app.view.game.version, before + 1); assert.equal(app.view.feedback.kind, 'ready');
+  const saved = app.raw(), shown = app.view.feedback;
+  assert.deepEqual(Object.keys(JSON.parse(saved)).sort(), ['aiRandom', 'game', 'schemaVersion']);
+  app.send(command); assert.deepEqual(app.view.feedback, shown); assert.equal(app.raw(), saved);
+  app.send({ type: 'pause' }); app.send(command);
+  assert.deepEqual(app.view.feedback, shown); assert.equal(app.raw(), saved);
+});
+
+test('關閉教練不顯示策略回饋，合法捨牌仍保存', () => {
+  const app = controller(sessions.encodeSession(readySession()), true, { coachRaw: 'off' });
+  app.send({ type: 'resume' }); const command = readyDiscard(app.view.game);
+  app.send(command); assert.equal(app.view.feedback, null);
+  assert.equal(sessions.decodeSession(app.raw()).game.version, command.version + 1);
+});
+
+test('可選回饋分析失敗不阻擋已接受的捨牌保存', () => {
+  const app = controller(sessions.encodeSession(readySession()), true, { feedbackError: Error('optional analysis failed') });
+  app.send({ type: 'resume' }); const command = readyDiscard(app.view.game);
+  app.send(command); assert.equal(app.view.feedback, null); assert.equal(app.view.notice, '');
+  assert.equal(sessions.decodeSession(app.raw()).game.version, command.version + 1);
+  assert.equal(app.view.game.version, command.version + 1);
 });

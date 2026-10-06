@@ -7,6 +7,12 @@ import { PRACTICE_KEY, createPractice, drawPractice, discardPractice, encodePrac
 import type { Practice } from './practice.js';
 import { renderPractice } from './practice-view.js';
 import { showTutorial } from './tutorial-view.js';
+import { discardFeedback, meldFeedback } from './feedback.js';
+import type { PlayFeedback, PlayProgress } from './feedback.js';
+
+// ponytail: feedback lasts for this page only; add saved achievements only as a separate requested feature.
+let feedback: PlayFeedback | null = null;
+let progress: PlayProgress | null = null;
 
 const COACH_KEY = 'tw16:coach:v1';
 let coachEnabled = true;
@@ -88,7 +94,7 @@ function paint(): void {
   const current = session?.game;
   render(root, {
     game, selectedTile, drawnTile: current?.turn === 0 && current.phase === 'awaitDiscard' ? current.drawContext.lastTile : null,
-    busy: needsAutomation() || failed, paused, speed, coachEnabled, coachNotice, status: message, notice, hasSave: saved !== null,
+    busy: needsAutomation() || failed, paused, speed, coachEnabled, coachNotice, feedback, status: message, notice, hasSave: saved !== null,
   }, command => { if (screen === rendered) send(command); });
 }
 function refresh(): void {
@@ -101,7 +107,11 @@ function refresh(): void {
     try {
       const next = automaticAction(session);
       if (!next) return;
+      const before = getObservation(session.game, 0);
       session = advance(session, next.actor, next.intent, session.game.version, next.randomState);
+      const after = getObservation(session.game, 0);
+      if (after.settlement) feedback = null;
+      else feedback = meldFeedback(before, after) ?? feedback;
       const labels: Record<string, string> = { DEAL: '正在發牌', REPLACE: '補牌', DRAW: '摸牌', DISCARD: '出牌', CHI: '吃', PON: '碰', KAN_OPEN: '明槓', KAN_ADDED: '加槓', KAN_CLOSED: '暗槓', WIN: '胡牌', PASS: '過', RESOLVE: '確認牌局' };
       status = `${next.actor === 'engine' ? '' : `電腦 ${next.actor}・`}${labels[next.intent.type] ?? ''}`;
       persist();
@@ -116,7 +126,7 @@ function refresh(): void {
 function start(): void {
   if ((session || rawSave !== null || unreadableSave) && !window.confirm('開始新一將會取代目前的本機存檔。確定重新開始？')) return;
   unreadableSave = false;
-  session = createSession(); selectedTile = null; paused = false; failed = false; status = '準備開局';
+  session = createSession(); feedback = null; progress = null; selectedTile = null; paused = false; failed = false; status = '準備開局';
   persist(); refresh();
 }
 function send(command: UICommand): void {
@@ -125,7 +135,7 @@ function send(command: UICommand): void {
     paused = true; stopTimer(); paint(); showTutorial(root); return;
   }
   if (command.type === 'coach-toggle') {
-    coachEnabled = !coachEnabled; coachNotice = '';
+    coachEnabled = !coachEnabled; coachNotice = ''; feedback = null;
     try { localStorage.setItem(COACH_KEY, coachEnabled ? 'on' : 'off'); }
     catch { coachNotice = '教練設定本次已套用，但無法保存；重新開啟可能恢復預設。'; }
     refresh(); return;
@@ -158,7 +168,7 @@ function send(command: UICommand): void {
   }
   if (command.type === 'start' || command.type === 'new') { start(); return; }
   if (command.type === 'resume') {
-    if (saved) { session = decodeSession(encodeSession(saved)); paused = false; failed = false; selectedTile = null; status = '已恢復牌局'; refresh(); }
+    if (saved) { session = decodeSession(encodeSession(saved)); feedback = null; progress = null; paused = false; failed = false; selectedTile = null; status = '已恢復牌局'; refresh(); }
     return;
   }
   if (command.type === 'speed') { speed = command.value; refresh(); return; }
@@ -173,8 +183,17 @@ function send(command: UICommand): void {
     if (command.type === 'next') {
       if (session.game.phase !== 'handResult') return;
       session = advance(session, 'engine', { type: 'NEXT_HAND' }, session.game.version);
+      feedback = null; progress = null;
     } else if (command.type === 'intent') {
+      const before = getObservation(session.game, 0);
       session = advance(session, 0, command.intent, command.version);
+      feedback = null;
+      if (coachEnabled && command.intent.type === 'DISCARD') {
+        try {
+          const result = discardFeedback(before, command.intent.tileId, progress);
+          progress = result.progress; feedback = result.feedback;
+        } catch (error) { console.warn('Optional feedback unavailable:', error); }
+      }
     }
     selectedTile = null; status = ''; persist(); refresh();
   } catch {

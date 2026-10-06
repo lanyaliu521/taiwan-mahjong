@@ -28,6 +28,7 @@ export function createBrowserFixtures() {
     exhaustedWait: discard(fixture({ turn: 1, hands: { 0: '111m 222m 333p 444p 555s 1z', 1: '5s' }, restrictions: { 1: { lastDiscard: '1z' }, 2: { lastDiscard: '1z' }, 3: { lastDiscard: '1z' } } }), 1, '5s'),
     handResult,
     matchResult: run(handResult, 'engine', 'NEXT_HAND'),
+    feedbackReady: fixture({ hands: { 0: '123m456m123p456p789s1z7z' } }),
   };
   return Object.entries(games).map(([name, game]) => ({ name, session: decodeSession(encodeSession({ schemaVersion: 1, game, aiRandom: [17, 29, 43] })) }));
 }
