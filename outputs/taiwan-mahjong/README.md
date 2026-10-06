@@ -10,7 +10,7 @@
 - [維護指南：修改位置、資料流、存檔與驗證](MAINTENANCE.md)
 - [固定桌規與完整台表](../taiwan-mahjong-m0/RULES.md)
 - [概念契約](../taiwan-mahjong-m0/CONTRACTS.md)：實際欄位以src/model.ts為準。
-- [人性化AI玩家設計](HUMAN-AI-DESIGN.md)：後續擴充的個性、攻守、決策與評估方案；設計整理中，現行版本不實裝。
+- [人性化AI玩家設計](HUMAN-AI-DESIGN.md)：個性、攻守、最佳實踐與未來工作包已整理完成；[決策／保存規格](HUMAN-AI-DECISION-SPEC.md)、[證據／驗證方案](HUMAN-AI-VALIDATION.md)。後續實作尚未啟動，現行版本不實裝。
 - [進攻／防守牌風研究](AI-STYLE-DESIGN.md)：公開資訊安全原理、768副起手基準與三個引擎反例；已併入人性化AI設計，尚未更換遊戲AI。
 - [純練習與新手提示設計](TRAINING-DESIGN.md)：M5設計及Sol／Luna分工。
 - [新手操作教學驗證](TUTORIAL-VALIDATION.md)：六步原生視窗、示範選牌／出牌與兩種吃法，正式發布狀態見HANDOFF。
@@ -60,4 +60,3 @@ npm run build
 ## 歷史證據
 
 [M0驗收](../taiwan-mahjong-m0/VALIDATION.md)、[M1驗收](VALIDATION.md)、[M2驗收](M2-VALIDATION.md)、[M3驗收](M3-VALIDATION.md)、[吃牌專項](M3.1-CHI-VALIDATION.md)保留原始結果。歷史交接只用來查背景；目前狀態以HANDOFF及ROADMAP為準。
-
