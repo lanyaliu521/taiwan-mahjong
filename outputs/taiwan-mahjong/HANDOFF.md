@@ -2,9 +2,9 @@
 
 2026-10-06。M0–M5.4已完成並發布；M6.0牌風研究完成。**人性化AI目前只做後續擴充設計，未實裝。** 先讀README／ROADMAP，再按工作內容讀對應文件。開發6.1 Sol主導，Luna限定協助，不例行使用Astra。
 
-## 最新工作：正向遊玩回饋（本機驗收完成，待發布核對）
+## 最新工作：正向遊玩回饋（已完成並發布）
 
-使用者審查人性化AI設計前，要求加強現有遊戲的正向回饋。已加入公平真人觀察下的牌效／進步／聽牌提示、仲裁完成後的吃碰提示、結算實際得分與練習鼓勵；不改AI策略、桌規或保存格式。詳見[POSITIVE-FEEDBACK-VALIDATION](POSITIVE-FEEDBACK-VALIDATION.md)。254項全套通過，新增feedbackReady場景後17項resume通過，最終255項由發布CI重驗；build通過。4193瀏覽器已驗聽牌雙擊、暫停去重、關閉教練、吃牌成立、練習肯定、結算／排名與窄畫面。本次產物index-CdDM5XHR.js／index-BQS6FW6H.css，下一步提交推送及核對Actions／正式資源。本輪起始五小時已用33%，檢查42%（剩58%）；不能得知精確對話剩餘token。
+使用者審查人性化AI設計前，要求加強現有遊戲的正向回饋。已加入公平真人觀察下的牌效／進步／聽牌提示、仲裁完成後的吃碰提示、結算實際得分與練習鼓勵；不改AI策略、桌規或保存格式。詳見[POSITIVE-FEEDBACK-VALIDATION](POSITIVE-FEEDBACK-VALIDATION.md)。來源91c01a9；本機254項全套及新增場景後17項resume通過，最終255項由發布CI完整重驗，build／deploy成功，run37401183051。4193瀏覽器已驗聽牌雙擊、暫停去重、關閉教練、吃牌成立、練習肯定、結算／排名與窄畫面。正式首頁載入index-CdDM5XHR.js／index-BQS6FW6H.css，兩資源HTTP200；沒有操作正式存檔。下一步按使用者試玩回饋維護，仍不啟動人性化AI實作。本輪起始五小時已用33%，結束檢查49%（增加約16百分點、剩51%）；不能得知精確對話剩餘token。
 
 ## 前次：人性化AI設計已完成（未實裝）
 
@@ -43,7 +43,7 @@ analysis.ts共用牌效；coach.ts只接真人Observation。向聽與實際胡�
 正式網站：https://zhai2liu.github.io/taiwan-mahjong/
 Repository：https://github.com/zhai2Liu/taiwan-mahjong.git（API大小寫；網站小寫同帳號）。origin已配合改名，Vite base ./，沒有CNAME或舊owner綁定。Git認證已完成，main推送來源自動測試／build／Pages。網址來源不同不搬移localStorage，不刪舊資料。
 
-現行遊戲最近已驗244測試與build。窄視窗修正來源05d0122、run37389916026成功；前期研究來源d37b3d2、run37390666564成功，runtime相同。最近正式驗收資源index-WkiKqWo8.js／index-DIlVjIQw.css，首頁320有捲軸client／scroll均305，HEADER-LIVE-320.jpg；本次只文件，未重新驗正式網站。
+現行遊戲最新為上述正向回饋來源91c01a9及255測試。歷史窄視窗修正來源05d0122、run37389916026成功；前期研究來源d37b3d2、run37390666564成功。前次runtime為index-WkiKqWo8.js／index-DIlVjIQw.css，首頁320證據HEADER-LIVE-320.jpg；這是歷史驗收，不代表本次資源。
 
 M5.4正式教學及先前鍵盤／付款維護證據見TUTORIAL-VALIDATION、MAINTENANCE-2026-10-06、PANEL-STATE-VALIDATION、COACH-FLOW-VALIDATION。Actions前次阻擋已解除，run37369632079 attempt2成功為歷史教學發布證據，非待辦。
 
@@ -51,6 +51,6 @@ workflow paths排除專案根Markdown／JPG／SIMULATION文件，純文件正常
 
 ## 工作環境與用量
 
-測試port必須獨立，不覆寫使用者4173等來源存檔。4191曾作測試，存活下次確認；原生confirm曾卡IAB／Brave，勿自動點已有存檔的新局／重練。改用controller或practice-browser可見開關，不宣稱原生對話框或實機手機／Safari已驗。scratch放work/、交付在outputs/。
+測試port必須獨立，不覆寫使用者4173等來源存檔。本輪4193獨立開發伺服器驗收後停止；4191等歷史程序存活下次確認。原生confirm曾卡IAB／Brave，勿自動點已有存檔的新局／重練。改用controller或practice-browser可見開關，不宣稱原生對話框或實機手機／Safari已驗。scratch放work/、交付在outputs/。
 
-本次起始五小時已用12%，70%按最多追加70百分點，上限82%前收斂；最新檢查32%（帳戶較起始增加20百分點，剩68%），本次已完成不用耗滿預算。帳戶比例不是精確對話剩餘token；每包落盤交接，不自行重設額度或新增自動續跑。舊交接的87%屬上一輪，不再當本次剩餘量。
+前次人性化AI設計額度由12%到32%，未用滿70%預算；本輪正向回饋用量見頂部49%。帳戶比例不是精確對話剩餘token；每包落盤交接，不自行重設額度或新增自動續跑。舊交接的87%屬更早一輪，不再當本次剩餘量。

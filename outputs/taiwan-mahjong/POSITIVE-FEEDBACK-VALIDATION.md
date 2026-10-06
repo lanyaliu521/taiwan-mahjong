@@ -20,6 +20,7 @@ view.ts保留獨立polite live region，以事件key去重；電腦回合重繪�
 ## 驗證與重現
 
 - npm test：原244項加7項回饋與3項控制器測試，共254項通過；再新增feedbackReady瀏覽器場景，resume套件17項通過，最終總數255項（發布CI再次跑完整套件）。npm run build通過，產物index-CdDM5XHR.js／index-BQS6FW6H.css。
+- 正式來源91c01a9，Actions run37401183051的build／deploy皆success。正式首頁DOM核對兩個資源名稱一致，JS／CSS皆HTTP200；未操作正式來源的使用者存檔。
 - 回饋測試：有效聽口、觀察不變、訊息不重複、錯過WIN、耗盡等待、非法ID、新局重置、仲裁取得副露、他家WIN攔截。控制器測試：出牌只推進一次、暫停／過期拒絕、教練關閉、分析失敗仍保存與原存檔欄位。
 - 獨立4193開發來源test/browser.html：feedbackReady續局、雙擊捨白→「牌型已聽，公開有效牌3張」；暫停後不再帶is-new動畫，live region保留同一訊息；教練關閉後卡片及播報皆清除。
 - chi134-m：選13吃2，仲裁取得後顯示吃牌成立及合法捨牌提示；切練習後播報清空。隨機練習展開較佳候選、捨出候選北，顯示肯定文字且「摸下一張」可用。
