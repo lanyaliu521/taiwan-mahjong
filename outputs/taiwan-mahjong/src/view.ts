@@ -1,6 +1,6 @@
 import { coachAnalysis } from './coach.js';
 import type { Analysis } from './analysis.js';
-import type { Intent, Seat } from './model.js';
+import type { Intent, Seat, ScoreResult } from './model.js';
 import type { getObservation } from './engine.js';
 import { kindOf, seatWind } from './tiles.js';
 import { tileFace } from './tile-face.js';
@@ -336,6 +336,17 @@ function handAndActions(model: ViewModel, send: Send): HTMLElement {
   return section;
 }
 
+/** Display the settled awards; splitting dragons never adds or re-evaluates tai. */
+export function scoreLines(score: ScoreResult): { reason: string; tai: number }[] {
+  return [...score.items].sort((a, b) => b.tai - a.tai).flatMap(item => {
+    if (item.id === 'S03') {
+      const dragons = score.decomposition?.groups.filter(g => g.kind === 'triplet' && /^[5-7]z$/.test(g.tiles[0])) ?? [];
+      if (dragons.length === item.tai) return dragons.map(g => ({ reason: ({ '5z': '紅中', '6z': '發財', '7z': '白板' } as Record<string, string>)[g.tiles[0]], tai: 1 }));
+    }
+    return [{ reason: item.id === 'S06' ? `${item.tai} 花（正花）` : item.reason, tai: item.tai }];
+  });
+}
+
 function result(model: ViewModel, send: Send): HTMLDialogElement {
   const game = model.game!, settlement = game.settlement!;
   const section = node('dialog', 'result-panel'); section.dataset.result = settlement.id; section.setAttribute('aria-labelledby', 'result-title');
@@ -347,9 +358,11 @@ function result(model: ViewModel, send: Send): HTMLDialogElement {
   title.append(button('返回牌桌', 'close-result', () => section.close(), 'button button-quiet'));
   section.append(title);
   const won = settlement.winner === game.seat;
+  const awarded = settlement.score ? scoreLines(settlement.score) : [];
   const reward = node('section', `result-reward ${won ? 'is-win' : ''}`);
   reward.setAttribute('aria-label', won ? '你的胡牌得分' : '你的本局結果');
   reward.append(node('span', 'reward-symbol', won ? '胡' : settlement.winner === null ? '和' : '局'), node('p', 'reward-title', won ? `${source}！這局由你拿下` : settlement.winner === null ? '收好這手經驗，下一局再來' : settlement.delta[game.seat] === 0 ? '本局沒有扣分' : '這局告一段落，下一局重新出發'));
+  if (settlement.score) reward.append(node('p', 'reward-patterns', awarded.length ? awarded.map(i => i.reason).join(' ＋ ') : '零台胡牌'));
   reward.append(node('strong', 'reward-points', `${signed(settlement.delta[game.seat])} 分`), node('span', 'reward-caption', '本局實際積分變動'));
   if (game.phase === 'matchResult') {
     const rank = 1 + game.scores.filter(s => s > game.scores[game.seat]).length;
@@ -359,7 +372,7 @@ function result(model: ViewModel, send: Send): HTMLDialogElement {
   section.append(reward);
   if (model.notice) section.append(node('p', 'notice', model.notice));
   const breakdown = node('details', 'result-breakdown'); breakdown.dataset.persist = `result-${settlement.id}`;
-  breakdown.append(node('summary', '', '查看胡牌拆法與計台明細'));
+  breakdown.append(node('summary', '', '查看胡牌拆法與胡入牌'));
   const decomposition = settlement.score?.decomposition;
   if (decomposition) {
     const shape = node('section', 'winning-shape'); shape.setAttribute('aria-label', '胡牌拆法，五面子一對將');
@@ -381,17 +394,22 @@ function result(model: ViewModel, send: Send): HTMLDialogElement {
   const details = node('div', 'result-body');
   const items = node('div', 'score-items');
   if (settlement.score) {
-    for (const item of settlement.score.items) { const line = node('div', 'score-item'); line.append(node('span', '', item.reason), node('strong', '', `${item.tai} 台`)); items.append(line); }
+    const awards = node('section', 'result-awards'); awards.setAttribute('aria-label', '胡牌牌型與台數');
+    awards.append(node('h3', '', '胡牌牌型與台數'));
+    const flowerCount = settlement.winner === null ? 0 : game.players[settlement.winner].flowers.length;
+    if (flowerCount) awards.append(node('p', 'muted', `花牌共 ${flowerCount} 張；依桌規計正花、花槓或特殊花胡，不是每張花都加台。`));
+    for (const item of awarded) { const line = node('div', 'score-item'); line.append(node('span', '', item.reason), node('strong', '', `${item.tai} 台`)); items.append(line); }
     if (!settlement.score.items.length) items.append(node('p', '', '零台胡牌'));
-    items.append(node('p', 'muted', '涉及莊家的付款另加莊家 1 台、連莊 2N 台；實際收付如下。'));
-  } else items.append(node('p', 'muted', '本局無收付，莊家繼續連莊。'));
-  if (settlement.externalTile) { const winning = node('div', 'winning-tile'); winning.append(node('span', '', '胡入牌'), tile(settlement.externalTile, 'tile-small')); items.append(winning); }
+    const total = node('div', 'score-item score-total'); total.append(node('span', '', '牌型合計'), node('strong', '', `${settlement.score.tai} 台`)); items.append(total);
+    awards.append(items, node('p', 'muted', '以上不含莊連台。涉及莊家的付款另加莊家 1 台、連莊 2N 台；實際積分見下表。')); section.append(awards);
+  }
+  if (settlement.externalTile) { const winning = node('div', 'winning-tile'); winning.append(node('span', '', '胡入牌'), tile(settlement.externalTile, 'tile-small')); details.append(winning); }
   const scores = node('table', 'result-scores');
   const caption = node('caption', 'sr-only', '本局積分變動與總分'); scores.append(caption);
   const thead = node('thead'), headerRow = node('tr'); ['座位', '本局', '總分'].forEach(text => { const th = node('th', '', text); th.scope = 'col'; headerRow.append(th); }); thead.append(headerRow); scores.append(thead);
   const tbody = node('tbody');
   game.scores.forEach((score, seat) => { const row = node('tr', seat === settlement.winner ? 'winner-row' : ''); row.append(node('th', '', `${names[seat]} · ${wind(game, seat)}`), node('td', settlement.delta[seat] > 0 ? 'positive' : '', signed(settlement.delta[seat])), node('td', '', signed(score))); tbody.append(row); });
-  scores.append(tbody); details.append(items); breakdown.append(details); section.append(scores, breakdown);
+  scores.append(tbody); breakdown.append(details); section.append(scores); if (settlement.score) section.append(breakdown);
   const footer = node('div', 'result-footer'); footer.append(node('p', 'muted', game.phase === 'matchResult' ? '東南西北四圈結束。謝謝入座。' : '本局已結算，準備好再開始下一局。'), button(game.phase === 'matchResult' ? '再打一將' : '下一局', game.phase === 'matchResult' ? 'new-result' : 'next', () => send({ type: game.phase === 'matchResult' ? 'new' : 'next' }), 'button button-primary', model.busy || model.paused));
   section.append(footer); return section;
 }

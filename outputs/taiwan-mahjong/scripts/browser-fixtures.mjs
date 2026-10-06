@@ -29,6 +29,7 @@ export function createBrowserFixtures() {
     handResult,
     matchResult: run(handResult, 'engine', 'NEXT_HAND'),
     feedbackReady: fixture({ hands: { 0: '123m456m123p456p789s1z7z' } }),
+    patternResult: run(fixture({ hands: { 0: '123m456m789p555z666z77s' }, flowers: { 0: 'f1f5f2' } }), 0, 'WIN'),
   };
   return Object.entries(games).map(([name, game]) => ({ name, session: decodeSession(encodeSession({ schemaVersion: 1, game, aiRandom: [17, 29, 43] })) }));
 }
