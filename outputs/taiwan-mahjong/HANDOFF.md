@@ -2,9 +2,9 @@
 
 2026-10-06。M0–M5.4已完成並發布；M6.0牌風研究完成。**人性化AI目前只做後續擴充設計，未實裝。** 先讀README／ROADMAP，再按工作內容讀對應文件。開發6.1 Sol主導，Luna限定協助，不例行使用Astra。
 
-## 最新工作：胡牌牌型逐條呈現（本機完成，待發布核對）
+## 最新工作：胡牌牌型逐條呈現（已完成並發布）
 
-使用者追加台灣慣用逐條報台，已將牌型／每項台數／合計移出折疊區，得分卡加「＋」串接組合。S03依既有胡牌拆法分紅中／發財／白板，S06顯示n正花；只格式化已結算項目，不重新計台、不改規則或存檔。門清一摸三／大三元／花槓的替代關係維持。259全套及patternResult本地桌面／窄版驗收通過；詳細見POSITIVE-FEEDBACK-VALIDATION追加段。下一步提交推送、核對CI與正式資源，再按試玩回饋維護。人性化AI仍未實裝。本輪起始五小時已用50%（剩50%）。
+使用者追加台灣慣用逐條報台，已將牌型／每項台數／合計移出折疊區，得分卡加「＋」串接組合。S03依既有胡牌拆法分紅中／發財／白板，S06顯示n正花；只格式化已結算項目，不重新計台、不改規則或存檔。門清一摸三／大三元／花槓的替代關係維持。259全套、最後21項受影響測試／build及patternResult本地桌面／窄版驗收通過；詳細見POSITIVE-FEEDBACK-VALIDATION追加段。來源7a4bdf8、run37408966858的build／deploy success，正式首頁載入index-C0qk3bSE.js／index-C1R8Rm_P.css。獨立4193測試已結束並停止，不操作正式存檔。下一步按試玩回饋維護，人性化AI仍未實裝。本輪起始五小時已用50%，最後檢查55%（增加約5百分點、剩45%）；不是精確對話剩餘token。
 
 ## 前次：正向遊玩回饋（已完成並發布）
 
@@ -47,7 +47,7 @@ analysis.ts共用牌效；coach.ts只接真人Observation。向聽與實際胡�
 正式網站：https://zhai2liu.github.io/taiwan-mahjong/
 Repository：https://github.com/zhai2Liu/taiwan-mahjong.git（API大小寫；網站小寫同帳號）。origin已配合改名，Vite base ./，沒有CNAME或舊owner綁定。Git認證已完成，main推送來源自動測試／build／Pages。網址來源不同不搬移localStorage，不刪舊資料。
 
-現行遊戲最新為上述正向回饋來源91c01a9及255測試。歷史窄視窗修正來源05d0122、run37389916026成功；前期研究來源d37b3d2、run37390666564成功。前次runtime為index-WkiKqWo8.js／index-DIlVjIQw.css，首頁320證據HEADER-LIVE-320.jpg；這是歷史驗收，不代表本次資源。
+現行遊戲最新為頂部胡牌牌型來源7a4bdf8及259測試，正向回饋91c01a9及255測試為前次。歷史窄視窗修正來源05d0122、run37389916026成功；前期研究來源d37b3d2、run37390666564成功。更早runtime為index-WkiKqWo8.js／index-DIlVjIQw.css，首頁320證據HEADER-LIVE-320.jpg；這是歷史驗收，不代表本次資源。
 
 M5.4正式教學及先前鍵盤／付款維護證據見TUTORIAL-VALIDATION、MAINTENANCE-2026-10-06、PANEL-STATE-VALIDATION、COACH-FLOW-VALIDATION。Actions前次阻擋已解除，run37369632079 attempt2成功為歷史教學發布證據，非待辦。
 

@@ -39,4 +39,6 @@ view.ts的scoreLines只格式化已結算ScoreResult，不更改RULES、scoring�
 
 259項全套通過，新增score-display三例驗證實際胡牌得台、原結果不變、門清一摸三優先、大三元不重複及花槓替代；新增patternResult場景受resume一致性核對。最後排序與排版調整再驗score-display／resume及build。
 
+正式來源7a4bdf8；Actions run37408966858完整測試、build／deploy success。正式首頁DOM確認index-C0qk3bSE.js／index-C1R8Rm_P.css；未操作正式存檔。
+
 獨立4193場景patternResult：手牌123m456m789p555z666z77s，花f1/f5/f2，東位自摸，預設顯示門清一摸三3＋紅中1＋發財1＋2正花2＋獨聽1＝8台，花牌共3張；莊家付款差額仍為+360。桌面清單與合計可見；外層344×900窄版彈窗client／scroll同為250，下一局可見，無橫溢。[驗收截圖](WIN-PATTERNS.jpg)。未宣稱實機手機測試。正式發布來源／資源與狀態見HANDOFF。
