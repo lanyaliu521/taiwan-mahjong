@@ -68,3 +68,5 @@ npm run build
 ## 歷史證據
 
 [M0驗收](../taiwan-mahjong-m0/VALIDATION.md)、[M1驗收](VALIDATION.md)、[M2驗收](M2-VALIDATION.md)、[M3驗收](M3-VALIDATION.md)、[吃牌專項](M3.1-CHI-VALIDATION.md)保留原始結果。歷史交接只用來查背景；目前狀態以HANDOFF及ROADMAP為準。
+
+- [阻止莊家續莊的離線策略比較](DEALER-STRATEGY-VALIDATION.md)：安全權重與牌效代價；未接正式AI。

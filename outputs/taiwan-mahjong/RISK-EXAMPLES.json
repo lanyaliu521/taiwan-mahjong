@@ -1,5 +1,423 @@
 {
   "caveat": "Constructed case; unknown is not dangerous, route counts are not probabilities, payment floors are not expected loss.",
+  "comparison": [
+    {
+      "name": "attack",
+      "config": {
+        "maxShantenLoss": 0,
+        "dealerExposureWeight": 0,
+        "otherExposureWeight": 0
+      },
+      "best": [
+        "3m"
+      ],
+      "candidates": [
+        {
+          "kind": "3m",
+          "shanten": 0,
+          "improving": 5,
+          "eligible": true,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "1p",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "2p",
+          "shanten": 1,
+          "improving": 5,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "3p",
+          "shanten": 1,
+          "improving": 5,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "4p",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "5p",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "6p",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "2s",
+          "shanten": 1,
+          "improving": 30,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "3s",
+          "shanten": 1,
+          "improving": 29,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "7s",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "8s",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "9s",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "1z",
+          "shanten": 1,
+          "improving": 7,
+          "eligible": false,
+          "exposurePenalty": 0
+        }
+      ]
+    },
+    {
+      "name": "fold",
+      "config": {
+        "maxShantenLoss": 1,
+        "dealerExposureWeight": 1,
+        "otherExposureWeight": 1
+      },
+      "best": [
+        "1p"
+      ],
+      "candidates": [
+        {
+          "kind": "3m",
+          "shanten": 0,
+          "improving": 5,
+          "eligible": true,
+          "exposurePenalty": 2
+        },
+        {
+          "kind": "1p",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": true,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "2p",
+          "shanten": 1,
+          "improving": 5,
+          "eligible": true,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "3p",
+          "shanten": 1,
+          "improving": 5,
+          "eligible": true,
+          "exposurePenalty": 2
+        },
+        {
+          "kind": "4p",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": true,
+          "exposurePenalty": 3
+        },
+        {
+          "kind": "5p",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": true,
+          "exposurePenalty": 3
+        },
+        {
+          "kind": "6p",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": true,
+          "exposurePenalty": 3
+        },
+        {
+          "kind": "2s",
+          "shanten": 1,
+          "improving": 30,
+          "eligible": true,
+          "exposurePenalty": 3
+        },
+        {
+          "kind": "3s",
+          "shanten": 1,
+          "improving": 29,
+          "eligible": true,
+          "exposurePenalty": 3
+        },
+        {
+          "kind": "7s",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": true,
+          "exposurePenalty": 3
+        },
+        {
+          "kind": "8s",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": true,
+          "exposurePenalty": 3
+        },
+        {
+          "kind": "9s",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": true,
+          "exposurePenalty": 3
+        },
+        {
+          "kind": "1z",
+          "shanten": 1,
+          "improving": 7,
+          "eligible": true,
+          "exposurePenalty": 3
+        }
+      ]
+    },
+    {
+      "name": "stopDealer",
+      "config": {
+        "maxShantenLoss": 0,
+        "dealerExposureWeight": 3,
+        "otherExposureWeight": 1
+      },
+      "best": [
+        "3m"
+      ],
+      "candidates": [
+        {
+          "kind": "3m",
+          "shanten": 0,
+          "improving": 5,
+          "eligible": true,
+          "exposurePenalty": 2
+        },
+        {
+          "kind": "1p",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "2p",
+          "shanten": 1,
+          "improving": 5,
+          "eligible": false,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "3p",
+          "shanten": 1,
+          "improving": 5,
+          "eligible": false,
+          "exposurePenalty": 2
+        },
+        {
+          "kind": "4p",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": false,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "5p",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": false,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "6p",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": false,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "2s",
+          "shanten": 1,
+          "improving": 30,
+          "eligible": false,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "3s",
+          "shanten": 1,
+          "improving": 29,
+          "eligible": false,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "7s",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": false,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "8s",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": false,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "9s",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": false,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "1z",
+          "shanten": 1,
+          "improving": 7,
+          "eligible": false,
+          "exposurePenalty": 5
+        }
+      ]
+    },
+    {
+      "name": "stopDealerAllowLoss",
+      "config": {
+        "maxShantenLoss": 1,
+        "dealerExposureWeight": 3,
+        "otherExposureWeight": 1
+      },
+      "best": [
+        "1p"
+      ],
+      "candidates": [
+        {
+          "kind": "3m",
+          "shanten": 0,
+          "improving": 5,
+          "eligible": true,
+          "exposurePenalty": 2
+        },
+        {
+          "kind": "1p",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": true,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "2p",
+          "shanten": 1,
+          "improving": 5,
+          "eligible": true,
+          "exposurePenalty": 0
+        },
+        {
+          "kind": "3p",
+          "shanten": 1,
+          "improving": 5,
+          "eligible": true,
+          "exposurePenalty": 2
+        },
+        {
+          "kind": "4p",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": true,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "5p",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": true,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "6p",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": true,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "2s",
+          "shanten": 1,
+          "improving": 30,
+          "eligible": true,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "3s",
+          "shanten": 1,
+          "improving": 29,
+          "eligible": true,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "7s",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": true,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "8s",
+          "shanten": 1,
+          "improving": 8,
+          "eligible": true,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "9s",
+          "shanten": 1,
+          "improving": 12,
+          "eligible": true,
+          "exposurePenalty": 5
+        },
+        {
+          "kind": "1z",
+          "shanten": 1,
+          "improving": 7,
+          "eligible": true,
+          "exposurePenalty": 5
+        }
+      ]
+    }
+  ],
   "bestEfficiency": [
     "3m"
   ],
