@@ -1,0 +1,754 @@
+{
+  "assumption": "Constructed public pool; K/N is not wall probability. No opponent policy or deception experiment.",
+  "results": [
+    {
+      "name": "same-step",
+      "hand": "123m456m123p23s67p55z4z9s",
+      "north": {
+        "kind": "4z",
+        "provenSafe": true,
+        "possibleUses": []
+      },
+      "best": [
+        "4z",
+        "9s"
+      ],
+      "nextDrawDifferences": [],
+      "choices": [
+        {
+          "discard": "1m",
+          "shanten": 2,
+          "K": 26,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "1m:3",
+            "4m:3",
+            "7m:4",
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "2m",
+          "shanten": 2,
+          "K": 19,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "2m:3",
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "3m",
+          "shanten": 2,
+          "K": 19,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3m:3",
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "4m",
+          "shanten": 2,
+          "K": 23,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "4m:3",
+            "7m:4",
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "5m",
+          "shanten": 2,
+          "K": 19,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5m:3",
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "6m",
+          "shanten": 2,
+          "K": 22,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3m:3",
+            "6m:3",
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "1p",
+          "shanten": 2,
+          "K": 23,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "1p:3",
+            "4p:4",
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "2p",
+          "shanten": 2,
+          "K": 19,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "2p:3",
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "3p",
+          "shanten": 2,
+          "K": 19,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3p:3",
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "2s",
+          "shanten": 2,
+          "K": 39,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "2s:3",
+            "3s:3",
+            "4s:4",
+            "5s:4",
+            "7s:4",
+            "8s:4",
+            "9s:3",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "3s",
+          "shanten": 2,
+          "K": 35,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "2s:3",
+            "3s:3",
+            "4s:4",
+            "7s:4",
+            "8s:4",
+            "9s:3",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "6p",
+          "shanten": 2,
+          "K": 39,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5p:4",
+            "6p:3",
+            "7p:3",
+            "8p:4",
+            "9p:4",
+            "1s:4",
+            "4s:4",
+            "7s:4",
+            "8s:4",
+            "9s:3",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "7p",
+          "shanten": 2,
+          "K": 39,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "4p:4",
+            "5p:4",
+            "6p:3",
+            "7p:3",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "7s:4",
+            "8s:4",
+            "9s:3",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "5z",
+          "shanten": 2,
+          "K": 21,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "9s:3",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "4z",
+          "shanten": 1,
+          "K": 16,
+          "N": 116,
+          "reserveNorth": false,
+          "effective": [
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "9s",
+          "shanten": 1,
+          "K": 16,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "acceptance-cost",
+      "hand": "123m456m123p23s677p55z4z",
+      "north": {
+        "kind": "4z",
+        "provenSafe": true,
+        "possibleUses": []
+      },
+      "best": [
+        "4z"
+      ],
+      "nextDrawDifferences": [],
+      "choices": [
+        {
+          "discard": "1m",
+          "shanten": 2,
+          "K": 30,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "1m:3",
+            "4m:3",
+            "7m:4",
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "2m",
+          "shanten": 2,
+          "K": 23,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "2m:3",
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "3m",
+          "shanten": 2,
+          "K": 23,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3m:3",
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "4m",
+          "shanten": 2,
+          "K": 27,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "4m:3",
+            "7m:4",
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "5m",
+          "shanten": 2,
+          "K": 23,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5m:3",
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "6m",
+          "shanten": 2,
+          "K": 26,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3m:3",
+            "6m:3",
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "1p",
+          "shanten": 2,
+          "K": 27,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "1p:3",
+            "4p:4",
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "2p",
+          "shanten": 2,
+          "K": 23,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "2p:3",
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "3p",
+          "shanten": 2,
+          "K": 23,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3p:3",
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "2s",
+          "shanten": 2,
+          "K": 41,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "4p:4",
+            "5p:4",
+            "6p:3",
+            "7p:2",
+            "8p:4",
+            "9p:4",
+            "1s:4",
+            "2s:3",
+            "3s:3",
+            "4s:4",
+            "5s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "3s",
+          "shanten": 2,
+          "K": 37,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "4p:4",
+            "5p:4",
+            "6p:3",
+            "7p:2",
+            "8p:4",
+            "9p:4",
+            "1s:4",
+            "2s:3",
+            "3s:3",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "6p",
+          "shanten": 1,
+          "K": 12,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "7p:2",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "7p",
+          "shanten": 1,
+          "K": 16,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5p:4",
+            "8p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "5z",
+          "shanten": 2,
+          "K": 27,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "4p:4",
+            "5p:4",
+            "6p:3",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "4z",
+          "shanten": 1,
+          "K": 20,
+          "N": 116,
+          "reserveNorth": false,
+          "effective": [
+            "5p:4",
+            "7p:2",
+            "8p:4",
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ready-exit",
+      "hand": "123m456m123p456p23s55z4z",
+      "north": {
+        "kind": "4z",
+        "provenSafe": true,
+        "possibleUses": []
+      },
+      "best": [
+        "4z"
+      ],
+      "nextDrawDifferences": [],
+      "choices": [
+        {
+          "discard": "1m",
+          "shanten": 1,
+          "K": 18,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "1m:3",
+            "4m:3",
+            "7m:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "2m",
+          "shanten": 1,
+          "K": 11,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "2m:3",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "3m",
+          "shanten": 1,
+          "K": 11,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3m:3",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "4m",
+          "shanten": 1,
+          "K": 15,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "4m:3",
+            "7m:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "5m",
+          "shanten": 1,
+          "K": 11,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5m:3",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "6m",
+          "shanten": 1,
+          "K": 14,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3m:3",
+            "6m:3",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "1p",
+          "shanten": 1,
+          "K": 18,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "1p:3",
+            "4p:3",
+            "7p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "2p",
+          "shanten": 1,
+          "K": 11,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "2p:3",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "3p",
+          "shanten": 1,
+          "K": 11,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3p:3",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "4p",
+          "shanten": 1,
+          "K": 15,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "4p:3",
+            "7p:4",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "5p",
+          "shanten": 1,
+          "K": 11,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "5p:3",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "6p",
+          "shanten": 1,
+          "K": 14,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "3p:3",
+            "6p:3",
+            "1s:4",
+            "4s:4"
+          ]
+        },
+        {
+          "discard": "2s",
+          "shanten": 1,
+          "K": 20,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "1s:4",
+            "2s:3",
+            "3s:3",
+            "4s:4",
+            "5s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "3s",
+          "shanten": 1,
+          "K": 16,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "1s:4",
+            "2s:3",
+            "3s:3",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "5z",
+          "shanten": 1,
+          "K": 10,
+          "N": 116,
+          "reserveNorth": true,
+          "effective": [
+            "1s:4",
+            "4s:4",
+            "5z:2"
+          ]
+        },
+        {
+          "discard": "4z",
+          "shanten": 0,
+          "K": 8,
+          "N": 116,
+          "reserveNorth": false,
+          "effective": [
+            "1s:4",
+            "4s:4"
+          ]
+        }
+      ]
+    }
+  ]
+}
