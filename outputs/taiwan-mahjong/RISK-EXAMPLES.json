@@ -1,0 +1,1066 @@
+{
+  "caveat": "Constructed case; unknown is not dangerous, route counts are not probabilities, payment floors are not expected loss.",
+  "bestEfficiency": [
+    "3m"
+  ],
+  "heldSafeKinds": [
+    "1p",
+    "2p"
+  ],
+  "rows": [
+    {
+      "kind": "3m",
+      "shanten": 0,
+      "K": 5,
+      "safeAgainst": [
+        1
+      ],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": true,
+          "possibleUses": [],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "sequence",
+              "needs": [
+                "1m",
+                "2m"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "2m",
+                "4m"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "4m",
+                "5m"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "sequence",
+              "needs": [
+                "1m",
+                "2m"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "2m",
+                "4m"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "4m",
+                "5m"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "1p",
+      "shanten": 1,
+      "K": 12,
+      "safeAgainst": [
+        1,
+        2,
+        3
+      ],
+      "allSafe": true,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": true,
+          "possibleUses": [],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": true,
+          "possibleUses": [],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": true,
+          "possibleUses": [],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "2p",
+      "shanten": 1,
+      "K": 5,
+      "safeAgainst": [
+        1,
+        2,
+        3
+      ],
+      "allSafe": true,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": true,
+          "possibleUses": [],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": true,
+          "possibleUses": [],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": true,
+          "possibleUses": [],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "3p",
+      "shanten": 1,
+      "K": 5,
+      "safeAgainst": [
+        1
+      ],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": true,
+          "possibleUses": [],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "sequence",
+              "needs": [
+                "4p",
+                "5p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "sequence",
+              "needs": [
+                "4p",
+                "5p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "4p",
+      "shanten": 1,
+      "K": 12,
+      "safeAgainst": [],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "4p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "4p"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "4p",
+                "4p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "5p",
+                "6p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "4p"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "4p",
+                "4p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "5p",
+                "6p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "5p",
+      "shanten": 1,
+      "K": 8,
+      "safeAgainst": [],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "5p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "5p"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "5p",
+                "5p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "4p",
+                "6p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "6p",
+                "7p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "5p"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "5p",
+                "5p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "4p",
+                "6p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "6p",
+                "7p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "6p",
+      "shanten": 1,
+      "K": 8,
+      "safeAgainst": [],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "6p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "6p"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "6p",
+                "6p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "4p",
+                "5p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "5p",
+                "7p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "7p",
+                "8p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "6p"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "6p",
+                "6p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "4p",
+                "5p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "5p",
+                "7p"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "7p",
+                "8p"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "2s",
+      "shanten": 1,
+      "K": 30,
+      "safeAgainst": [],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "2s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "2s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "2s",
+                "2s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "1s",
+                "3s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "3s",
+                "4s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "2s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "2s",
+                "2s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "1s",
+                "3s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "3s",
+                "4s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "3s",
+      "shanten": 1,
+      "K": 29,
+      "safeAgainst": [],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "3s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "3s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "3s",
+                "3s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "1s",
+                "2s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "2s",
+                "4s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "4s",
+                "5s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "3s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "3s",
+                "3s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "1s",
+                "2s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "2s",
+                "4s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "4s",
+                "5s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "7s",
+      "shanten": 1,
+      "K": 8,
+      "safeAgainst": [],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "7s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "7s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "7s",
+                "7s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "5s",
+                "6s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "6s",
+                "8s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "8s",
+                "9s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "7s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "7s",
+                "7s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "5s",
+                "6s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "6s",
+                "8s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "8s",
+                "9s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "8s",
+      "shanten": 1,
+      "K": 8,
+      "safeAgainst": [],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "8s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "8s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "8s",
+                "8s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "6s",
+                "7s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "7s",
+                "9s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "8s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "8s",
+                "8s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "6s",
+                "7s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "7s",
+                "9s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "9s",
+      "shanten": 1,
+      "K": 12,
+      "safeAgainst": [],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "9s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "9s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "9s",
+                "9s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "7s",
+                "8s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "9s"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "9s",
+                "9s"
+              ]
+            },
+            {
+              "type": "sequence",
+              "needs": [
+                "7s",
+                "8s"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    },
+    {
+      "kind": "1z",
+      "shanten": 1,
+      "K": 7,
+      "safeAgainst": [],
+      "allSafe": false,
+      "opponents": [
+        {
+          "seat": 1,
+          "declaredGroups": 5,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "1z"
+              ]
+            }
+          ],
+          "minimumRonPayment": 80
+        },
+        {
+          "seat": 2,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "1z"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "1z",
+                "1z"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        },
+        {
+          "seat": 3,
+          "declaredGroups": 0,
+          "publicDiscards": 0,
+          "provenSafe": false,
+          "possibleUses": [
+            {
+              "type": "pair",
+              "needs": [
+                "1z"
+              ]
+            },
+            {
+              "type": "triplet",
+              "needs": [
+                "1z",
+                "1z"
+              ]
+            }
+          ],
+          "minimumRonPayment": 30
+        }
+      ]
+    }
+  ]
+}

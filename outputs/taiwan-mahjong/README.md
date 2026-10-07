@@ -5,6 +5,7 @@
 ## 入口
 
 - [目前交接與下一步](HANDOFF.md)
+- [對手別公開風險證據](RISK-EVIDENCE-VALIDATION.md)：單家與全桌安全、進聽與退守的實際代價；離線研究，未改正式AI。
 - [牌風、牌效與留安全張研究](HUMAN-AI-TACTICS-RESEARCH.md)：台麻反例、可重現牌例與人性化決策方向；正式AI策略尚未變更。
 - [全專案檢視與優化](AUDIT-2026-10-07.md)：展開提示保留牌桌、儲存失敗直接重試與文件整理。
 - [桌規展開與牌桌排版修正](TABLE-LAYOUT-VALIDATION.md)：展開說明不再擠壓中央牌桌。
