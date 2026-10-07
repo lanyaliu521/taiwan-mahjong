@@ -6,7 +6,7 @@
 
 [HUMAN-AI-TACTICS-RESEARCH](HUMAN-AI-TACTICS-RESEARCH.md)整理來源、留退路／安全進聽／欺敵的區別、現二字牌單吊反例、四軸映射與消融方案。3組17張案例：同一步牌效保留、少4張有效進張的代價、安全打北進聽；RESERVE-EXAMPLES.json與research-reserve.mjs可重現，腳本含5組人工期望斷言。
 
-src/safety.ts只用公開牌池排除普通放槍的將／刻／順子路徑，未接ai.ts、Session或教練。5個新測試含4,314組局部容量與完整五面子一對見證交叉核對；不是完整對手分布或放槍率模型。268項全套／check／build通過；正式bundle仍index-BEUwn2va.js／index-CmJt2tzJ.css，研究模組未入站。提交／CI完成後補此處。
+src/safety.ts只用公開牌池排除普通放槍的將／刻／順子路徑，未接ai.ts、Session或教練。5個新測試含4,314組局部容量與完整五面子一對見證交叉核對；不是完整對手分布或放槍率模型。268項全套／check／build通過；正式bundle仍index-BEUwn2va.js／index-CmJt2tzJ.css，研究模組未入站。來源0968d43，Actions37660636097的build／deploy皆成功；正式首頁仍載入相同JS／CSS，兩資源HTTP200。工作已完成，工作樹提交後保持乾淨。
 
 下一包：公開相對風險證據、反例與有代價的選擇情境；尚未校準威脅、危險排序或人格權重。保留牌偏好不能越過合法WIN、現在捨牌風險及禁捨；欺敵加分仍停用。人格策略接線前需公平、續局升版與對局評估，不直接將口訣上線。
 
@@ -39,4 +39,4 @@ src/safety.ts只用公開牌池排除普通放槍的將／刻／順子路徑，�
 - 更早來源8152b91，Actions37555396794成功、259測試；證據見[TABLE-LAYOUT-VALIDATION](TABLE-LAYOUT-VALIDATION.md)。這是歷史證據。
 - 純Markdown／JPG／SIMULATION報告被workflow路徑排除；文件提交不須skip-ci或手動部署。不要直接改site／dist。
 - 驗收必用獨立port，本輪4193已停止、測試頁已關閉；不可覆寫使用者4173或正式存檔。原生confirm只在確實要換題／新局時操作；測試工具提供獨立情境。尺寸驗收不等於手機實機／Safari驗收。
-- Scratch放work/、交付放outputs/。每包完成立即更新交接。帳戶比例不是精確對話剩餘token；額度低時優先落盤，不自行重設或新增自動續跑。前次最後98%為舊窗口；本輪起始3%、測試檢查24%。帳戶用量包含其他並行工作。
+- Scratch放work/、交付放outputs/。每包完成立即更新交接。帳戶比例不是精確對話剩餘token；額度低時優先落盤，不自行重設或新增自動續跑。前次最後98%為舊窗口；本輪起始3%、測試檢查24%、收尾43%（剩57%）。帳戶用量包含其他並行工作。
