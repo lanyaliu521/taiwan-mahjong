@@ -64,3 +64,6 @@
 @media(prefers-reduced-motion:reduce){.play-feedback.is-new{animation:none}}
 .reward-patterns{font-size:14px;line-height:1.7;color:#ffe7a6;margin:8px 0;overflow-wrap:anywhere}.result-awards{margin:14px 0;padding:12px 14px;border:1px solid #d9be7940;border-radius:10px;background:#ffffff05}.result-awards h3{font-size:14px;font-weight:500;margin-bottom:6px;color:#ffe5a1}.result-awards .muted{font-size:11px;line-height:1.6;margin-top:7px}.score-total{border-top:1px solid #d9be7970;border-bottom:0;margin-top:4px;font-weight:600}@media(max-width:760px){.reward-patterns{font-size:12px}.result-awards{padding:10px;margin:10px 0}.result-awards .score-item{padding:5px 0;font-size:12px}}
 .result-panel:has(.result-awards) .result-reward{padding:10px;margin:10px 0}.result-panel:has(.result-awards) .reward-symbol{display:none}.result-panel:has(.result-awards) .reward-title{margin:0}.result-panel:has(.result-awards) .reward-points{font-size:30px}
+/* Expanded rules use page space instead of squeezing the playing surface. */
+.in-game:has(>.rules[open]){height:auto;min-height:100dvh}
+.in-game:has(>.rules[open]) .table-grid{flex:none;height:clamp(420px,55dvh,700px)}
