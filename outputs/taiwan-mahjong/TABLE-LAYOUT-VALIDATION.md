@@ -7,3 +7,5 @@
 獨立4193的test/browser.html，awaitDiscard續局→暫停→鍵盤展開桌規與計台表：牌桌clientHeight／scrollHeight418／418，四玩家與中央資訊的上下界皆在牌桌內。390×844窄版同為418／418，牌桌clientWidth／scrollWidth318／318，頁面336／336，無橫溢。收合後手牌操作區top488／bottom688仍在iframe可見範圍。此為桌面瀏覽器viewport測試，非實機手機。
 
 [修正截圖](TABLE-LAYOUT-FIX.jpg)。CSS改動以實際排版與操作驗收，不加只重述CSS的單元測試。npm run build及正式發布CI結果見HANDOFF。驗收沒有重設使用者正式牌局；本地fixture只寫4193來源，驗收後停止伺服器。
+
+正式來源8152b91，run37555396794完整測試／build／deploy成功。使用者Brave原頁重載後續原17張手牌，恢復暫停並展開桌規／計台表；1920×861的牌桌clientHeight／scrollHeight同為472px，四玩家與中央上下界全部在桌內。資源index-DJcYTXK4.js／index-DkTukn-3.css與本地build一致。[正式修正畫面](TABLE-LAYOUT-LIVE.jpg)。沒有捨牌、換局或覆寫新牌局。
