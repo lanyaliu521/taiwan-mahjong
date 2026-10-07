@@ -7,7 +7,7 @@ import { tileFace } from './tile-face.js';
 import type { PlayFeedback } from './feedback.js';
 
 export type UICommand =
-  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' | 'tutorial' }
+  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' | 'tutorial' | 'retry-save' }
   | { type: 'practice' | 'practice-start' | 'practice-resume' | 'practice-replay' | 'practice-draw' | 'game' }
   | { type: 'practice-discard'; tileId: string }
   | { type: 'speed'; value: 'normal' | 'fast' }
@@ -16,7 +16,7 @@ export type UICommand =
 export type ViewModel = {
   game: ReturnType<typeof getObservation> | null;
   selectedTile: string | null; drawnTile: string | null; busy: boolean; paused: boolean;
-  coachEnabled?: boolean; coachNotice?: string;
+  coachEnabled?: boolean; coachNotice?: string; canRetrySave?: boolean;
   feedback?: PlayFeedback | null;
   speed: 'normal' | 'fast'; status: string; notice: string; hasSave: boolean;
 };
@@ -370,7 +370,11 @@ function result(model: ViewModel, send: Send): HTMLDialogElement {
     reward.append(node('p', 'reward-finish', `一將完成 · ${tied ? '並列' : ''}第 ${rank} 名 · 總分 ${signed(game.scores[game.seat])}`));
   }
   section.append(reward);
-  if (model.notice) section.append(node('p', 'notice', model.notice));
+  if (model.notice) {
+    const notice = node('p', 'notice', model.notice); notice.setAttribute('role', 'alert');
+    if (model.canRetrySave) notice.append(button('重試儲存', 'retry-save', () => send({ type: 'retry-save' }), 'button button-secondary'));
+    section.append(notice);
+  }
   const breakdown = node('details', 'result-breakdown'); breakdown.dataset.persist = `result-${settlement.id}`;
   breakdown.append(node('summary', '', '查看胡牌拆法與胡入牌'));
   const decomposition = settlement.score?.decomposition;
@@ -452,7 +456,11 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
   const focus = root.contains(document.activeElement) ? (document.activeElement as HTMLElement).dataset.focus : undefined;
   const restoreDetails = preserveDetails(root);
   const shell = node('div', `app-shell ${model.game ? 'in-game' : ''}`); shell.append(header(model, send));
-  if (model.notice) { const notice = node('p', 'notice', model.notice); notice.setAttribute('role', 'alert'); shell.append(notice); }
+  if (model.notice) {
+    const notice = node('p', 'notice', model.notice); notice.setAttribute('role', 'alert');
+    if (model.canRetrySave) notice.append(button('重試儲存', 'retry-save', () => send({ type: 'retry-save' }), 'button button-secondary'));
+    shell.append(notice);
+  }
   if (!model.game) shell.append(home(model, send));
   else {
     const main = node('main', 'game-main');
@@ -485,7 +493,7 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
   if (focus) {
     const target = Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(element => element.dataset.focus === focus);
     if (target && !target.matches(':disabled')) target.focus({ preventScroll: true });
-    else if (['game', 'resume', 'start', 'next'].includes(focus) || focus.startsWith('tile-') || focus.startsWith('action-')) root.querySelector<HTMLElement>(model.game ? '[data-focus="hand-heading"]' : '[data-focus="home-entry"]')?.focus({ preventScroll: true });
+    else if (['game', 'resume', 'start', 'next', 'retry-save'].includes(focus) || focus.startsWith('tile-') || focus.startsWith('action-')) root.querySelector<HTMLElement>(model.game ? '[data-focus="hand-heading"]' : '[data-focus="home-entry"]')?.focus({ preventScroll: true });
   }
   if (resultDialog && showResult) { resultDialog.showModal(); resultDialog.querySelector<HTMLElement>('h2')?.focus(); }
 }

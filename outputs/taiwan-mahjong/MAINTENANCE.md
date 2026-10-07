@@ -49,6 +49,8 @@ exactPool只接剩餘一般牌的唯一實體ID；publicPool扣自家牌、公�
 
 ## 存檔與相容性
 
+2026-10-07維護：main.ts以saveFailed／practiceSaveFailed記最近一次保存失敗，透過canRetrySave顯示「重試儲存」。retry-save只保存目前模式並paint，不advance或refresh；保留選牌、暫停、速度及既有timer。成功清除提示；失敗仍保留進度。failed／practiceBlocked時禁止重試，不能覆蓋他頁。結算modal內也要有按鈕，成功移除後回焦點入口。見[AUDIT-2026-10-07](AUDIT-2026-10-07.md)。
+
 本機鍵：`tw16:TW16-CLASSIC-v1:save`，位於main.ts。Session schemaVersion=1，內容為GameState與3位AI的亂數；GameState另有schemaVersion=1及rulesVersion。UI選牌、暫停與速度不是持久牌局格式。
 
 讀取必須走session.decodeSession → engine.restore。只JSON.parse或直接呼叫validation.restore不足以取代引擎還原；engine還會重算待回應候選。寫入前encodeSession驗證資料；壞檔及未知版本保留，開始新一將前確認覆寫。保存失敗保留上一份可用存檔並提醒保持頁面；跨分頁競爭停止操作，要求重載。

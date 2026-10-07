@@ -41,14 +41,18 @@ function stats(a: Analysis): HTMLElement {
 }
 function bestText(choices: DiscardAnalysis[]) { return choices.map(c => tileName(c.kind)).join('、'); }
 
-export function renderPractice(root: HTMLElement, p: Practice | null, notice: string, hasSave: boolean, blocked: boolean, send: (c: UICommand) => void): void {
+export function renderPractice(root: HTMLElement, p: Practice | null, notice: string, hasSave: boolean, blocked: boolean, send: (c: UICommand) => void, canRetrySave = false): void {
   clearFeedback(root);
   const focused = root.contains(document.activeElement) ? (document.activeElement as HTMLElement).dataset.focus : undefined;
   const restoreDetails = preserveDetails(root);
   const shell = node('div', 'app-shell practice-shell');
   const head = node('header', 'site-header'); head.append(node('h1', '', '純練習模式'), button('新手教學', 'tutorial', () => send({ type: 'tutorial' }), 'button button-quiet'), button('返回對戰', 'game', () => send({ type: 'game' }), 'button button-quiet'));
   shell.append(head);
-  if (notice) { const alert = node('p', 'notice', notice); alert.setAttribute('role', 'alert'); shell.append(alert); }
+  if (notice) {
+    const alert = node('p', 'notice', notice); alert.setAttribute('role', 'alert');
+    if (canRetrySave) alert.append(button('重試儲存', 'retry-save', () => send({ type: 'retry-save' }), 'button button-secondary'));
+    shell.append(alert);
+  }
   const main = node('main', 'practice-main');
   const intro = node('p', 'practice-intro', p ? '十六張練習 · 五面子一對將' : '136張一般牌、不含花；只練進牌與捨牌，不設對手或計台。');
   intro.tabIndex = -1; intro.dataset.focus = 'practice-entry'; main.append(intro);

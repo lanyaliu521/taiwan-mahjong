@@ -31,6 +31,8 @@ let speed: 'normal' | 'fast' = 'normal';
 let notice = '';
 let status = '';
 let failed = false;
+let saveFailed = false;
+let practiceSaveFailed = false;
 let timer: ReturnType<typeof setTimeout> | undefined;
 let generation = 0;
 let rendered = 0;
@@ -63,16 +65,17 @@ function persist(): boolean {
     localStorage.setItem(SAVE_KEY, text);
     rawSave = text;
     saved = session;
+    saveFailed = false;
     notice = '';
     return true;
-  } catch { notice = '牌局可繼續，但這一步未能儲存。請保持頁面開啟，以免失去目前進度。'; return false; }
+  } catch { saveFailed = true; notice = '牌局可繼續，但這一步未能儲存。請保持頁面開啟，以免失去目前進度。'; return false; }
 }
 function persistPractice(): boolean {
   if (!practice) return true;
   try {
     const text = encodePractice(practice);
-    localStorage.setItem(PRACTICE_KEY, text); practiceRaw = text; practiceSaved = practice; practiceNotice = ''; return true;
-  } catch { practiceNotice = '本次練習未能儲存；上次存檔已保留。請保持頁面開啟，以免失去目前進度。'; return false; }
+    localStorage.setItem(PRACTICE_KEY, text); practiceRaw = text; practiceSaved = practice; practiceNotice = ''; practiceSaveFailed = false; return true;
+  } catch { practiceSaveFailed = true; practiceNotice = '本次練習未能儲存；上次存檔已保留。請保持頁面開啟，以免失去目前進度。'; return false; }
 }
 function stopTimer(): void { clearTimeout(timer); timer = undefined; generation++; }
 function needsAutomation(): boolean {
@@ -83,7 +86,7 @@ function needsAutomation(): boolean {
 function paint(): void {
   const screen = ++rendered;
   if (mode === 'practice') {
-    renderPractice(root, practice, practiceNotice, practiceSaved !== null, practiceBlocked, command => { if (screen === rendered) send(command); });
+    renderPractice(root, practice, practiceNotice, practiceSaved !== null, practiceBlocked, command => { if (screen === rendered) send(command); }, !!practice && !practiceBlocked && practiceSaveFailed);
     return;
   }
   const game = session ? getObservation(session.game, 0) : null;
@@ -95,6 +98,7 @@ function paint(): void {
   render(root, {
     game, selectedTile, drawnTile: current?.turn === 0 && current.phase === 'awaitDiscard' ? current.drawContext.lastTile : null,
     busy: needsAutomation() || failed, paused, speed, coachEnabled, coachNotice, feedback, status: message, notice, hasSave: saved !== null,
+    canRetrySave: !!session && !failed && saveFailed,
   }, command => { if (screen === rendered) send(command); });
 }
 function refresh(): void {
@@ -130,6 +134,12 @@ function start(): void {
   persist(); refresh();
 }
 function send(command: UICommand): void {
+  if (command.type === 'retry-save') {
+    if (mode === 'practice') {
+      if (practice && !practiceBlocked && practiceSaveFailed) { persistPractice(); paint(); }
+    } else if (session && !failed && saveFailed) { persist(); paint(); }
+    return;
+  }
   if (command.type === 'tutorial') {
     if (mode === 'practice' ? !practiceBlocked && !persistPractice() : session && !failed && !persist()) { refresh(); return; }
     paused = true; stopTimer(); paint(); showTutorial(root); return;

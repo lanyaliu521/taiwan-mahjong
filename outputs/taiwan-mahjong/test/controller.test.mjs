@@ -28,7 +28,7 @@ function controller(raw = null, confirm = true, faults = {}) {
       if (name === './session.js') return sessions;
       if (name === './practice.js') return practices;
       if (name === './feedback.js') return faults.feedbackError ? { ...feedback, discardFeedback: () => { throw faults.feedbackError; } } : feedback;
-      if (name === './practice-view.js') return { renderPractice: (_root, practice, notice, hasSave, blocked, handler) => { view = { practice, notice, hasSave, blocked }; send = handler; } };
+      if (name === './practice-view.js') return { renderPractice: (_root, practice, notice, hasSave, blocked, handler, canRetrySave = false) => { view = { practice, notice, hasSave, blocked, canRetrySave }; send = handler; } };
       if (name === './view.js') return { render: (_root, state, handler) => { view = state; send = handler; } };
       if (name === './tutorial-view.js') return { showTutorial: () => { tutorialOpens++; } };
       throw Error(name);
@@ -123,6 +123,62 @@ test('QuotaExceededError 保留最後成功存檔，恢復寫入後保存最新�
   assert.equal(app.view.notice, '');
   assert.equal(sessions.decodeSession(app.raw()).game.version, app.view.game.version);
   assert.notEqual(app.raw(), raw);
+});
+
+test('對戰重試保存恢復寫入後只保存當前狀態，不推進牌局或重排計時器', () => {
+  const raw = sessions.encodeSession(initial()), faults = { write: new DOMException('full', 'QuotaExceededError') };
+  const app = controller(raw, true, faults);
+  app.send({ type: 'resume' }); app.tick();
+  const version = app.view.game.version, timer = [...app.timers.entries()][0], writes = app.writes;
+  assert.equal(app.view.canRetrySave, true); assert.match(app.view.notice, /未能儲存/);
+  app.send({ type: 'retry-save' });
+  assert.equal(app.view.game.version, version); assert.equal(app.writes, writes + 1);
+  assert.equal(app.raw(), raw); assert.equal(app.view.canRetrySave, true); assert.match(app.view.notice, /未能儲存/);
+  assert.equal([...app.timers.entries()][0][0], timer[0], '失敗重試不可更動既有自動計時器');
+  faults.write = null; app.send({ type: 'retry-save' });
+  assert.equal(app.view.game.version, version); assert.equal(sessions.decodeSession(app.raw()).game.version, version);
+  assert.equal(app.view.notice, ''); assert.equal(app.view.canRetrySave, false);
+  assert.equal([...app.timers.entries()][0][0], timer[0]);
+});
+
+test('練習重試保存恢復寫入後保存同一手牌；持續失敗維持可重試提示', () => {
+  const p = practices.createPractice(42), raw = practices.encodePractice(p);
+  const faults = { practiceRaw: raw, practiceWrite: new DOMException('full', 'QuotaExceededError') };
+  const app = controller(null, true, faults);
+  app.send({ type: 'practice' }); app.send({ type: 'practice-resume' });
+  app.send({ type: 'practice-discard', tileId: p.hand[0] });
+  const hand = [...app.view.practice.hand], writes = app.writes;
+  assert.equal(app.view.canRetrySave, true); assert.match(app.view.notice, /未能儲存/);
+  app.send({ type: 'retry-save' });
+  assert.deepEqual(app.view.practice.hand, hand); assert.equal(app.writes, writes + 1);
+  assert.equal(app.practiceRaw(), raw); assert.equal(app.view.canRetrySave, true); assert.match(app.view.notice, /未能儲存/);
+  faults.practiceWrite = null; app.send({ type: 'retry-save' });
+  assert.deepEqual(app.view.practice.hand, hand);
+  assert.deepEqual(practices.decodePractice(app.practiceRaw()).hand, hand);
+  assert.equal(app.view.notice, ''); assert.equal(app.view.canRetrySave, false);
+});
+
+test('對戰跨分頁競爭後拒絕重試寫入，避免覆蓋遠端存檔', () => {
+  const old = sessions.encodeSession(initial()), faults = { write: new DOMException('full', 'QuotaExceededError') };
+  const app = controller(old, true, faults); app.send({ type: 'resume' }); app.tick();
+  assert.equal(app.view.canRetrySave, true);
+  const next = sessions.automaticAction(initial());
+  const remote = sessions.encodeSession(sessions.advance(initial(), next.actor, next.intent, initial().game.version, next.randomState));
+  app.remote(remote); const writes = app.writes;
+  app.send({ type: 'retry-save' });
+  assert.equal(app.raw(), remote); assert.equal(app.writes, writes);
+  assert.equal(app.view.canRetrySave, false); assert.match(app.view.notice, /另一個分頁/);
+});
+
+test('練習跨分頁競爭後拒絕重試寫入，避免覆蓋遠端存檔', () => {
+  const p = practices.createPractice(42), raw = practices.encodePractice(p);
+  const faults = { practiceRaw: raw, practiceWrite: new DOMException('full', 'QuotaExceededError') };
+  const app = controller(null, true, faults); app.send({ type: 'practice' }); app.send({ type: 'practice-resume' });
+  app.send({ type: 'practice-discard', tileId: p.hand[0] }); assert.equal(app.view.canRetrySave, true);
+  const remote = practices.encodePractice(practices.discardPractice(p, p.hand[1])); app.remotePractice(remote); const writes = app.writes;
+  app.send({ type: 'retry-save' });
+  assert.equal(app.practiceRaw(), remote); assert.equal(app.writes, writes);
+  assert.equal(app.view.canRetrySave, false); assert.equal(app.view.blocked, true);
 });
 
 for (const [label, raw] of [
