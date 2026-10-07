@@ -6,7 +6,7 @@
 
 src/risk-evidence.ts只分析自家Observation合法捨牌，區分單家／全桌普通放槍安全、持有／可捨安全庫存，附公開面子數／捨牌數與既有計台函式計算的零台放槍底線。不提供概率、未知候選危險排序或選牌。五宣告面子只可能成將，暗槓只數面子、不偷扣牌種。
 
-[RISK-EVIDENCE-VALIDATION](RISK-EVIDENCE-VALIDATION.md)及RISK-EXAMPLES.json保存可重現取捨：三萬0向聽K5、只對莊安全；一筒1向聽K12、三家安全。273項全套／check／build通過，含不可見暗手與牆牌交換不影響證據等5個新增測試。研究模組未接正式AI、Session或教練，bundle保持index-BEUwn2va.js／index-CmJt2tzJ.css。提交／CI待補。
+[RISK-EVIDENCE-VALIDATION](RISK-EVIDENCE-VALIDATION.md)及RISK-EXAMPLES.json保存可重現取捨：三萬0向聽K5、只對莊安全；一筒1向聽K12、三家安全。273項全套／check／build通過，含不可見暗手與牆牌交換不影響證據等5個新增測試。研究模組未接正式AI、Session或教練，bundle保持index-BEUwn2va.js／index-CmJt2tzJ.css。已提交f944292；Actions37662675210 build／deploy皆成功，正式首頁及相同JS／CSS資源HTTP200。此包已完成，下一步依下段進行。
 
 下一包先做共同情境下明確指定進攻／退守模式的候選比較與消融，再研究切換時機；相對風險與威脅仍未校準。叫牌整體後捨、三模板、保存升版與正式策略尚未實作，不算整個M6.1完成。本輪起始五小時已用47%，測試後71%（剩29%）；不是精確對話剩餘token。未使用子代理或開瀏覽器。
 
