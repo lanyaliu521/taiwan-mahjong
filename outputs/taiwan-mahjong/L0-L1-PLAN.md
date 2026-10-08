@@ -1,3 +1,5 @@
+> 2026-10-09進度：L1-A已完成，見[L1A-EVIDENCE-VALIDATION](L1A-EVIDENCE-VALIDATION.md)；下一包L1-B。以下保留L0基準與方案，舊下一步已更新於HANDOFF。
+
 # L0基準查核與L1最小技術方案
 
 2026-10-09。遵循[方向決議](PRODUCT-DIRECTION.md)。標示「現有實作／證據支持／設計／待確認」，不將概念契約當成已存在的API。
