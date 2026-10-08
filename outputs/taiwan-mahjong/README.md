@@ -4,6 +4,8 @@
 
 ## 入口
 
+- [完整專案現況與目標重整底稿](PROJECT-REVIEW.md)：功能、架構、研究進度、限制與待決策。
+
 - [目前交接與下一步](HANDOFF.md)
 - [對手別公開風險證據](RISK-EVIDENCE-VALIDATION.md)：單家與全桌安全、進聽與退守的實際代價；離線研究，未改正式AI。
 - [牌風、牌效與留安全張研究](HUMAN-AI-TACTICS-RESEARCH.md)：台麻反例、可重現牌例與人性化決策方向；正式AI策略尚未變更。
@@ -16,7 +18,7 @@
 - [維護指南：修改位置、資料流、存檔與驗證](MAINTENANCE.md)
 - [固定桌規與完整台表](../taiwan-mahjong-m0/RULES.md)
 - [概念契約](../taiwan-mahjong-m0/CONTRACTS.md)：實際欄位以src/model.ts為準。
-- [人性化AI玩家設計](HUMAN-AI-DESIGN.md)：個性、攻守、最佳實踐與未來工作包已整理完成；[決策／保存規格](HUMAN-AI-DECISION-SPEC.md)、[證據／驗證方案](HUMAN-AI-VALIDATION.md)。後續實作尚未啟動，現行版本不實裝。
+- [人性化AI玩家設計](HUMAN-AI-DESIGN.md)：個性、攻守、最佳實踐與未來工作包已整理完成；[決策／保存規格](HUMAN-AI-DECISION-SPEC.md)、[證據／驗證方案](HUMAN-AI-VALIDATION.md)。離線研究模組已開始，正式人格整合尚未啟動，現行版本未替換AI。
 - [進攻／防守牌風研究](AI-STYLE-DESIGN.md)：公開資訊安全原理、768副起手基準與三個引擎反例；已併入人性化AI設計，尚未更換遊戲AI。
 - [純練習與新手提示設計](TRAINING-DESIGN.md)：M5設計及Sol／Luna分工。
 - [新手操作教學驗證](TUTORIAL-VALIDATION.md)：六步原生視窗、示範選牌／出牌與兩種吃法，正式發布狀態見HANDOFF。

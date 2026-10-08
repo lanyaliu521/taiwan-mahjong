@@ -133,4 +133,4 @@ src/tutorial-view.ts只接root，不接Session、getObservation、localStorage�
 
 教學資料保護回歸在controller.test：對戰與練習保存失敗均不得開窗或丟進度；讀取壞檔／跨頁已阻擋時只准看教學，不寫回原存檔。讀取／保存失敗與跨頁競爭不是同一情況，不要以統一「可看教學」流程省略保存保護。示範互動和窄視窗則以瀏覽器驗收，不為固定文案加字串鏡像測試。
 
-離線偏好比较：src/strategy-comparison.ts、test/strategy-comparison.test.mjs。共用scripts/research-risk.mjs生成RISK-EXAMPLES.json；限制與下一步見DEALER-STRATEGY-VALIDATION.md。未接正式入口，不要把偏好分數當危險機率。
+離線偏好比較：src/strategy-comparison.ts、test/strategy-comparison.test.mjs。共用scripts/research-risk.mjs生成RISK-EXAMPLES.json；限制與下一步見DEALER-STRATEGY-VALIDATION.md。未接正式入口，不要把偏好分數當危險機率。
