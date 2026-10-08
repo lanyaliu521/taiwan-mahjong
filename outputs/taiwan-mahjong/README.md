@@ -6,6 +6,8 @@
 
 ## 入口
 
+- [L2-A1捨牌資料與保存](L2A1-REVIEW-STORE.md)：已完成限定子包，L2-A仍在進行，未接正式對局。
+
 - [L1-B決策證據契約與驗收](L1B-EVIDENCE-CONTRACT.md)：已完成內部封裝，尚未接正式UI／保存。
 
 - [L1-A核心證據驗收](L1A-EVIDENCE-VALIDATION.md)：獨立手算、未知安全反例與續莊界線；L1-B已完成，後續L2-A。

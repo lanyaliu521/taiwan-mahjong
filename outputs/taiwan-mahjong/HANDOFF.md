@@ -2,7 +2,15 @@
 
 2026-10-09。產品轉向「台灣16張麻將進階玩家決策訓練」。已採納報告主方向及D-01～08規劃預設；詳見[PRODUCT-DIRECTION](PRODUCT-DIRECTION.md)。主線是可信證據、少量局後檢討、無提示陌生題測驗；既有對戰保留，正式人格／攻守整合暫緩。
 
-## 最新完成：L1-B最小決策證據封裝
+## 最新完成：L2-A1最小捨牌資料／保存（L2-A未全部完成）
+
+新增review-store.ts及6測試；[契約與限制](L2A1-REVIEW-STORE.md)。294全套測試、check／build通過，正式bundle不變。模組未接main／UI，不自動記錄真人，不動舊Session／練習。未推送／部署。
+
+只支援待捨E17的最小DTO，非完整Observation；不能直接丟回decisionEvidence。嚴格白名單／版本／牌權／容量／選擇、20筆及字節上限、單次寫入失敗保留原檔已驗。expectedRaw只拒絕已知過期寫入，不是跨頁交易鎖；**不得直接接正式對局**。下一步先補公開局況／吃碰快照、重算介面與跨頁互斥，再接動作成功後記錄及通知／清除UX。AT-07尚未全面通過，L2-B未開始。
+
+本輪起始帳戶五小時已用72%，檢查84%（剩16%），非精確token；先完成小包交接，未重設額度。
+
+## 前包：L1-B最小決策證據封裝
 
 新增src/decision-evidence.ts與7項測試；[契約與驗收](L1B-EVIDENCE-CONTRACT.md)記schemaVersion=1、analyzerVersion=tw16-evidence-1、候選Intent／穩定id、E1牌效、E2對手別proven／unknown、E3限定牌效偏好。E17改善數／比例不適用，輸出null；不讀事後結算或私有資料。288全套測試、check／build通過，正式bundle仍index-BEUwn2va.js／index-CmJt2tzJ.css，未接UI／AI／存檔，未推送／部署。
 
@@ -27,7 +35,7 @@ L1-A本輪帳戶五小時起始已用26%、收尾41%（剩59%），非精確toke
 
 ## 下一個工作包
 
-L2-A決策快照與獨立保存：先建立受控DTO／驗證、版本／大小限制、選擇對應、保存失敗／跨分頁與舊檔相容。詳見L0-L1-PLAN及L1B-EVIDENCE-CONTRACT。L2-B再接局後UI；不改正式AI或引入研究權重。
+繼續L2-A剩餘事項，依L2A1-REVIEW-STORE末節補全公開快照／吃碰資料、重算與跨頁互斥，再驗真人提交後記錄、通知／清除及舊存檔相容；不得當作L2-A已完成直接跳L2-B。
 
 不接人格／阻莊權重至正式AI，不先蓋快照框架，不做全面風險概率或收益。60題及6–10人不是固定交期或統計充分門檻；本輪未招募試用者。既有研究保留供通過驗收後選用。
 

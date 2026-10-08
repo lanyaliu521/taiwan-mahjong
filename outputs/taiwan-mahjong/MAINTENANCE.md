@@ -1,3 +1,5 @@
+> L2-A1的review-store.ts尚未接線；最小捨牌DTO不是Observation，過期值檢查不是交易鎖。接線前看[L2-A1契約](L2A1-REVIEW-STORE.md)待辦。
+
 > L1-B已新增[decision-evidence契約](L1B-EVIDENCE-CONTRACT.md)，內部Observation封裝已驗，不是載入驗證器；改牌效／安全語義需評估analyzerVersion升版。
 
 > 2026-10-09：產品及新訓練契約見[方向決議](PRODUCT-DIRECTION.md)與[L0-L1方案](L0-L1-PLAN.md)。以下模組／存檔描述仍是現行實作；新快照尚未接線。
