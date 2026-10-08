@@ -6,7 +6,9 @@
 
 ## 入口
 
-- [L1-A核心證據驗收](L1A-EVIDENCE-VALIDATION.md)：獨立手算、未知安全反例與續莊界線；下一步L1-B。
+- [L1-B決策證據契約與驗收](L1B-EVIDENCE-CONTRACT.md)：已完成內部封裝，尚未接正式UI／保存。
+
+- [L1-A核心證據驗收](L1A-EVIDENCE-VALIDATION.md)：獨立手算、未知安全反例與續莊界線；L1-B已完成，後續L2-A。
 
 - [完整專案現況與目標重整底稿](PROJECT-REVIEW.md)：功能、架構、研究進度、限制與待決策。
 

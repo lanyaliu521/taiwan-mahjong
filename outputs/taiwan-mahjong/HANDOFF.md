@@ -2,7 +2,13 @@
 
 2026-10-09。產品轉向「台灣16張麻將進階玩家決策訓練」。已採納報告主方向及D-01～08規劃預設；詳見[PRODUCT-DIRECTION](PRODUCT-DIRECTION.md)。主線是可信證據、少量局後檢討、無提示陌生題測驗；既有對戰保留，正式人格／攻守整合暫緩。
 
-## 最新完成：L1-A核心證據驗收
+## 最新完成：L1-B最小決策證據封裝
+
+新增src/decision-evidence.ts與7項測試；[契約與驗收](L1B-EVIDENCE-CONTRACT.md)記schemaVersion=1、analyzerVersion=tw16-evidence-1、候選Intent／穩定id、E1牌效、E2對手別proven／unknown、E3限定牌效偏好。E17改善數／比例不適用，輸出null；不讀事後結算或私有資料。288全套測試、check／build通過，正式bundle仍index-BEUwn2va.js／index-CmJt2tzJ.css，未接UI／AI／存檔，未推送／部署。
+
+L1-B帳戶五小時起始已用46%、收尾66%（剩34%），非精確token。L1-A／B限定內部證據工作完成，非新訓練MVP上線或學習效果驗證。輸入只限引擎新產生Observation；基本防呆不取代L2外部／存檔嚴格驗證。L1-B不得被當成任意JSON安全載入器。
+
+## 前包：L1-A核心證據驗收
 
 [驗收清單與結論](L1A-EVIDENCE-VALIDATION.md)含12類案例的條件、預期、推導與限制。新增test/evidence-boundaries.test.mjs三項測試：16種手算牌池及並列集合、可見資訊相同但實際可胡不同的兩個世界、普通放槍安全後莊仍自摸／流局續莊兩分支。281全套測試、check／build通過；src、正式AI、桌規、存檔及bundle不變。未推送／部署。
 
@@ -21,7 +27,7 @@ L1-A本輪帳戶五小時起始已用26%、收尾41%（剩59%），非精確toke
 
 ## 下一個工作包
 
-L1-B最小證據封裝：依L1A-EVIDENCE-VALIDATION落實E1／E2／E3範圍、明確分析版本、候選Intent映射、unknown及穩定排序；補新輸出的AT-03～06驗證。不修改正式AI，不新增快照保存／題庫UI；L2再做保存與檢討。
+L2-A決策快照與獨立保存：先建立受控DTO／驗證、版本／大小限制、選擇對應、保存失敗／跨分頁與舊檔相容。詳見L0-L1-PLAN及L1B-EVIDENCE-CONTRACT。L2-B再接局後UI；不改正式AI或引入研究權重。
 
 不接人格／阻莊權重至正式AI，不先蓋快照框架，不做全面風險概率或收益。60題及6–10人不是固定交期或統計充分門檻；本輪未招募試用者。既有研究保留供通過驗收後選用。
 
