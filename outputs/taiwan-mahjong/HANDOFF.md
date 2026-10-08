@@ -1,62 +1,32 @@
 # 現行交接入口
 
-2026-10-08。M0–M5.4與前次維護已完成。本輪依使用者要求深化人性化AI研究與M6.1公開安全基礎；**未更換正式AI，不算M6.1整包完成。** 開發由6.1 Sol主導、Luna限定協助，不例行啟用Astra。
+2026-10-09。產品轉向「台灣16張麻將進階玩家決策訓練」。已採納報告主方向及D-01～08規劃預設；詳見[PRODUCT-DIRECTION](PRODUCT-DIRECTION.md)。主線是可信證據、少量局後檢討、無提示陌生題測驗；既有對戰保留，正式人格／攻守整合暫緩。
 
-## 目前優先：使用者重新審視專案目標
+## 本包完成
 
-已提交[完整專案現況與目標重整底稿](PROJECT-REVIEW.md)。前包14870ee本機乾淨、278測試紀錄與建置已核對，遠端main查得57a0921；未推送最新研究包。此次只整理文件、校正README／ROADMAP舊狀態，不改功能、不重跑無關測試。下一步依使用者審查調整目標與ROADMAP，不自動開始新人格整合。
+- 原始報告完整複製入專案，SHA256與Downloads原檔一致；保留提案原文，本次決議另記。
+- 更新ROADMAP、訓練設計、README、啟動AGENTS及研究／發布註記；PROJECT-REVIEW保留歷史快照。
+- [L0-L1-PLAN](L0-L1-PLAN.md)已查核實際API／呼叫鏈、資訊邊界、證據案例、最少檔案與快照／存檔風險；方案未實作。
+- 本輪重新278項測試全過、check／build成功。bundle仍index-BEUwn2va.js／index-CmJt2tzJ.css。未更動src、桌規、現行AI或存檔。
 
-## 最新工作：對莊權重離線比較（第三子包，已本機完成）
+## 版本基準與證據界線
 
-2026-10-08：依使用者強調阻止連莊，加入strategy-comparison.ts，先限制向聽損失，再依對莊／對閒未知安全證據權重與牌效比較；合法WIN優先，未接正式AI。R17莊胡或流局均續莊，因此避免放槍不等於成功阻莊。詳見[DEALER-STRATEGY-VALIDATION](DEALER-STRATEGY-VALIDATION.md)。
+開工本機fe909ee，遠端main即時查為57a0921；14870ee研究及fe909ee文件未推送。本包另作本機文件提交，未推送／部署。最新Actions37662675210來源f944292仍成功；正式首頁與JS／CSS本輪HTTP200。不含本輪瀏覽器互動或手機實機驗收；無新部署，不能宣稱新訓練已上線。
 
-278項全套測試與check／build通過，正式bundle仍index-BEUwn2va.js／index-CmJt2tzJ.css。新增5測試及RISK-EXAMPLES四種偏好消融。案例選牌差異來自向聽門檻，尚未證明提高莊權重改善結果；權重不是放槍率。下一步補對莊／對閒安全衝突案例與同向聽K損失上限，再做同種子換座配對驗證續莊率和點數。不可直接上線。
+## 下一個工作包
 
-本包本機提交，尚未推送或驗證新Actions；恢復後先核對git狀態再決定推送，前包部署證據不是本包發布證據。起始帳戶五小時已用86%，收尾99%；非精確token。額度偏低故停止擴張並可靠交接，未重設額度。
+L1-A核心證據獨立驗收，依L0-L1-PLAN案例表補驗收清單及缺口測試，包含E1/E2/E3界線、合法性、並列與未知，不以同一AI／分析器自證。L1-B後再接證據格式；L2才做保存與檢討UI。
 
-## 目前工作：對手別公開風險證據（第二個離線子包）
+不接人格／阻莊權重至正式AI，不先蓋快照框架，不做全面風險概率或收益。60題及6–10人不是固定交期或統計充分門檻；本輪未招募試用者。既有研究保留供通過驗收後選用。
 
-src/risk-evidence.ts只分析自家Observation合法捨牌，區分單家／全桌普通放槍安全、持有／可捨安全庫存，附公開面子數／捨牌數與既有計台函式計算的零台放槍底線。不提供概率、未知候選危險排序或選牌。五宣告面子只可能成將，暗槓只數面子、不偷扣牌種。
+## 固定界線
 
-[RISK-EVIDENCE-VALIDATION](RISK-EVIDENCE-VALIDATION.md)及RISK-EXAMPLES.json保存可重現取捨：三萬0向聽K5、只對莊安全；一筒1向聽K12、三家安全。273項全套／check／build通過，含不可見暗手與牆牌交換不影響證據等5個新增測試。研究模組未接正式AI、Session或教練，bundle保持index-BEUwn2va.js／index-CmJt2tzJ.css。已提交f944292；Actions37662675210 build／deploy皆成功，正式首頁及相同JS／CSS資源HTTP200。此包已完成，下一步依下段進行。
+- TW16-CLASSIC-v1，144張含花、16張五面子一對；莊胡及流局續莊。RULES唯一權威，不套日麻振聽。
+- AI／教練只讀指定getObservation；新快照要額外白名單，排除settlement及事後資料，不讀暗牌／牆／種子。
+- 現行Session、GameState、練習皆v1；對戰tw16:TW16-CLASSIC-v1:save、練習tw16:practice:v1、偏好tw16:coach:v1。新review鍵僅設計，尚不存在。
+- 舊檔完整驗證，失敗保留；跨分頁停止，結算不重付。未知不等於危險，公開K/N不是實際摸牌率，研究權重不是概率。
+- Sol主導，Luna僅必要限定協助；本輪無子代理。帳戶五小時起始已用1%、收尾檢查21%（剩79%），不是精確token。保持最少程式與依賴，scratch放work/，輸出放outputs/；額度為帳戶比例，非精確token。
 
-下一包先做共同情境下明確指定進攻／退守模式的候選比較與消融，再研究切換時機；相對風險與威脅仍未校準。叫牌整體後捨、三模板、保存升版與正式策略尚未實作，不算整個M6.1完成。本輪起始五小時已用47%，測試後71%（剩29%）；不是精確對話剩餘token。未使用子代理或開瀏覽器。
+正式站：https://zhai2liu.github.io/taiwan-mahjong/；origin：https://github.com/zhai2Liu/taiwan-mahjong.git。未啟動本機伺服器，未動使用者存檔。
 
-## 前包：牌風、牌效與保留安全張研究
-
-[HUMAN-AI-TACTICS-RESEARCH](HUMAN-AI-TACTICS-RESEARCH.md)整理來源、留退路／安全進聽／欺敵的區別、現二字牌單吊反例、四軸映射與消融方案。3組17張案例：同一步牌效保留、少4張有效進張的代價、安全打北進聽；RESERVE-EXAMPLES.json與research-reserve.mjs可重現，腳本含5組人工期望斷言。
-
-src/safety.ts只用公開牌池排除普通放槍的將／刻／順子路徑，未接ai.ts、Session或教練。5個新測試含4,314組局部容量與完整五面子一對見證交叉核對；不是完整對手分布或放槍率模型。268項全套／check／build通過；正式bundle仍index-BEUwn2va.js／index-CmJt2tzJ.css，研究模組未入站。來源0968d43，Actions37660636097的build／deploy皆成功；正式首頁仍載入相同JS／CSS，兩資源HTTP200。工作已完成，工作樹提交後保持乾淨。
-
-下一包：公開相對風險證據、反例與有代價的選擇情境；尚未校準威脅、危險排序或人格權重。保留牌偏好不能越過合法WIN、現在捨牌風險及禁捨；欺敵加分仍停用。人格策略接線前需公平、續局升版與對局評估，不直接將口訣上線。
-
-前次來源e0a703b、交接62e633d，2026-10-08重新確認Actions37577872254成功。前階段完整驗收已落盤，本輪沒有重做UI或更動其行為，也未開瀏覽器／伺服器。
-
-## 前一階段：全專案維護（已收尾）
-
-前次處理兩個具體改善：展開教練或顯示儲存警告時不擠壓中央牌桌；對戰、結算和練習儲存失敗可按「重試儲存」，不必推進遊戲，跨分頁衝突仍禁止覆寫。263項完整測試／check／build、依賴audit與獨立4193瀏覽器驗收通過；已發布來源e0a703b，Actions37577872254的build／deploy皆成功；正式首頁與資源index-BEUwn2va.js／index-CmJt2tzJ.css均驗過，兩資源HTTP200、瀏覽器無error／warn。下一步依試玩回饋維護。詳細範圍、證據與限制見[AUDIT-2026-10-07](AUDIT-2026-10-07.md)。
-
-本檔只保留現況與接續事項；舊工作證據從README連往各驗收文件，不沿用舊資源名稱或額度當現況。
-
-## 不變的實作界線
-
-- TW16-CLASSIC-v1：144張含花、台灣16張五面子一對，1真人＋3本地公平AI。RULES與cases凍結；不套日麻振聽、日麻或港麻計台。
-- AI與教練只讀getObservation的自家／公開資訊；不接完整GameState、對手暗手、暗槓種、牌牆或種子。公開K/N不是實際摸牌機率，拆法不是最大互斥搭數，現行建議不含防守評分。
-- 對戰Session／GameState及練習仍schemaVersion=1。讀檔必須驗證；失敗保留原檔，跨分頁競爭停止操作。結算已付款，重載／重開結算不可再付款。
-- 對戰鍵`tw16:TW16-CLASSIC-v1:save`、練習鍵`tw16:practice:v1`、教練偏好`tw16:coach:v1`各自獨立。教學先保存暫停，示範不改正式牌局。
-- 練習136張一般牌、不放回；無花、計台或吃碰槓。正向回饋只是同頁提示，逐條牌型只格式化已結算ScoreResult，不另算台。
-
-## 擴充入口
-
-[README](README.md)為總入口；[MAINTENANCE](MAINTENANCE.md)記修改位置、資料流及驗證；[ROADMAP](ROADMAP.md)記階段；[DEPLOYMENT](DEPLOYMENT.md)記發布／回復。按需讀[凍結桌規](../taiwan-mahjong-m0/RULES.md)，不要重新研究或另抄規則。
-
-人性化AI的[設計](HUMAN-AI-DESIGN.md)、[決策／保存規格](HUMAN-AI-DECISION-SPEC.md)、[驗證方案](HUMAN-AI-VALIDATION.md)已完成，包含四軸、三個試驗模板、資訊邊界及Session升版要求。[牌風研究](AI-STYLE-DESIGN.md)的768副E16起手基準不可直接套莊E17；研究腳本可讀fixture真值，正式策略不可照搬。本輪已啟動研究與公開安全基礎；三模板、保存升版及正式策略仍未開始。
-
-## 正式站與工作環境
-
-- 網站：https://zhai2liu.github.io/taiwan-mahjong/
-- origin：https://github.com/zhai2Liu/taiwan-mahjong.git；main來源推送自動test／build／Pages。Vite base為`./`，無CNAME或舊owner綁定。
-- 更早來源8152b91，Actions37555396794成功、259測試；證據見[TABLE-LAYOUT-VALIDATION](TABLE-LAYOUT-VALIDATION.md)。這是歷史證據。
-- 純Markdown／JPG／SIMULATION報告被workflow路徑排除；文件提交不須skip-ci或手動部署。不要直接改site／dist。
-- 驗收必用獨立port，本輪4193已停止、測試頁已關閉；不可覆寫使用者4173或正式存檔。原生confirm只在確實要換題／新局時操作；測試工具提供獨立情境。尺寸驗收不等於手機實機／Safari驗收。
-- Scratch放work/、交付放outputs/。每包完成立即更新交接。帳戶比例不是精確對話剩餘token；額度低時優先落盤，不自行重設或新增自動續跑。前次最後98%為舊窗口；本輪起始3%、測試檢查24%、收尾43%（剩57%）。帳戶用量包含其他並行工作。
+原M0–M5.4、M6三個離線包與歷史部署證據保留於[2026-10-08交接](HANDOFF-20261008.md)，舊「下一步」已被本文件取代。

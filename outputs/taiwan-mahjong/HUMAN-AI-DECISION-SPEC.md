@@ -1,3 +1,5 @@
+> 2026-10-09：依[產品方向決議](PRODUCT-DIRECTION.md)，本文件保留離線研究用途。正式人格／自動攻守整合暫緩，舊下一步不自動啟動；後續以[ROADMAP](ROADMAP.md)的L線為準。
+
 # 人性化 AI：決策與保存規格
 
 2026-10-06。**未來實作提案，非現行API承諾**。玩法與參數意義見[主文件](HUMAN-AI-DESIGN.md)；驗證與證據狀態見[驗證方案](HUMAN-AI-VALIDATION.md)。本文件不改RULES、GameState或正式程式。

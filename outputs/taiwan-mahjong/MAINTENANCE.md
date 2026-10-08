@@ -1,3 +1,5 @@
+> 2026-10-09：產品及新訓練契約見[方向決議](PRODUCT-DIRECTION.md)與[L0-L1方案](L0-L1-PLAN.md)。以下模組／存檔描述仍是現行實作；新快照尚未接線。
+
 # 維護指南
 
 2026-10-06，M5.3及後續維護更新。此文件說明現有實作與修改路徑；目前進度見[HANDOFF](HANDOFF.md)，新增玩法規格見[TRAINING-DESIGN](TRAINING-DESIGN.md)。

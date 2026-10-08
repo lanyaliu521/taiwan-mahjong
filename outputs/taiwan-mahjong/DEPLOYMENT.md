@@ -1,3 +1,5 @@
+> 2026-10-09訓練轉向：L0不推送既有離線研究包。未來L2分析資料使用獨立版本鍵（尚未實作），發布／回退均需核對舊Session、練習及新快照的可讀性；回退程式不等於回復資料，不得清空舊檔。見[L0-L1方案](L0-L1-PLAN.md)。
+
 # GitHub Pages發布與回復
 
 現行網址：https://zhai2liu.github.io/taiwan-mahjong/；repository：zhai2Liu/taiwan-mahjong。本機origin及About Website已同步。**最新來源、驗證及Actions見[HANDOFF](HANDOFF.md)**；本文件維護發布流程，避免多處版本資訊失去同步。
