@@ -431,8 +431,8 @@ export function clearFeedback(root: HTMLElement): void {
 export function updateReviewStatus(root: HTMLElement, state: ReviewStatus, send: Send): void {
   const area = root.querySelector<HTMLElement>('[data-review-status]'); if (!area) return;
   const detail = area.closest('details')!;
-  detail.querySelector('summary')!.textContent = state.failed ? '決策記錄與保存 · 需要處理' : '決策記錄與保存';
-  if (state.failed) detail.open = true;
+  detail.querySelector('summary')!.textContent = state.failed ? '決策記錄與保存 · 需要處理' : state.notice ? '決策記錄與保存 · 提示' : '決策記錄與保存';
+  if (state.failed || state.notice) detail.open = true;
   const text = area.querySelector<HTMLElement>('[role="status"]')!;
   const message = state.notice || `已保留最近 ${state.count} 筆決策${state.pending ? `，${state.pending} 筆待存` : ''}。僅存在此瀏覽器，最多20筆。`;
   if (text.textContent !== message) text.textContent = message;
