@@ -1,4 +1,4 @@
-> L2-A1的review-store.ts尚未接線；最小捨牌DTO不是Observation，過期值檢查不是交易鎖。接線前看[L2-A1契約](L2A1-REVIEW-STORE.md)待辦。
+> L2-A已接真人動作後記錄；review:v2獨立鍵與Web Locks。修改保存前看[L2-A3驗收](L2A3-RECORDING-VALIDATION.md)及[L2-A2契約](L2A2-DECISION-SNAPSHOT.md)。
 
 > L1-B已新增[decision-evidence契約](L1B-EVIDENCE-CONTRACT.md)，內部Observation封裝已驗，不是載入驗證器；改牌效／安全語義需評估analyzerVersion升版。
 

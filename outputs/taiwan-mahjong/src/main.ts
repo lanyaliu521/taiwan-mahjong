@@ -1,7 +1,9 @@
 import { getObservation, legalActions } from './engine.js';
 import { createSession, automaticAction, advance, encodeSession, decodeSession } from './session.js';
 import type { Session } from './session.js';
-import { render } from './view.js';
+import { render, updateReviewStatus, confirmReviewClear } from './view.js';
+import { createReviewRecorder } from './review-recorder.js';
+import { REVIEW_KEY } from './review-store.js';
 import type { UICommand } from './view.js';
 import { PRACTICE_KEY, createPractice, drawPractice, discardPractice, encodePractice, decodePractice } from './practice.js';
 import type { Practice } from './practice.js';
@@ -43,6 +45,8 @@ let practiceRaw: string | null = null;
 let practiceUnreadable = false;
 let practiceNotice = '';
 let practiceBlocked = false;
+const reviews = createReviewRecorder({ getItem: key => localStorage.getItem(key), setItem: (key, value) => localStorage.setItem(key, value) },
+  () => { if (mode === 'game') updateReviewStatus(root, reviews.status(), send); });
 try {
   practiceRaw = localStorage.getItem(PRACTICE_KEY);
   if (practiceRaw !== null) {
@@ -99,6 +103,7 @@ function paint(): void {
     game, selectedTile, drawnTile: current?.turn === 0 && current.phase === 'awaitDiscard' ? current.drawContext.lastTile : null,
     busy: needsAutomation() || failed, paused, speed, coachEnabled, coachNotice, feedback, status: message, notice, hasSave: saved !== null,
     canRetrySave: !!session && !failed && saveFailed,
+    review: reviews.status(),
   }, command => { if (screen === rendered) send(command); });
 }
 function refresh(): void {
@@ -134,6 +139,11 @@ function start(): void {
   persist(); refresh();
 }
 function send(command: UICommand): void {
+  if (command.type === 'review-retry') { void reviews.retry(); return; }
+  if (command.type === 'review-clear') {
+    paused = true; stopTimer(); paint();
+    confirmReviewClear(root, () => { void reviews.clear(); }); return;
+  }
   if (command.type === 'retry-save') {
     if (mode === 'practice') {
       if (practice && !practiceBlocked && practiceSaveFailed) { persistPractice(); paint(); }
@@ -190,6 +200,7 @@ function send(command: UICommand): void {
     return;
   }
   try {
+    let reviewInput: Parameters<typeof reviews.record> | undefined;
     if (command.type === 'next') {
       if (session.game.phase !== 'handResult') return;
       session = advance(session, 'engine', { type: 'NEXT_HAND' }, session.game.version);
@@ -197,6 +208,7 @@ function send(command: UICommand): void {
     } else if (command.type === 'intent') {
       const before = getObservation(session.game, 0);
       session = advance(session, 0, command.intent, command.version);
+      reviewInput = [before, command.intent, 'TW16-CLASSIC-v1'];
       feedback = null;
       if (coachEnabled && command.intent.type === 'DISCARD') {
         try {
@@ -206,12 +218,14 @@ function send(command: UICommand): void {
       }
     }
     selectedTile = null; status = ''; persist(); refresh();
+    if (reviewInput) reviews.record(...reviewInput);
   } catch {
     notice = '牌局已更新，這個操作未套用。請依畫面重新選擇。'; refresh();
   }
 }
 // ponytail: one tab owns local play; stop a second tab rather than merging competing turn histories.
 window.addEventListener('storage', event => {
+  if (event.key === null || event.key === REVIEW_KEY) reviews.externalChange();
   if (event.key === null || event.key === PRACTICE_KEY && event.newValue !== practiceRaw) {
     practiceBlocked = true; practiceSaved = null; practiceRaw = event.key === null ? null : event.newValue;
     practiceNotice = '另一個分頁已變更練習存檔，此頁已停止練習。請重新整理以使用最新進度。';

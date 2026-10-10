@@ -4,7 +4,8 @@
 let fault=new URLSearchParams(location.search).get('fault');
 const get=Storage.prototype.getItem,set=Storage.prototype.setItem;
 Storage.prototype.getItem=function(k){if(fault==='read')throw new DOMException('Test read failure','SecurityError');return get.call(this,k)};
-Storage.prototype.setItem=function(k,v){if(fault==='write')throw new DOMException('Test write failure','QuotaExceededError');return set.call(this,k,v)};
+Storage.prototype.setItem=function(k,v){if(fault==='write'||fault==='review-write'&&k==='tw16:review:v2')throw new DOMException('Test write failure','QuotaExceededError');return set.call(this,k,v)};
+if(fault==='review-write') { const button=document.createElement('button');button.textContent='測試：解除檢討寫入故障';button.onclick=()=>{fault='none';button.remove()};document.body.prepend(button); }
 addEventListener('message',e=>{if(e.origin===location.origin&&e.source===parent&&e.data==='recover')fault='none'});
 await import('../src/main.ts');
 </script></html>

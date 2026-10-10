@@ -5,9 +5,10 @@ import type { getObservation } from './engine.js';
 import { kindOf, seatWind } from './tiles.js';
 import { tileFace } from './tile-face.js';
 import type { PlayFeedback } from './feedback.js';
+import type { ReviewStatus } from './review-recorder.js';
 
 export type UICommand =
-  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' | 'tutorial' | 'retry-save' }
+  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' | 'tutorial' | 'retry-save' | 'review-retry' | 'review-clear' }
   | { type: 'practice' | 'practice-start' | 'practice-resume' | 'practice-replay' | 'practice-draw' | 'game' }
   | { type: 'practice-discard'; tileId: string }
   | { type: 'speed'; value: 'normal' | 'fast' }
@@ -18,6 +19,7 @@ export type ViewModel = {
   selectedTile: string | null; drawnTile: string | null; busy: boolean; paused: boolean;
   coachEnabled?: boolean; coachNotice?: string; canRetrySave?: boolean;
   feedback?: PlayFeedback | null;
+  review?: ReviewStatus;
   speed: 'normal' | 'fast'; status: string; notice: string; hasSave: boolean;
 };
 type Game = NonNullable<ViewModel['game']>;
@@ -425,6 +427,32 @@ export function clearFeedback(root: HTMLElement): void {
   const region = feedbackRegions.get(root);
   if (region) { region.live.textContent = ''; region.key = ''; }
 }
+/** Update only the review status: async saves must not replace a tile between two clicks. */
+export function updateReviewStatus(root: HTMLElement, state: ReviewStatus, send: Send): void {
+  const area = root.querySelector<HTMLElement>('[data-review-status]'); if (!area) return;
+  const detail = area.closest('details')!;
+  detail.querySelector('summary')!.textContent = state.failed ? '決策記錄與保存 · 需要處理' : '決策記錄與保存';
+  if (state.failed) detail.open = true;
+  const text = area.querySelector<HTMLElement>('[role="status"]')!;
+  const message = state.notice || `已保留最近 ${state.count} 筆決策${state.pending ? `，${state.pending} 筆待存` : ''}。僅存在此瀏覽器，最多20筆。`;
+  if (text.textContent !== message) text.textContent = message;
+  let retry = area.querySelector<HTMLButtonElement>('[data-focus="review-retry"]');
+  if (!retry) { retry = button('重試檢討保存', 'review-retry', () => send({ type: 'review-retry' }), 'button button-secondary'); area.append(retry); }
+  retry.hidden = !state.pending && !state.failed; retry.disabled = state.busy;
+  let clear = area.querySelector<HTMLButtonElement>('[data-focus="review-clear"]');
+  if (!clear) { clear = button('清除檢討記錄', 'review-clear', () => send({ type: 'review-clear' }), 'button button-quiet'); area.append(clear); }
+  clear.disabled = state.busy || !state.count && !state.pending && !state.failed;
+}
+
+export function confirmReviewClear(root: HTMLElement, confirm: () => void): void {
+  const dialog = node('dialog', 'tutorial-panel'); dialog.setAttribute('aria-labelledby', 'review-clear-title');
+  const title = node('h2', '', '清除所有檢討記錄？'); title.id = 'review-clear-title';
+  const cancel = button('保留記錄', 'review-clear-cancel', () => dialog.close(), 'button button-secondary');
+  dialog.append(title, node('p', '', '已保存及此頁待存的檢討將被清除，無法復原。對戰與練習進度不變。'), cancel,
+    button('確認清除檢討', 'review-clear-confirm', () => { dialog.close(); confirm(); }, 'button button-primary'));
+  dialog.addEventListener('close', () => { dialog.remove(); root.querySelector<HTMLElement>('[data-focus="review-clear"]')?.focus({ preventScroll: true }); }, { once: true });
+  document.body.append(dialog); dialog.showModal(); cancel.focus();
+}
 export function preserveDetails(root: HTMLElement): () => void {
   const details = detailStates.get(root) ?? new Map<string, boolean>();
   detailStates.set(root, details);
@@ -484,12 +512,19 @@ export function render(root: HTMLElement, model: ViewModel, send: Send): void {
     }
     shell.append(main);
   }
+  if (model.review) {
+    const detail = node('details', 'rules'); detail.dataset.persist = 'review-storage';
+    detail.append(node('summary', '', '決策記錄與保存'));
+    const area = node('div', 'rules-body'); area.dataset.reviewStatus = '';
+    const text = node('p'); text.setAttribute('role', 'status'); area.append(text); detail.append(area); shell.append(detail);
+  }
   shell.append(rules());
   const footer = node('footer', 'site-footer'); footer.append(node('span', '', '台灣十六張'), node('span', '', '本地運行 · 純積分 · TW16-CLASSIC-v1')); shell.append(footer);
   // ponytail: replace a small local table and restore focused controls; use keyed patching only if measured rendering cost warrants it.
   root.replaceChildren(shell);
   const table = root.querySelector('.table-grid'); if (table) table.scrollTop = tableScroll;
   restoreDetails();
+  if (model.review) updateReviewStatus(root, model.review, send);
   if (focus) {
     const target = Array.from(root.querySelectorAll<HTMLElement>('[data-focus]')).find(element => element.dataset.focus === focus);
     if (target && !target.matches(':disabled')) target.focus({ preventScroll: true });

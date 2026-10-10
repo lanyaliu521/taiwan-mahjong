@@ -7,6 +7,8 @@ import * as engine from '../dist/engine.js';
 import * as sessions from '../dist/session.js';
 import * as practices from '../dist/practice.js';
 import * as feedback from '../dist/feedback.js';
+import * as reviewStore from '../dist/review-store.js';
+import { createReviewRecorder } from '../dist/review-recorder.js';
 import { fixture } from './fixtures.mjs';
 import { kindOf } from '../dist/tiles.js';
 
@@ -21,15 +23,22 @@ function controller(raw = null, confirm = true, faults = {}) {
   const storage = new Map(raw === null ? [] : [[key, raw]]), timers = new Map(), delays = new Map(), handlers = new Map();
   if (faults.coachRaw !== undefined) storage.set('tw16:coach:v1', faults.coachRaw);
   if (faults.practiceRaw !== undefined) storage.set(practices.PRACTICE_KEY, faults.practiceRaw);
+  if (faults.reviewRaw !== undefined) storage.set(reviewStore.REVIEW_KEY, faults.reviewRaw);
   let send, view, timerId = 0, confirmations = 0, writes = 0, tutorialOpens = 0;
+  const writeKeys = [];
   vm.runInNewContext(compiled, {
     require(name) {
       if (name === './engine.js') return engine;
       if (name === './session.js') return sessions;
       if (name === './practice.js') return practices;
+      if (name === './review-store.js') return reviewStore;
+      if (name === './review-recorder.js') return { createReviewRecorder: (storage, changed) => createReviewRecorder(storage, changed,
+        Object.hasOwn(faults, 'locks') ? faults.locks : { request: async (_key, _options, callback) => callback({}) }) };
       if (name === './feedback.js') return faults.feedbackError ? { ...feedback, discardFeedback: () => { throw faults.feedbackError; } } : feedback;
       if (name === './practice-view.js') return { renderPractice: (_root, practice, notice, hasSave, blocked, handler, canRetrySave = false) => { view = { practice, notice, hasSave, blocked, canRetrySave }; send = handler; } };
-      if (name === './view.js') return { render: (_root, state, handler) => { view = state; send = handler; } };
+      if (name === './view.js') return { render: (_root, state, handler) => { view = state; send = handler; },
+        updateReviewStatus: (_root, state) => { if (view) view.review = state; },
+        confirmReviewClear: (_root, action) => { confirmations++; if (confirm) action(); } };
       if (name === './tutorial-view.js') return { showTutorial: () => { tutorialOpens++; } };
       throw Error(name);
     },
@@ -37,13 +46,13 @@ function controller(raw = null, confirm = true, faults = {}) {
     window: { confirm: () => { confirmations++; return confirm; }, addEventListener: (name, handler) => handlers.set(name, handler) },
     localStorage: {
       getItem: k => { if (faults.read) throw faults.read; return storage.get(k) ?? null; },
-      setItem: (k, v) => { writes++; if (faults.write || k === practices.PRACTICE_KEY && faults.practiceWrite) throw faults.write || faults.practiceWrite; storage.set(k, v); },
+      setItem: (k, v) => { writeKeys.push(k); if (k !== reviewStore.REVIEW_KEY) writes++; if (faults.write || k === practices.PRACTICE_KEY && faults.practiceWrite || k === reviewStore.REVIEW_KEY && faults.reviewWrite) throw faults.write || faults.practiceWrite || faults.reviewWrite; storage.set(k, v); },
     },
     setTimeout: (callback, delay) => { const id = ++timerId; timers.set(id, callback); delays.set(id, delay); return id; },
     clearTimeout: id => { timers.delete(id); delays.delete(id); },
   });
   return {
-    send: command => send(command), timers, delays,
+    send: command => send(command), timers, delays, writeKeys,
     get view() { return view; }, get confirmations() { return confirmations; }, get uiSend() { return send; }, get writes() { return writes; }, get tutorialOpens() { return tutorialOpens; },
     tick() {
       assert.equal(timers.size, 1, '每次只能排入一個自動操作');
@@ -52,6 +61,7 @@ function controller(raw = null, confirm = true, faults = {}) {
     },
     raw: () => storage.get(key) ?? null,
     practiceRaw: () => storage.get(practices.PRACTICE_KEY) ?? null,
+    reviewRaw: () => storage.get(reviewStore.REVIEW_KEY) ?? null,
     remotePractice(raw) {
       if (raw === null) storage.delete(practices.PRACTICE_KEY); else storage.set(practices.PRACTICE_KEY, raw);
       handlers.get('storage')({ key: practices.PRACTICE_KEY, newValue: raw });
@@ -495,4 +505,56 @@ test('可選回饋分析失敗不阻擋已接受的捨牌保存', () => {
   app.send(command); assert.equal(app.view.feedback, null); assert.equal(app.view.notice, '');
   assert.equal(sessions.decodeSession(app.raw()).game.version, command.version + 1);
   assert.equal(app.view.game.version, command.version + 1);
+});
+
+const settleReview = () => new Promise(resolve => setImmediate(resolve));
+const reviewSession = () => ({ schemaVersion: 1, game: fixture(), aiRandom: [17,29,43] });
+
+test('真人接受動作後才存決策前快照，牌局先保存，選牌及拒絕不記錄', async () => {
+  const session = reviewSession(), app = controller(sessions.encodeSession(session));
+  app.send({ type: 'resume' });
+  const action = app.view.game.legalActions.find(a => a.type === 'DISCARD');
+  app.send({ type: 'select', tileId: action.tileId });
+  assert.equal(app.reviewRaw(), null);
+  app.send({ type: 'intent', intent: action, version: session.game.version - 1 });
+  await settleReview(); assert.equal(app.reviewRaw(), null);
+  app.send({ type: 'intent', intent: action, version: session.game.version });
+  await settleReview();
+  const records = reviewStore.decodeReviewArchive(app.reviewRaw());
+  assert.equal(records.length, 1); assert.equal(records[0].observation.version, session.game.version);
+  assert.deepEqual(records[0].chosen, action); assert.ok(records[0].observation.self.concealed.includes(action.tileId));
+  assert.equal(sessions.decodeSession(app.raw()).game.version, session.game.version + 1);
+  assert.deepEqual(app.writeKeys.slice(-2), [key, reviewStore.REVIEW_KEY]);
+  assert.equal(app.view.review.pending, 0); assert.equal(app.view.review.count, 1);
+});
+
+test('檢討配額失敗、缺鎖、壞檔保留進度，重試不重複執行動作', async () => {
+  for (const faults of [{ reviewWrite: new Error('quota') }, { locks: null }, { reviewRaw: '{broken' }]) {
+    const session = reviewSession(), app = controller(sessions.encodeSession(session), true, faults);
+    app.send({ type: 'resume' }); const action = app.view.game.legalActions.find(a => a.type === 'DISCARD');
+    app.send({ type: 'intent', intent: action, version: session.game.version }); await settleReview();
+    const saved = app.raw(); assert.equal(sessions.decodeSession(saved).game.version, session.game.version + 1);
+    assert.equal(app.reviewRaw(), faults.reviewRaw ?? null); assert.equal(app.view.review.pending, 1);
+    assert.equal(app.view.review.failed, true); assert.equal(app.view.notice, '');
+    if (faults.reviewWrite) {
+      delete faults.reviewWrite; app.send({ type: 'review-retry' }); await settleReview();
+      assert.equal(reviewStore.decodeReviewArchive(app.reviewRaw()).length, 1);
+      assert.equal(app.view.review.pending, 0); assert.equal(app.view.review.failed, false);
+    }
+    assert.equal(app.raw(), saved, '重試不可再執行牌局動作');
+  }
+});
+
+test('清除檢討先確認並暫停，取消保留；確認只清檢討與待存資料', async () => {
+  for (const confirm of [false, true]) {
+    const session = reviewSession(), app = controller(sessions.encodeSession(session), confirm);
+    app.send({ type: 'resume' }); const action = app.view.game.legalActions.find(a => a.type === 'DISCARD');
+    app.send({ type: 'intent', intent: action, version: session.game.version }); await settleReview();
+    const game = app.raw(), review = app.reviewRaw();
+    app.send({ type: 'review-clear' }); await settleReview();
+    assert.equal(app.confirmations, 1); assert.equal(app.timers.size, 0); assert.equal(app.view.paused, true);
+    assert.equal(app.raw(), game);
+    assert.equal(reviewStore.decodeReviewArchive(app.reviewRaw()).length, confirm ? 0 : 1);
+    if (!confirm) assert.equal(app.reviewRaw(), review);
+  }
 });

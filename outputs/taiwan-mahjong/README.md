@@ -6,7 +6,7 @@
 
 ## 入口
 
-- [L2-A1捨牌資料與保存](L2A1-REVIEW-STORE.md)：已完成限定子包，L2-A仍在進行，未接正式對局。
+- [L2-A真人記錄與保存驗收](L2A3-RECORDING-VALIDATION.md)：已接本機對局，獨立快照／互斥／重試／清除；發布狀態見HANDOFF。
 
 - [L1-B決策證據契約與驗收](L1B-EVIDENCE-CONTRACT.md)：已完成內部封裝，尚未接正式UI／保存。
 
