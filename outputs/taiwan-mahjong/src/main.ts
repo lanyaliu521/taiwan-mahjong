@@ -3,7 +3,9 @@ import { createSession, automaticAction, advance, encodeSession, decodeSession }
 import type { Session } from './session.js';
 import { render, updateReviewStatus, confirmReviewClear } from './view.js';
 import { createReviewRecorder } from './review-recorder.js';
-import { REVIEW_KEY } from './review-store.js';
+import { REVIEW_KEY, readReviewArchive } from './review-store.js';
+import { buildHandReview } from './hand-review.js';
+import { showHandReview } from './hand-review-view.js';
 import type { UICommand } from './view.js';
 import { PRACTICE_KEY, createPractice, drawPractice, discardPractice, encodePractice, decodePractice } from './practice.js';
 import type { Practice } from './practice.js';
@@ -139,6 +141,13 @@ function start(): void {
   persist(); refresh();
 }
 function send(command: UICommand): void {
+  if (command.type === 'review-open') {
+    if (mode !== 'game' || !session || !['handResult', 'matchResult'].includes(session.game.phase)) return;
+    const { matchId, handId } = session.game;
+    try { showHandReview(root, buildHandReview(readReviewArchive(localStorage).records, matchId, handId, 0), reviews.status().pending); }
+    catch { showHandReview(root, null, reviews.status().pending, '本局檢討無法讀取或分析版本不受支援；原資料已保留，對戰與結算不受影響。'); }
+    return;
+  }
   if (command.type === 'review-retry') { void reviews.retry(); return; }
   if (command.type === 'review-clear') {
     paused = true; stopTimer(); paint();

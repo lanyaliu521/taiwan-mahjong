@@ -9,7 +9,9 @@ import * as practices from '../dist/practice.js';
 import * as feedback from '../dist/feedback.js';
 import * as reviewStore from '../dist/review-store.js';
 import { createReviewRecorder } from '../dist/review-recorder.js';
-import { fixture } from './fixtures.mjs';
+import * as handReview from '../dist/hand-review.js';
+import { captureDecision } from '../dist/decision-snapshot.js';
+import { fixture, run, WIN } from './fixtures.mjs';
 import { kindOf } from '../dist/tiles.js';
 
 const key = 'tw16:TW16-CLASSIC-v1:save';
@@ -26,12 +28,15 @@ function controller(raw = null, confirm = true, faults = {}) {
   if (faults.reviewRaw !== undefined) storage.set(reviewStore.REVIEW_KEY, faults.reviewRaw);
   let send, view, timerId = 0, confirmations = 0, writes = 0, tutorialOpens = 0;
   const writeKeys = [];
+  const reviewViews = [];
   vm.runInNewContext(compiled, {
     require(name) {
       if (name === './engine.js') return engine;
       if (name === './session.js') return sessions;
       if (name === './practice.js') return practices;
       if (name === './review-store.js') return reviewStore;
+      if (name === './hand-review.js') return handReview;
+      if (name === './hand-review-view.js') return { showHandReview: (_root, review, pending, error) => reviewViews.push({ review, pending, error }) };
       if (name === './review-recorder.js') return { createReviewRecorder: (storage, changed) => createReviewRecorder(storage, changed,
         Object.hasOwn(faults, 'locks') ? faults.locks : { request: async (_key, _options, callback) => callback({}) }) };
       if (name === './feedback.js') return faults.feedbackError ? { ...feedback, discardFeedback: () => { throw faults.feedbackError; } } : feedback;
@@ -52,7 +57,7 @@ function controller(raw = null, confirm = true, faults = {}) {
     clearTimeout: id => { timers.delete(id); delays.delete(id); },
   });
   return {
-    send: command => send(command), timers, delays, writeKeys,
+    send: command => send(command), timers, delays, writeKeys, reviewViews,
     get view() { return view; }, get confirmations() { return confirmations; }, get uiSend() { return send; }, get writes() { return writes; }, get tutorialOpens() { return tutorialOpens; },
     tick() {
       assert.equal(timers.size, 1, '每次只能排入一個自動操作');
@@ -570,4 +575,38 @@ test('牌局保存失敗時不讓檢討超前舊存檔，避免還原後同版�
   delete faults.gameWrite; app.send({ type: 'retry-save' }); await settleReview();
   assert.equal(sessions.decodeSession(app.raw()).game.version, session.game.version + 1);
   assert.equal(app.reviewRaw(), null, '補存牌局不捏造遺漏決策');
+});
+
+test('局後檢討只在已結束本局開啟，重開不推進、不保存、不重付', () => {
+  const playing = controller(sessions.encodeSession(reviewSession())); playing.send({type:'resume'});
+  playing.send({type:'review-open'}); assert.equal(playing.reviewViews.length,0);
+  const before = fixture({hands:{0:WIN}}), observation = engine.getObservation(before,0);
+  const win = observation.legalActions.find(a=>a.type==='WIN');
+  const record = captureDecision(observation,win,'TW16-CLASSIC-v1');
+  const game = run(before,0,'WIN');
+  const raw = sessions.encodeSession({schemaVersion:1,game,aiRandom:[1,2,3]});
+  const reviewRaw = JSON.stringify({schemaVersion:2,records:[record]});
+  const app = controller(raw,true,{reviewRaw}); app.send({type:'resume'});
+  const original = app.raw(), writes = app.writeKeys.length;
+  app.send({type:'review-open'}); app.send({type:'review-open'});
+  assert.equal(app.reviewViews.length,2); assert.equal(app.reviewViews[0].review.cards.length,1);
+  assert.equal(app.reviewViews[0].review.cards[0].snapshot.chosen.type,'WIN');
+  assert.equal(app.raw(),original); assert.equal(app.reviewRaw(),reviewRaw);
+  assert.equal(app.writeKeys.length,writes); assert.equal(app.timers.size,0);
+  assert.deepEqual(app.view.game.scores,game.scores);
+});
+
+test('局後空檔、壞檔及未知分析版本只顯示說明，不重設原資料', () => {
+  const before = fixture({hands:{0:WIN}}), observation = engine.getObservation(before,0);
+  const record = captureDecision(observation,observation.legalActions.find(a=>a.type==='WIN'),'TW16-CLASSIC-v1');
+  record.analyzerVersion='future';
+  const raw = sessions.encodeSession({schemaVersion:1,game:run(before,0,'WIN'),aiRandom:[1,2,3]});
+  for(const reviewRaw of [null,'{broken',JSON.stringify({schemaVersion:2,records:[record]})]) {
+    const app = controller(raw,true,reviewRaw===null?{}:{reviewRaw}); app.send({type:'resume'});
+    app.send({type:'review-open'});
+    assert.equal(app.reviewViews.length,1);
+    if(reviewRaw===null) assert.equal(app.reviewViews[0].review.shown,0);
+    else { assert.equal(app.reviewViews[0].review,null); assert.match(app.reviewViews[0].error,/原資料已保留/); }
+    assert.equal(app.reviewRaw(),reviewRaw); assert.equal(app.raw(),raw); assert.equal(app.writeKeys.length,0);
+  }
 });

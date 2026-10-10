@@ -68,3 +68,27 @@
 .in-game:has(>.rules[open],.coach-panel[open],>.notice){height:auto;min-height:100dvh}
 .in-game:has(>.rules[open],.coach-panel[open],>.notice) .table-grid{flex:none;height:clamp(420px,55dvh,700px)}
 .notice .button{margin:6px 0 0 10px;min-height:44px}
+
+/* Static post-hand comparisons share native dialog behavior with settlement. */
+.review-panel { width: min(880px, calc(100vw - 32px)); max-height: 88dvh; box-sizing: border-box; overflow-y: auto; background: #fbf7ee; color: #213d33; border: 1px solid #b9c9b9; border-radius: 18px; padding: 24px; }
+.review-panel::backdrop { background: rgb(7 22 19 / .72); }
+.review-top { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.review-top h2 { margin: 0; }
+.review-card { margin-block: 24px; padding-top: 16px; border-top: 2px solid #bccab9; }
+.review-candidate { margin-block: 12px; padding: 12px 16px; border: 1px solid #cdd5c8; border-radius: 10px; background: #fffdf7; }
+.review-candidate h4 { margin: 0 0 8px; }
+.review-candidate p { margin-block: 8px; }
+.review-chosen { border: 2px solid #32755a; }
+.review-tag { color: #286046; font-weight: 700; }
+.review-limit { font-size: .9rem; line-height: 1.65; }
+.review-tiles { display: flex; flex-wrap: wrap; gap: 3px; margin-block: 12px; }
+.review-context, .review-more { padding-block: 12px; }
+.review-panel summary { cursor: pointer; font-weight: 700; }
+.review-panel li { margin-block: 8px; }
+@media (max-width: 540px) { .review-panel { padding: 16px; width: calc(100vw - 16px); } .review-top { flex-wrap: wrap; } .review-candidate { padding: 10px; } }
+.review-panel .muted { color: #53645a; opacity: 1; }
+.review-panel .button-secondary { color: #213d33; background: #edf0e5; border-color: #819a87; }
+.review-top { position: sticky; top: -24px; padding-block: 12px; background: #fbf7ee; z-index: 1; }
+.review-picker { display: grid; gap: 6px; margin-block: 16px; font-weight: 700; }
+.review-picker select { width: 100%; min-height: 44px; color: #213d33; background: #fffdf7; border: 1px solid #819a87; border-radius: 6px; padding: 8px; }
+@media (max-width: 540px) { .review-top { top: -16px; } }

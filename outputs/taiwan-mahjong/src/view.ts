@@ -8,7 +8,7 @@ import type { PlayFeedback } from './feedback.js';
 import type { ReviewStatus } from './review-recorder.js';
 
 export type UICommand =
-  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' | 'tutorial' | 'retry-save' | 'review-retry' | 'review-clear' }
+  | { type: 'start' | 'resume' | 'new' | 'next' | 'pause' | 'coach-toggle' | 'tutorial' | 'retry-save' | 'review-retry' | 'review-clear' | 'review-open' }
   | { type: 'practice' | 'practice-start' | 'practice-resume' | 'practice-replay' | 'practice-draw' | 'game' }
   | { type: 'practice-discard'; tileId: string }
   | { type: 'speed'; value: 'normal' | 'fast' }
@@ -417,7 +417,7 @@ function result(model: ViewModel, send: Send): HTMLDialogElement {
   game.scores.forEach((score, seat) => { const row = node('tr', seat === settlement.winner ? 'winner-row' : ''); row.append(node('th', '', `${names[seat]} · ${wind(game, seat)}`), node('td', settlement.delta[seat] > 0 ? 'positive' : '', signed(settlement.delta[seat])), node('td', '', signed(score))); tbody.append(row); });
   scores.append(tbody); breakdown.append(details); section.append(scores); if (settlement.score) section.append(breakdown);
   const footer = node('div', 'result-footer'); footer.append(node('p', 'muted', game.phase === 'matchResult' ? '東南西北四圈結束。謝謝入座。' : '本局已結算，準備好再開始下一局。'), button(game.phase === 'matchResult' ? '再打一將' : '下一局', game.phase === 'matchResult' ? 'new-result' : 'next', () => send({ type: game.phase === 'matchResult' ? 'new' : 'next' }), 'button button-primary', model.busy || model.paused));
-  section.append(footer); return section;
+  section.append(button('本局決策檢討', 'review-open', () => send({ type: 'review-open' }), 'button button-secondary'), footer); return section;
 }
 
 // ponytail: layout memory lasts for this page session; persist UI preferences only if requested.

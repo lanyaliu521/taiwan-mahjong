@@ -1,0 +1,36 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>局後檢討驗收</title><link rel="stylesheet" href="../src/style.css">
+<div id="setup"><p>獨立測試來源：建立一局已結束的真實引擎牌局與決策記錄。若此來源已有存檔則拒絕覆蓋。</p><button id="prepare">建立局後驗收牌局</button><p id="setup-status" role="status"></p></div><div id="app"></div>
+<script type="module">
+import { createSession, advance, encodeSession } from '../dist/session.js';
+import { getObservation, legalActions } from '../dist/engine.js';
+import { chooseAction } from '../dist/ai.js';
+import { captureDecision } from '../dist/decision-snapshot.js';
+import { appendReview, REVIEW_KEY } from '../dist/review-store.js';
+const SAVE='tw16:TW16-CLASSIC-v1:save';
+document.querySelector('#prepare').onclick=async event=>{
+  event.target.disabled=true;
+  try {
+    if(localStorage.getItem(SAVE)!==null||localStorage.getItem(REVIEW_KEY)!==null) throw Error('此來源已有存檔，請換新測試連接埠。');
+    let session=createSession({seed:3145,dealer:0}), random=31, raw=null, count=0;
+    for(let i=0;i<1200&&!session.game.settlement;i++) {
+      let actor='engine', intent=legalActions(session.game,'engine')[0], snapshot;
+      if(!intent) for(let seat=0;seat<4;seat++) {
+        const o=getObservation(session.game,seat); if(!o.legalActions.length)continue;
+        const decision=chooseAction(o,o.legalActions,random);random=decision.randomState;
+        actor=seat;intent=decision.intent;
+        if(seat===0)snapshot=captureDecision(o,intent,'TW16-CLASSIC-v1');
+        break;
+      }
+      if(!intent)throw Error('無合法轉移');
+      session=advance(session,actor,intent,session.game.version);
+      if(snapshot){raw=appendReview({getItem:()=>raw,setItem:(_key,value)=>raw=value},raw,snapshot);count++;}
+    }
+    if(!session.game.settlement)throw Error('未完成結算');
+    localStorage.setItem(SAVE,encodeSession(session));
+    if(raw!==null)localStorage.setItem(REVIEW_KEY,raw);
+    document.querySelector('#setup-status').textContent=`已完成牌局；真人座位提交${count}次，保存最近20筆。`;
+    event.target.remove(); await import('../src/main.ts');
+  }catch(error){document.querySelector('#setup-status').textContent=error.message;event.target.disabled=false;}
+};
+</script></html>
