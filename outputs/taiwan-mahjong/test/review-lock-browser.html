@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-Hant"><meta charset="utf-8"><title>檢討保存互斥驗收</title>
+<h1>檢討保存互斥驗收</h1>
+<p>僅在獨立測試來源使用；測試使用並清除本來源的檢討資料。</p>
+<button id="run">開始驗收</button><pre id="result">尚未執行</pre>
+<script type="module">
+import { createSession, advance } from '../dist/session.js';
+import { legalActions, getObservation } from '../dist/engine.js';
+import { captureDecision } from '../dist/decision-snapshot.js';
+import { REVIEW_KEY, appendReviewLocked, clearReviewLocked, readReviewArchive } from '../dist/review-store.js';
+const output = document.querySelector('#result');
+const assert = (ok, label) => { if (!ok) throw new Error(label); };
+if (new URL(location.href).searchParams.has('client')) {
+  document.body.hidden = true;
+  addEventListener('message', async e => {
+    if (e.origin !== location.origin || e.source !== parent) return;
+    const { id, expected, snapshot, action } = e.data;
+    try {
+      if (action === 'clear') await clearReviewLocked(localStorage, expected);
+      else await appendReviewLocked(localStorage, expected, snapshot);
+      parent.postMessage({ id, ok: true }, location.origin);
+    } catch (error) { parent.postMessage({ id, ok: false, error: error.message }, location.origin); }
+  });
+} else {
+  document.querySelector('#run').onclick = async event => {
+    event.target.disabled = true;
+    const frames = [], pending = new Map(); let seq = 0;
+    const listener = e => {
+      if (e.origin !== location.origin || !frames.some(f => f.contentWindow === e.source)) return;
+      const p = pending.get(e.data.id); if (p && p.source === e.source) { clearTimeout(p.timer); pending.delete(e.data.id); p.resolve(e.data); }
+    };
+    addEventListener('message', listener);
+    const call = (index, action, expected, snapshot) => new Promise((resolve, reject) => {
+      const id = ++seq, source = frames[index].contentWindow;
+      const timer = setTimeout(() => { pending.delete(id); reject(new Error('client timeout')); }, 5000);
+      pending.set(id, { resolve, source, timer }); source.postMessage({ id, action, expected, snapshot }, location.origin);
+    });
+    const original = localStorage.getItem(REVIEW_KEY);
+    const otherKeys = Object.keys(localStorage).filter(k => k !== REVIEW_KEY).map(k => [k, localStorage.getItem(k)]);
+    let release;
+    try {
+      assert(navigator.locks, 'Web Locks unavailable');
+      assert(original === null, '測試來源已有檢討資料，請改用全新連接埠');
+      for (let i = 0; i < 2; i++) {
+        const f = document.createElement('iframe'); f.title = `測試分頁 ${i + 1}`; f.hidden = true;
+        const loaded = new Promise(resolve => f.onload = resolve); f.src = '?client=1'; frames.push(f); document.body.append(f); await loaded;
+      }
+      let session = createSession({ seed: 20261010, dealer: 0 });
+      for (let i = 0; i < 30; i++) {
+        const action = legalActions(session.game, 'engine')[0]; if (!action) break;
+        session = advance(session, 'engine', action, session.game.version);
+      }
+      const o = getObservation(session.game, 0);
+      const first = captureDecision(o, o.legalActions.find(a => a.type === 'DISCARD'), 'TW16-CLASSIC-v1');
+      const second = structuredClone(first); second.observation.matchId += '-second';
+      const results = await Promise.all([call(0, 'append', null, first), call(1, 'append', null, second)]);
+      assert(results.filter(r => r.ok).length === 1, 'simultaneous append must have one winner');
+      assert(results.filter(r => !r.ok).every(r => ['REVIEW_BUSY', 'REVIEW_CONFLICT'].includes(r.error)), 'conflict reason');
+      assert(readReviewArchive(localStorage).records.length === 1, 'first record preserved');
+      const loser = results.findIndex(r => !r.ok);
+      assert((await call(loser, 'append', localStorage.getItem(REVIEW_KEY), [first, second][loser])).ok, 'retry after reread');
+      assert(readReviewArchive(localStorage).records.length === 2, 'both records preserved');
+      let acquired; const ready = new Promise(resolve => acquired = resolve);
+      const held = navigator.locks.request(REVIEW_KEY, async () => { acquired(); await new Promise(resolve => release = resolve); });
+      await ready;
+      assert((await call(0, 'clear', localStorage.getItem(REVIEW_KEY))).error === 'REVIEW_BUSY', 'clear shares exclusive lock');
+      release(); await held; release = null;
+      const third = structuredClone(first); third.observation.matchId += '-third';
+      const raw = localStorage.getItem(REVIEW_KEY);
+      const race = await Promise.all([call(0, 'clear', raw), call(1, 'append', raw, third)]);
+      assert(race.filter(r => r.ok).length === 1, 'clear versus append one winner');
+      assert(race.filter(r => !r.ok).every(r => ['REVIEW_BUSY', 'REVIEW_CONFLICT'].includes(r.error)), 'clear conflict reason');
+      assert(otherKeys.every(([k,v]) => localStorage.getItem(k) === v), 'other data unchanged');
+      output.textContent = 'PASS：兩個獨立瀏覽器視窗環境同時追加、重新讀取後重試、鎖定期間清除、清除與追加競爭、其他存檔保留。';
+    } catch (error) { output.textContent = `FAIL：${error.message}`; }
+    finally {
+      release?.(); frames.forEach(f => f.remove()); removeEventListener('message', listener);
+      pending.forEach(p => clearTimeout(p.timer));
+      if (original === null) localStorage.removeItem(REVIEW_KEY);
+      event.target.disabled = false;
+    }
+  };
+}
+</script></html>

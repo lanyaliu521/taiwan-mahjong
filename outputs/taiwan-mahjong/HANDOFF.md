@@ -2,7 +2,11 @@
 
 2026-10-09。產品轉向「台灣16張麻將進階玩家決策訓練」。已採納報告主方向及D-01～08規劃預設；詳見[PRODUCT-DIRECTION](PRODUCT-DIRECTION.md)。主線是可信證據、少量局後檢討、無提示陌生題測驗；既有對戰保留，正式人格／攻守整合暫緩。
 
-## 最新完成：L2-A1最小捨牌資料／保存（L2-A未全部完成）
+## 最新完成：L2-A2公開快照／跨頁互斥（L2-A尚待接線）
+
+2026-10-10新增decision-snapshot與鎖定保存介面，新鍵tw16:review:v2。303測試／build通過；內建瀏覽器兩個iframe競爭驗收PASS。詳見[L2-A2](L2A2-DECISION-SNAPSHOT.md)。尚未接main，bundle不變、未推送／部署。下一包真人成功操作後記錄、通知／清除與回歸；不能宣稱AT-07已全過。
+
+## 前包：L2-A1最小捨牌資料／保存
 
 新增review-store.ts及6測試；[契約與限制](L2A1-REVIEW-STORE.md)。294全套測試、check／build通過，正式bundle不變。模組未接main／UI，不自動記錄真人，不動舊Session／練習。未推送／部署。
 

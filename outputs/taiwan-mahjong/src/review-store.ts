@@ -3,8 +3,9 @@ import type { Meld, Seat } from './model.js';
 import { EVIDENCE_VERSION } from './decision-evidence.js';
 import { DECK, KINDS, kindOf, isFlower } from './tiles.js';
 import { prepareHand } from './hand.js';
+import { validateDecisionSnapshot, type DecisionSnapshot } from './decision-snapshot.js';
 
-export const REVIEW_KEY = 'tw16:review:v1';
+export const REVIEW_KEY = 'tw16:review:v2';
 export const REVIEW_LIMITS = { records: 20, recordBytes: 32768, totalBytes: 262144 } as const;
 type StoragePort = Pick<Storage, 'getItem' | 'setItem'>;
 type Observation = ReturnType<typeof getObservation>;
@@ -26,7 +27,12 @@ const ordinary = new Set(DECK.filter(t => !isFlower(t)));
 function tiles(v: unknown): asserts v is string[] {
   requireValue(Array.isArray(v) && v.length <= 136 && v.every(t => ordinary.has(t)) && new Set(v).size === v.length);
 }
-const identity = (s: DiscardSnapshot) => JSON.stringify([s.matchId, s.handId, s.version, s.seat]);
+export type ReviewRecord = DiscardSnapshot | DecisionSnapshot;
+const identity = (s: ReviewRecord) => { const o = s.schemaVersion === 2 ? s.observation : s; return JSON.stringify([o.matchId, o.handId, o.version, o.seat]); };
+function validateRecord(s: unknown): asserts s is ReviewRecord {
+  if (s && typeof s === 'object' && 'schemaVersion' in s && s.schemaVersion === 2) validateDecisionSnapshot(s);
+  else validateDiscardSnapshot(s);
+}
 
 /** Strict limited DTO. Does not authenticate edited local data or authorize engine actions. */
 export function validateDiscardSnapshot(value: unknown): asserts value is DiscardSnapshot {
@@ -80,13 +86,13 @@ export function captureDiscard(o: Observation, chosenTileId: string, rulesVersio
   return s;
 }
 
-export function decodeReviewArchive(raw: string | null): DiscardSnapshot[] {
+export function decodeReviewArchive(raw: string | null): ReviewRecord[] {
   if (raw === null) return [];
   requireValue(bytes(raw) <= REVIEW_LIMITS.totalBytes);
   const value = JSON.parse(raw);
   keys(value, 'schemaVersion records');
-  requireValue(value.schemaVersion === 1 && Array.isArray(value.records) && value.records.length <= REVIEW_LIMITS.records);
-  value.records.forEach(validateDiscardSnapshot);
+  requireValue([1, 2].includes(value.schemaVersion) && Array.isArray(value.records) && value.records.length <= REVIEW_LIMITS.records);
+  value.records.forEach((s: unknown) => { validateRecord(s); requireValue(value.schemaVersion !== 1 || s.schemaVersion === 1); });
   requireValue(new Set(value.records.map(identity)).size === value.records.length);
   return value.records;
 }
@@ -97,8 +103,8 @@ export function readReviewArchive(storage: StoragePort) {
 }
 
 /** expectedRaw is a stale-write guard, NOT an atomic cross-tab transaction. */
-export function appendReview(storage: StoragePort, expectedRaw: string | null, snapshot: DiscardSnapshot) {
-  validateDiscardSnapshot(snapshot);
+export function appendReview(storage: StoragePort, expectedRaw: string | null, snapshot: ReviewRecord) {
+  validateRecord(snapshot);
   const records = decodeReviewArchive(expectedRaw);
   if (storage.getItem(REVIEW_KEY) !== expectedRaw) throw new Error('REVIEW_CONFLICT');
   const existing = records.find(s => identity(s) === identity(snapshot));
@@ -107,9 +113,9 @@ export function appendReview(storage: StoragePort, expectedRaw: string | null, s
     return expectedRaw; // Retry is idempotent; never replace a conflicting historical choice.
   }
   records.push(snapshot);
-  let raw = JSON.stringify({ schemaVersion: 1, records });
+  let raw = JSON.stringify({ schemaVersion: 2, records });
   while (records.length > REVIEW_LIMITS.records || bytes(raw) > REVIEW_LIMITS.totalBytes) {
-    records.shift(); raw = JSON.stringify({ schemaVersion: 1, records });
+    records.shift(); raw = JSON.stringify({ schemaVersion: 2, records });
   }
   // A single setItem preserves the previous archive if quota/security throws. No remove-before-write.
   storage.setItem(REVIEW_KEY, raw);
@@ -119,9 +125,29 @@ export function appendReview(storage: StoragePort, expectedRaw: string | null, s
 /** The UI must obtain explicit confirmation first; this never touches game/practice saves. */
 export function clearReview(storage: StoragePort, expectedRaw: string | null) {
   if (storage.getItem(REVIEW_KEY) !== expectedRaw) throw new Error('REVIEW_CONFLICT');
-  const raw = JSON.stringify({ schemaVersion: 1, records: [] });
+  const raw = JSON.stringify({ schemaVersion: 2, records: [] });
   storage.setItem(REVIEW_KEY, raw);
   return raw;
 }
-// ponytail: discard-only records without full river reconstruction; add claim DTOs and an atomic
-// cross-tab write gate before live integration. Do not attach this storage helper directly to main.
+/** Browser integration must use these locked operations, never the raw synchronous helpers. */
+export async function appendReviewLocked(storage: StoragePort, expectedRaw: string | null, snapshot: ReviewRecord,
+  locks: Pick<LockManager, 'request'> | undefined = globalThis.navigator?.locks) {
+  if (!locks) throw new Error('REVIEW_LOCK_UNAVAILABLE');
+  const captured = structuredClone(snapshot);
+  validateRecord(captured);
+  return locks.request(REVIEW_KEY, { mode: 'exclusive', ifAvailable: true }, lock => {
+    if (!lock) throw new Error('REVIEW_BUSY');
+    return appendReview(storage, expectedRaw, captured);
+  });
+}
+
+export async function clearReviewLocked(storage: StoragePort, expectedRaw: string | null,
+  locks: Pick<LockManager, 'request'> | undefined = globalThis.navigator?.locks) {
+  if (!locks) throw new Error('REVIEW_LOCK_UNAVAILABLE');
+  return locks.request(REVIEW_KEY, { mode: 'exclusive', ifAvailable: true }, lock => {
+    if (!lock) throw new Error('REVIEW_BUSY');
+    return clearReview(storage, expectedRaw);
+  });
+}
+// ponytail: legacy v1 remains readable but is not a complete Observation; never invent missing
+// public context to upgrade it. Controller lifecycle validation is required before live integration.

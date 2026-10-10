@@ -9,7 +9,7 @@ const RULES = 'TW16-CLASSIC-v1';
 type Observation = ReturnType<typeof getObservation>;
 
 // Explicit fields: never serialize arbitrary caller properties into evidence.
-function actionValue(a: Intent): Intent {
+export function evidenceIntent(a: Intent): Intent {
   switch (a.type) {
     case 'DISCARD': return { type: a.type, tileId: a.tileId };
     case 'CHI': case 'PON': case 'KAN_OPEN': return { type: a.type, windowId: a.windowId, ownTiles: [...a.ownTiles].sort() };
@@ -22,7 +22,7 @@ function actionValue(a: Intent): Intent {
     default: throw new Error('INVALID_EVIDENCE_ACTION');
   }
 }
-const actionKey = (a: Intent) => JSON.stringify(actionValue(a));
+const actionKey = (a: Intent) => JSON.stringify(evidenceIntent(a));
 const kindOrder = (a: { kind: string }, b: { kind: string }) => KINDS.indexOf(a.kind) - KINDS.indexOf(b.kind);
 const metrics = (a: Analysis) => ({ level: 'E1' as const, status: 'supported' as const,
   shanten: a.shanten, effective: a.effective, improving: a.effective === 16 ? a.improving : null,
@@ -47,7 +47,7 @@ export function decisionEvidence(o: Observation, rulesVersion: string) {
   const ready = ['awaitDiscard', 'awaitClaims', 'awaitRobKong'].includes(o.phase) && [16, 17].includes(effective);
   const analysis = ready ? analyzeObservation(o, false) : null;
   const risks = ready && o.legalActions.some(a => a.type === 'DISCARD') ? discardRiskEvidence(o).candidates : [];
-  const actions = [...new Map(o.legalActions.map(a => [actionKey(a), actionValue(a)])).entries()]
+  const actions = [...new Map(o.legalActions.map(a => [actionKey(a), evidenceIntent(a)])).entries()]
     .sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
   const candidates = actions.map(([id, intent]) => {
     const discard = intent.type === 'DISCARD' ? analysis?.discards.find(d => d.kind === kindOf(intent.tileId)) : undefined;
