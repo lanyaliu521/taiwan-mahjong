@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "rulesVersion": "TW16-CLASSIC-v1",
+  "analyzerVersion": "tw16-evidence-1",
+  "status": "draft-not-in-runtime",
+  "assessmentFamilies": [],
+  "cases": [
+    {
+      "id": "E01", "skill": "efficiency", "familyId": "five-meld-singleton", "purpose": "training", "reviewStatus": "pending-content-review",
+      "difficulty": "基礎控制題", "scope": "公開張數下的局部牌效，不評估放槍或收益",
+      "prompt": "已完成五副露123萬、456萬、123筒、456筒、789索，暗手東、南。連同自己的手牌，東已知3張、南已知1張；沒有其他可見牌。若先維持較低向聽，再比較公開有效進張，哪些捨牌符合目標？選出全部。",
+      "choices": [{"id":"east","text":"打東，留南單騎"},{"id":"south","text":"打南，留東單騎"}],
+      "accepted": ["east"],
+      "expected": {"east":{"shanten":0,"improving":3},"south":{"shanten":0,"improving":1},"publicPoolTotal":117},
+      "derivation": "五組已固定，只差一對。打東等南，4−1=3；打南等東，4−3=1。兩者都是0向聽，因此此目標選3張者。136−15副露−2暗手−2張額外已知東=117；3/117不是實際牌牆摸牌率。",
+      "references": ["L1A-EVIDENCE-VALIDATION.md:C04", "test/evidence-boundaries.test.mjs:L1A-01"]
+    },
+    {
+      "id": "E02", "skill": "efficiency", "familyId": "four-meld-shanten-priority", "purpose": "training", "reviewStatus": "pending-content-review",
+      "difficulty": "單一取捨題", "scope": "固定四副露後的局部牌效",
+      "prompt": "四副露123萬、456萬、123筒、789筒；暗手三索、四索、東、東、南，沒有其他可見牌。目標先讓向聽較低，再比有效進張。選出全部符合此目標的捨牌。",
+      "choices": [{"id":"south","text":"南"},{"id":"east","text":"東"},{"id":"three","text":"三索"},{"id":"four","text":"四索"}],
+      "accepted": ["south"],
+      "expected": {"shanten":0,"improving":8,"effectiveKinds":["2s","5s"],"publicPoolTotal":119},
+      "derivation": "打南留下34索及東東，只缺34索接2或5，共4+4=8張。其餘捨牌破壞34或東對，至少仍差兩張成形，不能只看較大的進張數就跳過向聽目標。四副露12張加暗手5張，未知136−17=119。",
+      "references": ["L1B-EVIDENCE-CONTRACT.md", "src/analysis.ts:bestDiscards"]
+    },
+    {
+      "id": "S01", "skill": "safety-scope", "familyId": "four-known-honor", "purpose": "training", "reviewStatus": "pending-content-review",
+      "difficulty": "基礎控制題", "scope": "本次普通放槍的局部容量證明",
+      "prompt": "自己持有一張東，另外三張東都已公開。只就這一張東與普通胡牌成形路徑，可以證明哪一件事？",
+      "choices": [{"id":"ron-safe","text":"本次打東可排除以東作將或刻的普通放槍路徑"},{"id":"dealer-stop","text":"一定可以阻止莊家連莊"},{"id":"all-safe","text":"從現在起整局零風險"}],
+      "accepted": ["ron-safe"],
+      "expected": {"kind":"1z","unseenCopies":0,"provenSafe":true},
+      "derivation": "字牌不能成順。其餘三張皆已知，對手沒有東可與此牌組將或刻，因此排除本次普通放槍；不能據此排除後續自摸、花胡或流局續莊。",
+      "references": ["L1A-EVIDENCE-VALIDATION.md:C07", "test/safety.test.mjs"]
+    },
+    {
+      "id": "S02", "skill": "safety-scope", "familyId": "four-known-number-counterexample", "purpose": "training", "reviewStatus": "pending-content-review",
+      "difficulty": "反例辨識題", "scope": "剩餘局部成形路徑，不是實際放槍概率",
+      "prompt": "四張三萬都在自己手中，其他萬子沒有公開資訊。能因此證明打三萬不會普通放槍嗎？",
+      "choices": [{"id":"safe","text":"能，因為對手沒有三萬"},{"id":"unknown","text":"不能；對手仍可能用12、24或45萬接成順子"},{"id":"certain","text":"不能，因此一定會放槍"}],
+      "accepted": ["unknown"],
+      "expected": {"kind":"3m","unseenCopies":0,"routes":[["1m","2m"],["2m","4m"],["4m","5m"]],"provenSafe":false},
+      "derivation": "四見只排除三萬作將／刻，不能排除123、234、345三種順子。存在可行路徑不證明任何對手真的持有完整聽牌，故只能說未證明安全，不能推成必放槍或百分比。",
+      "references": ["L1A-EVIDENCE-VALIDATION.md:C08", "test/safety.test.mjs"]
+    },
+    {
+      "id": "C01", "skill": "claim-cost", "familyId": "chi-134-2-and-ban", "purpose": "training", "reviewStatus": "pending-content-review",
+      "difficulty": "基礎控制題", "scope": "組順子辨識，假設完整局況符合引擎吃牌前置條件",
+      "prompt": "只看相關手牌134萬，上家打2萬，尾局與過水等限制都不阻止吃牌，且吃後有合法牌可捨。哪些自身兩張可以吃成順子？選出全部；不問是否值得吃。",
+      "choices": [{"id":"13","text":"1與3萬"},{"id":"34","text":"3與4萬"},{"id":"14","text":"1與4萬"}],
+      "accepted": ["13","34"],
+      "expected": {"sequences":[["1m","2m","3m"],["2m","3m","4m"]]},
+      "derivation": "13加2是123，34加2是234；14加2成124不是連續三張。合法不等於建議吃，仍需比較後捨與門清代價。",
+      "references": ["L1A-EVIDENCE-VALIDATION.md:C05", "test/chi.test.mjs"]
+    },
+    {
+      "id": "C02", "skill": "claim-cost", "familyId": "chi-134-2-and-ban", "purpose": "training", "reviewStatus": "pending-content-review",
+      "difficulty": "單一取捨題", "scope": "本桌吃後禁捨；不是日麻振聽",
+      "prompt": "已用手中34萬吃入上家的2萬。依本桌吃後禁捨規則，這次不能捨哪些牌種？選出全部。",
+      "choices": [{"id":"2m","text":"二萬"},{"id":"5m","text":"五萬"},{"id":"1m","text":"一萬"},{"id":"4p","text":"四筒"}],
+      "accepted": ["2m","5m"],
+      "expected": {"ownKinds":["3m","4m"],"incoming":"2m","forbidden":["2m","5m"]},
+      "derivation": "這次取出的自身兩張是34，2或5都能與它們重新組成順子，因此依凍結桌規兩種均禁捨。不能把吃前所有暗手捨牌視為吃後仍合法。",
+      "references": ["../taiwan-mahjong-m0/RULES.md", "src/engine.ts:discardBan"]
+    },
+    {
+      "id": "D01", "skill": "dealer-continuation", "familyId": "dealer-safe-discard-scope", "purpose": "training", "reviewStatus": "pending-content-review",
+      "difficulty": "反例辨識題", "scope": "安全與阻莊的概念區分，不推薦唯一策略",
+      "prompt": "有公開證據證明某捨牌這一次不會普通放槍給任何一家。是否等於能阻止莊家連莊？選出全部正確敘述。",
+      "choices": [{"id":"no","text":"不等於；莊家之後仍可能自摸"},{"id":"draw","text":"不等於；本桌流局仍由莊家續莊"},{"id":"yes","text":"等於，只要不放槍莊家便不能連莊"}],
+      "accepted": ["no","draw"],
+      "expected": {"safeDoesNotStopDealer":true},
+      "derivation": "普通放槍證明只約束這一次捨牌。莊家自摸與流局都在其範圍外，而本桌兩者均續莊。不能把安全權重直接當阻莊成功率。",
+      "references": ["L1A-EVIDENCE-VALIDATION.md:C11", "test/evidence-boundaries.test.mjs:L1A-03"]
+    },
+    {
+      "id": "D02", "skill": "dealer-continuation", "familyId": "dealer-transition-rule", "purpose": "training", "reviewStatus": "pending-content-review",
+      "difficulty": "基礎控制題", "scope": "TW16-CLASSIC-v1既定續莊條件",
+      "prompt": "目前莊家連2。哪些結果會讓下一局維持同一位莊家並變成連3？選出全部。",
+      "choices": [{"id":"dealer-win","text":"莊家胡牌"},{"id":"draw","text":"流局"},{"id":"other-win","text":"閒家胡牌"}],
+      "accepted": ["dealer-win","draw"],
+      "expected": {"keepsDealer":["dealer-win","draw"],"nextStreak":3},
+      "derivation": "本桌莊胡與流局續莊且N加1，閒家胡才移莊。題目只是规则辨識，不表示流局是玩家應追求的策略。",
+      "references": ["../taiwan-mahjong-m0/RULES.md:R17", "test/engine.test.mjs"]
+    }
+  ]
+}
