@@ -217,8 +217,11 @@ function send(command: UICommand): void {
         } catch (error) { console.warn('Optional feedback unavailable:', error); }
       }
     }
-    selectedTile = null; status = ''; persist(); refresh();
-    if (reviewInput) reviews.record(...reviewInput);
+    selectedTile = null; status = ''; const gameSaved = persist(); refresh();
+    if (reviewInput) {
+      if (gameSaved) reviews.record(...reviewInput);
+      else reviews.skipUnsavedGame();
+    }
   } catch {
     notice = '牌局已更新，這個操作未套用。請依畫面重新選擇。'; refresh();
   }

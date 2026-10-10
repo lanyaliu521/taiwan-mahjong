@@ -35,6 +35,7 @@ export function createReviewRecorder(storage: Pick<Storage, 'getItem' | 'setItem
   }
   return {
     status: (): ReviewStatus => ({ count, pending: pending.length, busy, failed: blocked, notice }),
+    skipUnsavedGame() { notice = '牌局尚未存妥，這次未收錄檢討；請先處理牌局儲存。'; notify(); },
     record(...args: Parameters<typeof captureDecision>) {
       try {
         // ponytail: keep at most 20 unsaved records in memory; no unbounded queue or background retries.

@@ -46,7 +46,7 @@ function controller(raw = null, confirm = true, faults = {}) {
     window: { confirm: () => { confirmations++; return confirm; }, addEventListener: (name, handler) => handlers.set(name, handler) },
     localStorage: {
       getItem: k => { if (faults.read) throw faults.read; return storage.get(k) ?? null; },
-      setItem: (k, v) => { writeKeys.push(k); if (k !== reviewStore.REVIEW_KEY) writes++; if (faults.write || k === practices.PRACTICE_KEY && faults.practiceWrite || k === reviewStore.REVIEW_KEY && faults.reviewWrite) throw faults.write || faults.practiceWrite || faults.reviewWrite; storage.set(k, v); },
+      setItem: (k, v) => { writeKeys.push(k); if (k !== reviewStore.REVIEW_KEY) writes++; if (faults.write || k === key && faults.gameWrite || k === practices.PRACTICE_KEY && faults.practiceWrite || k === reviewStore.REVIEW_KEY && faults.reviewWrite) throw faults.write || faults.gameWrite || faults.practiceWrite || faults.reviewWrite; storage.set(k, v); },
     },
     setTimeout: (callback, delay) => { const id = ++timerId; timers.set(id, callback); delays.set(id, delay); return id; },
     clearTimeout: id => { timers.delete(id); delays.delete(id); },
@@ -557,4 +557,17 @@ test('清除檢討先確認並暫停，取消保留；確認只清檢討與待�
     assert.equal(reviewStore.decodeReviewArchive(app.reviewRaw()).length, confirm ? 0 : 1);
     if (!confirm) assert.equal(app.reviewRaw(), review);
   }
+});
+
+test('牌局保存失敗時不讓檢討超前舊存檔，避免還原後同版本不同選擇衝突', async () => {
+  const session = reviewSession(), faults = { gameWrite: new Error('game quota') };
+  const original = sessions.encodeSession(session), app = controller(original, true, faults);
+  app.send({ type: 'resume' }); const action = app.view.game.legalActions.find(a => a.type === 'DISCARD');
+  app.send({ type: 'intent', intent: action, version: session.game.version }); await settleReview();
+  assert.equal(app.view.game.version, session.game.version + 1);
+  assert.equal(app.raw(), original); assert.equal(app.reviewRaw(), null);
+  assert.match(app.view.review.notice, /未收錄/); assert.equal(app.view.canRetrySave, true);
+  delete faults.gameWrite; app.send({ type: 'retry-save' }); await settleReview();
+  assert.equal(sessions.decodeSession(app.raw()).game.version, session.game.version + 1);
+  assert.equal(app.reviewRaw(), null, '補存牌局不捏造遺漏決策');
 });
