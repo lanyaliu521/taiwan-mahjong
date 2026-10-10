@@ -2,7 +2,7 @@
 
 > L1-B已新增[decision-evidence契約](L1B-EVIDENCE-CONTRACT.md)，內部Observation封裝已驗，不是載入驗證器；改牌效／安全語義需評估analyzerVersion升版。
 
-> 2026-10-09：產品及新訓練契約見[方向決議](PRODUCT-DIRECTION.md)與[L0-L1方案](L0-L1-PLAN.md)。以下模組／存檔描述仍是現行實作；新快照尚未接線。
+> 2026-10-09：產品及新訓練契約見[方向決議](PRODUCT-DIRECTION.md)與[L0-L1方案](L0-L1-PLAN.md)。以下為維護基準；新快照已接線，詳見本文件首段的L2-A契約與驗收。
 
 # 維護指南
 
@@ -140,3 +140,5 @@ src/tutorial-view.ts只接root，不接Session、getObservation、localStorage�
 教學資料保護回歸在controller.test：對戰與練習保存失敗均不得開窗或丟進度；讀取壞檔／跨頁已阻擋時只准看教學，不寫回原存檔。讀取／保存失敗與跨頁競爭不是同一情況，不要以統一「可看教學」流程省略保存保護。示範互動和窄視窗則以瀏覽器驗收，不為固定文案加字串鏡像測試。
 
 離線偏好比較：src/strategy-comparison.ts、test/strategy-comparison.test.mjs。共用scripts/research-risk.mjs生成RISK-EXAMPLES.json；限制與下一步見DEALER-STRATEGY-VALIDATION.md。未接正式入口，不要把偏好分數當危險機率。
+
+L2-B1：src/hand-review.ts只讀已驗證封套，挑最近三筆可比較決策並合併相同牌種實體候選。下一包畫面須守已結算本局入口，不把此函式直接當存檔驗證器；見L2B1-HAND-REVIEW.md。

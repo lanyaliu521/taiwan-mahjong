@@ -1,3 +1,5 @@
+> 此為歷史子包紀錄；真人接線與現行行為以[L2-A3](L2A3-RECORDING-VALIDATION.md)及[HANDOFF](HANDOFF.md)為準。
+
 # L2-A1：最小捨牌資料與獨立保存
 
 2026-10-09。完成L2-A第一個子包，**不代表L2-A全部完成**。新增src/review-store.ts及6項測試，294項全套、check、build通過。未接main、畫面、既有Session或正式AI，未自動記錄玩家操作。
